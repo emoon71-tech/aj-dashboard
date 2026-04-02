@@ -2,8 +2,11 @@ name: Update Chip Data
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5'   # 台灣 18:00（盤後）
-  workflow_dispatch:          # 可以手動按
+    - cron: '0 10 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -12,6 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,5 +35,9 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "auto update chip data" || echo "no changes"
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "auto update chip data"
           git push
