@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.3.1">
+  <meta name="app-version" content="v2.4.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -279,7 +279,7 @@
       <div class="logo-icon">阿</div>
       <div>
         <div class="logo-text">阿吉股票儀表板</div>
-        <div class="logo-sub">AJ Stock Dashboard · 價值投資策略</div>
+        <div class="logo-sub">AJ Stock Dashboard · 阿吉公式 V10</div>
       </div>
     </div>
     <div class="topright">
@@ -1210,141 +1210,261 @@
     const reasons=[], risks=[];
     let chip=0, tech=0;
     const isEtf=!ep||!ep.e;
-
+    const chipMeta=getChipMeta(code);
+    const stockMeta=getStockMeta(code);
+    const inst=getInstitutionMeta(d);
     const tw=AppState.market.twIndex;
     const mBias=marketBiasScore();
+    const flowBias=parseFlowBias(AppState.market.flowText||'');
+    const fear=AppState.market.fearScore;
+    const shieldCount=(stockMeta.etf||[]).filter(x=>x && x!=='ETF').length;
+    const sectorHeat=(calcSectorHeat(currentCodes()).find(item=>item.name===(stockMeta.sector||'其他'))?.heat)||0;
+    const v=ep&&price?valLabel(price,ep):null;
+
     if(mBias>=1){
-      chip += 18;
-      reasons.push(isTradingTime()?'即時大盤偏多':'盤前預判偏多');
+      chip += 14;
+      reasons.push(isTradingTime()?'大盤環境偏多':'盤前環境偏多');
+    }else if(mBias===0){
+      chip += 9;
+      reasons.push('大盤中性，可挑強股');
     }else if(mBias===-1){
-      chip -= 8;
-      risks.push(isTradingTime()?'即時大盤偏空':'盤前預判偏空');
-      risks.push('大盤偏空，先保命');
-    }else if(mBias<=-2){
-      chip -= 14;
-      risks.push('即時大盤風險盤');
-      risks.push('台股急跌，今天少做');
+      chip += 3;
+      risks.push('大盤偏空，倉位要小');
     }else{
-      chip += 10;
-      reasons.push(isTradingTime()?'大盤震盪':'盤前觀察');
+      chip -= 8;
+      risks.push('大盤風險盤，先保命');
     }
 
-    const flowBias=parseFlowBias(AppState.market.flowText||'');
     if(flowBias>0){
       chip += 10;
       reasons.push('期貨籌碼偏多');
     }else if(flowBias<0){
       chip -= 6;
       risks.push('期貨籌碼偏空');
-      risks.push('法人未明顯站多方');
     }else{
-      chip += 5;
+      chip += 4;
     }
 
-    const fear=AppState.market.fearScore;
     if(Number.isFinite(fear)){
-      chip += fear<=35 ? 9 : fear<=60 ? 6 : 3;
-      if(fear<=35 && mBias>=0) reasons.push('市場恐慌，反向有利');
-      if(fear>=70) risks.push('市場過熱');
+      if(fear<=25){
+        chip += 8;
+        reasons.push('市場恐慌，反向有肉');
+      }else if(fear<=45){
+        chip += 6;
+        reasons.push('情緒未過熱');
+      }else if(fear<=65){
+        chip += 4;
+      }else{
+        chip += 1;
+        risks.push('市場偏熱，別追高');
+      }
     }else{
-      chip += 5;
+      chip += 4;
     }
 
-    const v=ep&&price?valLabel(price,ep):null;
+    if(chipMeta.status==='潛伏'){
+      chip += 12;
+      reasons.push('外資 / 投信籌碼偏潛伏');
+    }else if(chipMeta.status==='觀察'){
+      chip += 7;
+      reasons.push('法人有觀察痕跡');
+    }else{
+      chip += 2;
+      risks.push('盤後籌碼未明顯表態');
+    }
+
+    if(inst){
+      chip += 6;
+      reasons.push(inst.label);
+    }
+
+    if(sectorHeat>=78){
+      chip += 5;
+      reasons.push(`主流族群加溫：${stockMeta.sector||'其他'}`);
+    }else if(sectorHeat>=65){
+      chip += 3;
+      reasons.push(`族群輪動在前排：${stockMeta.sector||'其他'}`);
+    }else if(sectorHeat>0 && sectorHeat<52){
+      chip -= 2;
+      risks.push(`族群熱度普通：${stockMeta.sector||'其他'}`);
+    }
+
+    if(shieldCount>0){
+      chip += Math.min(4, shieldCount*2);
+      reasons.push(`ETF 護體 ${shieldCount} 檔`);
+    }
+
     if(v){
-      chip += [10,9,8,5,3,1][v.idx] ?? 5;
+      const valScore=[10,9,7,5,2,0][v.idx] ?? 5;
+      chip += valScore;
       if(v.idx<=2) reasons.push(`估值 ${v.label}`);
       if(v.idx>=4) risks.push(`估值 ${v.label}`);
+    }else if(isEtf){
+      chip += 8;
+      reasons.push('ETF 不套用 EPS 估值');
     }else{
-      chip += isEtf ? 8 : 5;
-      if(isEtf) reasons.push('ETF 不套用 EPS 估值');
+      chip += 4;
     }
 
     let stockPct=null;
     if(price!=null && prev!=null && prev!==0){
       stockPct=((price-prev)/prev)*100;
-      tech += stockPct>3 ? 10 : stockPct>1 ? 8 : stockPct>=0 ? 6 : stockPct>-2 ? 3 : 1;
-      if(stockPct>0) reasons.push('價格站上昨收');
-      if(stockPct<-2) risks.push('日內轉弱');
+      if(stockPct>=4){
+        tech += 10;
+        risks.push('日內漲幅偏大，別追太兇');
+      }else if(stockPct>=1.5){
+        tech += 9;
+        reasons.push('日內轉強');
+      }else if(stockPct>=0){
+        tech += 7;
+        reasons.push('站上昨收');
+      }else if(stockPct>-2){
+        tech += 4;
+      }else{
+        tech += 1;
+        risks.push('日內走弱');
+      }
     }else{
-      tech += isEtf ? 8 : 5;
-      if(isEtf) reasons.push('缺昨收資料，技術分用中性估算');
+      tech += isEtf ? 7 : 4;
     }
 
     if(price!=null && open!=null && open!==0){
-      tech += price>=open ? 10 : 3;
-      if(price>=open) reasons.push('站上開盤價');
-      else risks.push('跌破開盤價');
+      if(price>=open){
+        tech += 10;
+        reasons.push('站上開盤價');
+      }else{
+        tech += 2;
+        risks.push('跌破開盤價');
+      }
     }else{
-      tech += isEtf ? 8 : 5;
+      tech += isEtf ? 7 : 4;
     }
 
     if(high!=null && low!=null && price!=null){
-      const pos=(price-low)/Math.max(high-low,0.01);
-      tech += pos>=0.75 ? 10 : pos>=0.5 ? 7 : pos>=0.3 ? 4 : 1;
-      if(pos>=0.75) reasons.push('收在相對高位');
-      if(pos<0.3) risks.push('收在低位附近');
+      const range=Math.max(high-low,0.01);
+      const pos=(price-low)/range;
+      if(pos>=0.78){
+        tech += 10;
+        reasons.push('收在日內高檔區');
+      }else if(pos>=0.58){
+        tech += 7;
+      }else if(pos>=0.35){
+        tech += 4;
+      }else{
+        tech += 1;
+        risks.push('收在低檔區');
+      }
+      if(range/Math.max(price||1,1) > 0.08){
+        risks.push('波動偏大，注意震盪');
+      }
     }else{
-      tech += isEtf ? 8 : 5;
+      tech += isEtf ? 7 : 4;
     }
 
     if(high!=null && prev!=null && price!=null){
-      const broke=high>prev && price>prev;
-      tech += broke ? 10 : 4;
-      if(broke) reasons.push('有突破昨收');
-      else risks.push('突破力不足');
+      const brokePrev=high>prev && price>prev;
+      if(brokePrev){
+        tech += 9;
+        reasons.push('有過昨高 / 昨收壓力');
+      }else if(price>=prev){
+        tech += 6;
+      }else{
+        tech += 2;
+        risks.push('突破力不足');
+      }
     }else{
-      tech += isEtf ? 8 : 5;
+      tech += isEtf ? 7 : 4;
+    }
+
+    if(price!=null && open!=null && high!=null && low!=null){
+      const body=Math.abs(price-open);
+      const range=Math.max(high-low,0.01);
+      if(body/range>=0.45){
+        tech += 6;
+        reasons.push('K 棒實體明確');
+      }else if(body/range<=0.18){
+        tech += 2;
+        risks.push('K 棒猶豫，容易震盪');
+      }else{
+        tech += 4;
+      }
+    }else{
+      tech += isEtf ? 6 : 4;
     }
 
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
       if(tw.chgPct<=-1 && stockPct>0){
-        chip += 6;
+        chip += 4;
         tech += 4;
         reasons.push('逆勢強於大盤');
       }
       if(tw.chgPct<=-1 && stockPct<0){
-        chip -= 4;
-        risks.push('順著大盤一起弱');
+        chip -= 3;
+        tech -= 2;
+        risks.push('跟著大盤一起弱');
       }
-      if(tw.chgPct<=-2 && stockPct<1){
-        chip -= 6;
-        tech -= 3;
-        risks.push('風險盤下無明顯抵抗');
+      if(tw.chgPct>=1 && stockPct<0){
+        tech -= 4;
+        risks.push('大盤好你不動，偏弱');
       }
-    }
-
-    const chipMeta=getChipMeta(code);
-    if(chipMeta.score>0){
-      chip += Math.min(8, Math.round((chipMeta.score/20)*8));
-      if(chipMeta.status==='潛伏') reasons.push('盤後籌碼偏潛伏');
-      else if(chipMeta.status==='觀察') reasons.push('法人有觀察痕跡');
-    }else if(chipMeta.status==='無'){
-      risks.push('籌碼未明顯表態');
     }
 
     chip=clamp(Math.round(chip),0,50);
     tech=clamp(Math.round(tech),0,50);
     const total=chip+tech;
-    let decision='觀望', badge='sb-wait', note='條件還行，但先等更漂亮的點。';
+
+    let decision='觀察';
+    let badge='sb-wait';
+    let state='觀察';
+    let stateCls='status-watch';
+    let note='條件有一些，但還沒到漂亮進場點。';
+
     if(mBias<=-2){
-      decision=total>=70?'逆勢觀察':'先別碰';
-      badge=total>=70?'sb-wait':'sb-no';
-      note=total>=70?'大盤很差，這檔算逆勢，但仍以小倉觀察為主。':'今天先保命，別跟大盤硬頂。';
-    }else if(mBias===-1){
-      if(total>=76 && tech>=35){
-        decision='逆勢觀察'; badge='sb-wait'; note='有撐，但大盤偏空，先觀察不追價。';
-      }else if(total<=58){
-        decision='先別碰'; badge='sb-no'; note='盤空股弱，這口別硬吃。';
+      if(total>=76 && chip>=38){
+        decision='逆勢觀察';
+        badge='sb-wait';
+        state='逆勢';
+        stateCls='status-watch';
+        note='大盤風險高，這檔算硬，但也只值觀察單。';
+      }else{
+        decision='先別碰';
+        badge='sb-no';
+        state='偏弱';
+        stateCls='status-weak';
+        note='今天先保命，看到漂亮也別手癢。';
       }
+    }else if(total>=85 && chip>=40 && tech>=40){
+      decision='準備發動';
+      badge='sb-go';
+      state='發動';
+      stateCls='status-go';
+      note='籌碼和結構都漂亮，列入攻擊名單。';
+    }else if(total>=74 && chip>=34 && tech>=34){
+      decision='潛伏觀察';
+      badge='sb-go';
+      state='潛伏';
+      stateCls='status-go';
+      note='已接近發動區，等更順的節奏或回踩。';
+    }else if(total>=62){
+      decision='續觀察';
+      badge='sb-wait';
+      state='整理';
+      stateCls='status-hold';
+      note='有條件，但仍在整理，不急著出手。';
     }else{
-      if(total>=78 && tech>=35){
-        decision='可進場'; badge='sb-go'; note='可列攻擊名單，分批比梭哈帥。';
-      }else if(total<=54){
-        decision='先別碰'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
-      }
+      decision='先別碰';
+      badge='sb-no';
+      state='偏弱';
+      stateCls='status-weak';
+      note='這檔現在還不夠香，別為了寂寞亂買。';
     }
-    const score={chip,tech,total,decision,badge,note,reasons:[...new Set(reasons)].slice(0,4),risks:[...new Set(risks)].slice(0,4)};
+
+    const score={
+      chip,tech,total,decision,badge,note,state,stateCls,
+      reasons:[...new Set(reasons)].slice(0,5),
+      risks:[...new Set(risks)].slice(0,5),
+      v10Ready: price!=null && prev!=null && open!=null && high!=null && low!=null
+    };
     d.scoreData=score;
     d.scoreCacheKey=signature;
     AppState.stocks[code]=d;
@@ -1422,21 +1542,7 @@
   
   function getStatusMeta(code){
     const score=computeAjieScore(code);
-    const mBias=marketBiasScore();
-    if(mBias<=-2){
-      if(score.total>=70) return {label:'逆勢觀察', cls:'status-watch'};
-      if(score.total>=50) return {label:'少做', cls:'status-hold'};
-      return {label:'偏弱', cls:'status-weak'};
-    }
-    if(mBias===-1){
-      if(score.total>=76) return {label:'逆勢觀察', cls:'status-watch'};
-      if(score.total>=58) return {label:'少做', cls:'status-hold'};
-      return {label:'偏弱', cls:'status-weak'};
-    }
-    if(score.total>=72) return {label:'可進', cls:'status-go'};
-    if(score.total>=60) return {label:'觀察', cls:'status-watch'};
-    if(score.total>=48) return {label:'整理', cls:'status-hold'};
-    return {label:'偏弱', cls:'status-weak'};
+    return {label:score.state||'觀察', cls:score.stateCls||'status-watch'};
   }
   function getInstitutionMeta(d){
     if(!d||typeof d!=='object') return null;
@@ -1481,13 +1587,13 @@
           <div class="p ${col}">${price?'NT$ '+price.toLocaleString():'--'}</div>
           <div class="c ${col}">${pctText}${d.chg!=null?`　${formatSignedChange(d.chg)}`:''}</div>
           ${v?`<div style="margin-top:5px"><span class="sbg ${v.bcls}">${v.label}</span></div>`:''}
-          <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
+          <div><span class="status-box ${status.cls}">狀態｜${status.label}</span></div>
           ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
         </div>
       </div>
       <hr class="div">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <div style="font-size:10px;color:var(--text3);font-weight:500">阿吉快判引擎（盤勢＋估值＋日內結構）</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:500">阿吉公式 V10（籌碼＋結構＋市場）</div>
         <span class="score-badge ${score.badge}">${score.decision}</span>
       </div>
       <div class="score-grid">
@@ -1501,13 +1607,13 @@
           <div class="ttl">籌碼 / 盤勢</div>
           <div class="num">${score.chip}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
           <div class="score-bar"><div style="width:${score.chip*2}%"></div></div>
-          <div class="sub">看大盤、情緒、期貨、估值</div>
+          <div class="sub">看法人、族群、ETF、盤勢</div>
         </div>
         <div class="score-card">
           <div class="ttl">技術 / 結構</div>
           <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
           <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
-          <div class="sub">看強弱、位置、突破、開盤價</div>
+          <div class="sub">看強弱、位置、突破、K棒結構</div>
         </div>
       </div>
       <div class="reason-list">
@@ -1530,7 +1636,7 @@
         <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
         <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
       </div>
-      <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+      <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 此版已升級為 V10 評分核心；MA20 / MACD 等進階技術面需接 K 線資料後再補強。</div>
     `;
   }
 
@@ -1568,10 +1674,10 @@
         ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
         <div class="sp ${col}">${price?price.toLocaleString():'--'}</div>
         <div class="sch ${col}">${pctText}</div>
-        <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
+        <div><span class="status-box ${status.cls}">狀態｜${status.label}</span></div>
         <div class="score-row">
           <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="score-mini">阿吉分數 ${score.total}/100</span>
+          <span class="score-mini">V10 分數 ${score.total}/100</span>
         </div>
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
         ${shieldLabel && etfTitle?`<div class="sep">${etfTitle}</div>`:''}
