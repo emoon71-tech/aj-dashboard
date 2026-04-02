@@ -811,6 +811,61 @@
     if(!Number.isFinite(num)) return '--';
     return num.toLocaleString('zh-TW',{minimumFractionDigits:digits,maximumFractionDigits:digits});
   }
+  function pad2(v){return String(v).padStart(2,'0');}
+  function toDateKey(input){
+    if(!input) return null;
+    if(typeof input==='string'){
+      const s=input.trim();
+      let m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(m) return `${m[1]}-${m[2]}-${m[3]}`;
+      m=s.match(/^(\d{4})(\d{2})(\d{2})$/);
+      if(m) return `${m[1]}-${m[2]}-${m[3]}`;
+      m=s.match(/^(\d{2,3})\/(\d{1,2})\/(\d{1,2})$/);
+      if(m) return `${Number(m[1])+1911}-${pad2(m[2])}-${pad2(m[3])}`;
+      const asNum=Number(s);
+      if(Number.isFinite(asNum) && asNum>0){
+        const ts=asNum<1e12?asNum*1000:asNum;
+        return toDateKey(new Date(ts));
+      }
+      return null;
+    }
+    const dt=input instanceof Date?input:new Date(input);
+    if(Number.isNaN(dt.getTime())) return null;
+    return `${dt.getFullYear()}-${pad2(dt.getMonth()+1)}-${pad2(dt.getDate())}`;
+  }
+  function todayKey(){return toDateKey(new Date());}
+  function daysBetweenDateKey(a,b){
+    if(!a||!b) return null;
+    const da=new Date(`${a}T00:00:00`);
+    const db=new Date(`${b}T00:00:00`);
+    if(Number.isNaN(da.getTime())||Number.isNaN(db.getTime())) return null;
+    return Math.round((db-da)/86400000);
+  }
+  function deriveFreshness(source){
+    if(!source) return 'unknown';
+    const s=String(source).toLowerCase();
+    if(s.includes('快取')) return 'cache';
+    if(s.includes('mis.twse')||s.includes('即時')||s.includes('yahoo')) return 'quote';
+    if(s.includes('收盤')||s.includes('fallback')||s.includes('openapi')) return 'eod';
+    return 'unknown';
+  }
+  function getDataStamp(d){
+    const marketDate=toDateKey(d.marketDate||d.dataDate||d.quoteDate||d.tradeDate||d.date||d.dataTs||null);
+    const updatedAt=d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--';
+    const freshness=d.freshness||deriveFreshness(d.source);
+    const diff=marketDate?daysBetweenDateKey(marketDate,todayKey()):null;
+    const stale=diff!=null && diff>=1 && freshness!=='quote';
+    const label=marketDate?`資料日 ${marketDate}`:'資料日 --';
+    const warn=stale?`⚠ 已落後 ${diff} 天`:freshness==='cache'?'快取':'';
+    return {marketDate,updatedAt,freshness,stale,label,warn,diff};
+  }
+  function renderSourceLine(d,withVersion=false){
+    const stamp=getDataStamp(d||{});
+    const parts=[`來源：${d?.source||'--'}`, stamp.label, `更新：${stamp.updatedAt}`];
+    if(stamp.warn) parts.push(stamp.warn);
+    if(withVersion) parts.push('※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。');
+    return parts.join('　');
+  }
   function safeJsonParse(raw,fallback){
     try{return JSON.parse(raw);}catch(_){return fallback;}
   }
@@ -1530,7 +1585,7 @@
         <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
         <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
       </div>
-      <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+      <div class="hint" style="margin-top:8px">${renderSourceLine(d,true)}</div>
     `;
   }
 
@@ -1555,6 +1610,7 @@
       const etfTitle=getEtfBadgeTitle(code);
       const chipMeta=getChipMeta(code);
       const chipBadgeClass=getChipBadgeClass(code);
+      const stamp=getDataStamp(d);
       el.innerHTML=`
         <div class="rank-badge">#${idx+1} ${score.total}</div>
         <div class="sn">${d.name||ep?.n||code}</div>
@@ -1578,6 +1634,7 @@
         <div class="sep">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張｜投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</div>
         <div class="sep">籌碼分數 ${chipMeta.score}/20</div>
         ${stopRef?`<div class="sep">停損參考 ${stopRef.price.toLocaleString()}</div>`:''}
+        <div class="sep" style="${stamp.stale?'color:var(--gold)':''}">${stamp.label}${stamp.warn?`｜${stamp.warn}`:''}</div>
         ${d.error?'<div class="sep" style="color:var(--red)">抓取失敗</div>':''}
         ${d.loading?'<div class="sov">載入...</div>':''}
       `;
@@ -1634,7 +1691,11 @@
           instEntry:item.instEntry,institutionalEntry:item.institutionalEntry,chipEntry:item.chipEntry,
           institutionalNetBuy:item.institutionalNetBuy,foreignNetBuy:item.foreignNetBuy,trustNetBuy:item.trustNetBuy,dealerNetBuy:item.dealerNetBuy,
           foreignBuyDays:item.foreignBuyDays,trustBuyDays:item.trustBuyDays,
-          source:item.source||'即時',updatedAt:j.updatedAt||Date.now(),loading:false,error:false
+          source:item.source||'即時',
+          updatedAt:j.updatedAt||Date.now(),
+          marketDate:item.marketDate||j.marketDate||toDateKey(item.time),
+          freshness:item.freshness||'quote',
+          loading:false,error:false
         };
       });
 
@@ -1658,16 +1719,23 @@
       const j=await apiGetJson('/openapi/STOCK_DAY_ALL',{timeout:12000,retries:1});
       const arr=j.data||[];
       const map={}; arr.forEach(item=>{map[item.Code]=item;});
+      const datasetDate=toDateKey(j.marketDate) || toDateKey(arr.find(x=>x?.Date)?.Date) || null;
       codes.forEach(code=>{
         const item=map[code];
         if(item){
           const price=parseFloat(item.ClosingPrice||0), chg=parseFloat(item.Change||0), prev=price-chg;
+          const rowDate=toDateKey(item.Date||item.TradeDate||item.TradingDate)||datasetDate;
           AppState.stocks[code]={
+            ...(AppState.stocks[code]||{}),
             name:item.Name||EPS[code]?.n||code, price, prev:+prev.toFixed(2),
             open:parseFloat(item.OpeningPrice||0), high:parseFloat(item.HighestPrice||0),
             low:parseFloat(item.LowestPrice||0), volume:item.TradeVolume,
             chg:+chg.toFixed(2), chgPct:prev?+((chg/prev)*100).toFixed(2):0,
-            source:'收盤', updatedAt:Date.now(), loading:false
+            source:'收盤',
+            updatedAt:j.updatedAt||Date.now(),
+            marketDate:rowDate,
+            freshness:j.freshness||'eod',
+            loading:false
           };
         }else{
           AppState.stocks[code]={...(AppState.stocks[code]||{}),loading:false,error:true,source:'無資料'};
@@ -1687,7 +1755,7 @@
     if(!cache||!cache.stocks) return;
     codes.forEach(code=>{
       if(cache.stocks[code] && (!AppState.stocks[code] || AppState.stocks[code].loading || AppState.stocks[code].error)){
-        AppState.stocks[code]={...cache.stocks[code],source:(cache.stocks[code].source||'快取')+' / 快取'};
+        AppState.stocks[code]={...cache.stocks[code],source:(cache.stocks[code].source||'快取')+' / 快取',freshness:'cache'};
       }
     });
     if(cache.market){
