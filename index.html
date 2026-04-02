@@ -468,6 +468,20 @@
     ai:['2330','2317','2382','2308','6669','3231','2356','2376','3706','3017','3324','3037','8046','3034','2379','3711','2454','2449','2345','6274']
   };
   
+const EXTRA_NAME_MAP={
+    '3017':'奇鋐',
+    '3231':'緯創',
+    '3324':'雙鴻',
+    '3037':'欣興',
+    '8046':'南電',
+    '2356':'英業達',
+    '2376':'技嘉',
+    '3706':'神達',
+    '2449':'京元電子',
+    '2345':'智邦',
+    '6274':'台燿'
+  };
+
   const EPS={
     '2330':{n:'台積電',e:110.72,mn:14.82,mx:27.76},
     '2317':{n:'鴻海',e:13.6,mn:8,mx:18},
@@ -496,6 +510,11 @@
     '00929':{n:'復華台灣科技優息',e:null,mn:null,mx:null},
   };
   
+
+  const NAME_MAP=Object.freeze({
+    ...Object.fromEntries(Object.entries(EPS).map(([code,v])=>[code,v?.n]).filter(([,name])=>!!name)),
+    ...EXTRA_NAME_MAP
+  });
 
   const STOCK_META={
     '2330':{sector:'晶圓代工',etf:['0050','0056','00878','00919','00929']},
@@ -1451,6 +1470,16 @@
     return {label};
   }
   
+  function getDisplayName(code, data={}){
+    return data?.name || NAME_MAP[String(code)] || EPS[String(code)]?.n || String(code);
+  }
+
+  function getSourceLabel(data={}){
+    if(data?.source && data.source !== '無資料') return data.source;
+    return data?.error ? '資料整理中' : '即時資料';
+  }
+
+
   function renderDetailHtml(code){
     const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
     const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
@@ -1468,7 +1497,7 @@
     return `
       <div class="dh">
         <div>
-          <div class="dn2">${d.name||ep?.n||code}（${code}）</div>
+          <div class="dn2">${getDisplayName(code,d)}（${code}）</div>
           <div class="ds">開 ${d.open||'--'}　高 ${d.high||'--'}　低 ${d.low||'--'}　量 ${d.volume?Number(d.volume).toLocaleString():'--'} 張</div>
           <div class="badge-row">
             <span class="sbg bg-blue">${meta.sector||'其他'}</span>
@@ -1530,7 +1559,7 @@
         <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
         <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
       </div>
-      <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+      <div class="hint" style="margin-top:8px">來源：${getSourceLabel(d)}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
     `;
   }
 
@@ -1557,8 +1586,8 @@
       const chipBadgeClass=getChipBadgeClass(code);
       el.innerHTML=`
         <div class="rank-badge">#${idx+1} ${score.total}</div>
-        <div class="sn">${d.name||ep?.n||code}</div>
-        <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
+        <div class="sn">${getDisplayName(code,d)}</div>
+        <div class="sc2">${code} · ${getSourceLabel(d)}</div>
         <div class="badge-row">
           <span class="sbg bg-blue">${meta.sector||'其他'}</span>
           ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
@@ -1644,14 +1673,14 @@
         if(item){
           const price=parseFloat(item.ClosingPrice||0), chg=parseFloat(item.Change||0), prev=price-chg;
           AppState.stocks[code]={
-            name:item.Name||EPS[code]?.n||code, price, prev:+prev.toFixed(2),
+            name:item.Name||NAME_MAP[code]||EPS[code]?.n||code, price, prev:+prev.toFixed(2),
             open:parseFloat(item.OpeningPrice||0), high:parseFloat(item.HighestPrice||0),
             low:parseFloat(item.LowestPrice||0), volume:item.TradeVolume,
             chg:+chg.toFixed(2), chgPct:prev?+((chg/prev)*100).toFixed(2):0,
             source:'收盤', updatedAt:Date.now(), loading:false
           };
         }else{
-          AppState.stocks[code]={...(AppState.stocks[code]||{}),loading:false,error:true,source:'無資料'};
+          AppState.stocks[code]={...(AppState.stocks[code]||{}),name:getDisplayName(code, AppState.stocks[code]||{}),loading:false,error:true,source:'資料整理中'};
         }
       });
       setStat(`收盤 ✓ ${ts()}`,'ok');
