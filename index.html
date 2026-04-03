@@ -714,8 +714,8 @@
   };
   const META_KEY='__dashboard_meta__';
 
- const OTC_DIRECT_CODES=new Set([]); // 全部走 Worker，V9 已支援上櫃
-function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim()); }
+  const OTC_DIRECT_CODES=new Set(['3324']); // 上櫃先走前端直抓，避免 Worker 誤判
+  function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim()); }
   function rocDate(d=new Date()){
     const y=d.getFullYear()-1911;
     const m=String(d.getMonth()+1).padStart(2,'0');
