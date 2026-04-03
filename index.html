@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.0.0">
+  <meta name="app-version" content="v4.1.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -504,7 +504,7 @@
     ai:['2330','2317','2382','2308','6669','3231','2356','2376','3706','3017','3324','3037','8046','3034','2379','3711','2454','2449','2345','6274']
   };
   
-  const EPS={
+  let EPS={
     '2330':{n:'台積電',e:110.72,mn:14.82,mx:27.76},
     '2317':{n:'鴻海',e:13.6,mn:8,mx:18},
     '2454':{n:'聯發科',e:66.2,mn:12,mx:28},
@@ -639,6 +639,23 @@
     setStat('❌ 無法讀取 chipMap（請檢查路徑 / JSON）', 'err');
   }
 }
+
+  async function loadEpsMap(){
+    try{
+      const res = await fetch(`./data/epsMap.json?v=${Date.now()}`, { cache:'no-store' });
+      if(!res.ok) throw new Error(`HTTP錯誤 ${res.status}`);
+      const data = await res.json();
+      if(!data || typeof data !== 'object') throw new Error("格式錯誤");
+      const loaded = {...data};
+      delete loaded['__meta__'];
+      // 合併：epsMap 有的覆蓋，沒有的保留硬寫
+      Object.assign(EPS, loaded);
+      console.log('✅ epsMap 載入', Object.keys(loaded).length, '檔');
+    }catch(e){
+      console.warn('epsMap 載入失敗，用預設值', e);
+    }
+  }
+
 
   function calcChipSignal(meta){
     let score=0;
@@ -897,6 +914,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderSavedPools();
     applySavedMeta();
     await loadChipMap();
+    await loadEpsMap();
     setTime();
     setAutoRefresh();
     await refreshDashboard();
@@ -2414,4 +2432,3 @@ async function refreshAll(){
   
   </body>
   </html>
-  
