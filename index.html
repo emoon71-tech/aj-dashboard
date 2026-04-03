@@ -2041,17 +2041,13 @@ async function refreshAll(){
 
     if(codes.length){
       await fetchCodes(codes);
-
-      // ⭐ 這兩行一定要在這裡
       await loadTechData(codes);
 
       codes.forEach(c => {
         if(AppState.stocks[c]){
           computeAjieScore(c, true);
         }
-      });const codes = Object.keys(AppState.stocks);
-await loadTechData(codes);
-codes.forEach(c => computeAjieScore(c,true));
+      });
     }
 
     renderCurrentView();
