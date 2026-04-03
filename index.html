@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v3.5.2">
+  <meta name="app-version" content="v3.7.1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1403,6 +1403,19 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
+    // === MA20 趨勢補強（V3.7.0）===
+    const ma20 = safeNumber(techData.ma20);
+    if (Number.isFinite(ma20) && Number.isFinite(price) && ma20 > 0) {
+      const maBias = (price - ma20) / ma20;
+      if (maBias > 0.03) {
+        tech += 4;
+        reasons.push(`站上MA20 +${(maBias * 100).toFixed(1)}%`);
+      } else if (maBias < -0.03) {
+        tech -= 4;
+        risks.push(`低於MA20 ${Math.abs(maBias * 100).toFixed(1)}%`);
+      }
+    }
+
     // V3.5：位置 + 已漲幅（需要 high20 / low20）
     const high20 = safeNumber(techData.high20);
     const low20  = safeNumber(techData.low20);
@@ -1490,20 +1503,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     let decision='觀望', badge='sb-wait', note='條件還行，但先等更漂亮的點。';
     if(mBias<=-2){
-      decision=total>=70?'逆勢觀察':'不建議出手';
+      decision=total>=70?'逆勢觀察':'先別碰';
       badge=total>=70?'sb-wait':'sb-no';
       note=total>=70?'大盤很差，這檔算逆勢，但仍以小倉觀察為主。':'今天先保命，別跟大盤硬頂。';
     }else if(mBias===-1){
       if(total>=76 && tech>=35){
         decision='逆勢觀察'; badge='sb-wait'; note='有撐，但大盤偏空，先觀察不追價。';
       }else if(total<=58){
-        decision='不建議出手'; badge='sb-no'; note='盤空股弱，這口別硬吃。';
+        decision='先別碰'; badge='sb-no'; note='盤空股弱，這口別硬吃。';
       }
     }else{
       if(total>=78 && tech>=35){
         decision='可進場'; badge='sb-go'; note='可列攻擊名單，分批比梭哈帥。';
       }else if(total<=54){
-        decision='不建議出手'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
+        decision='先別碰'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
       }
     }
 
@@ -1648,15 +1661,16 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const chipBadgeClass=getChipBadgeClass(code);
     const posPct=score.nearHigh20!=null?Math.round(score.nearHigh20*100):null;
     const risePct=score.riseFromLow!=null?Math.round(score.riseFromLow*100):null;
+    const ma20Value = safeNumber(d.tech?.ma20);
+    const maBias = (Number.isFinite(ma20Value) && Number.isFinite(price) && ma20Value > 0) ? ((price - ma20Value) / ma20Value) : null;
     const heroTags=[];
-    if(posPct!=null) heroTags.push(posPct>=85?'位置偏高':posPct<=35?'位置偏低':`位置 ${posPct}%偏高`);
-    if(risePct!=null) heroTags.push(risePct>=25?`已離低點 +${risePct}%`:risePct>=0?`反彈力 +${risePct}%`:`反彈力 ${risePct}%`);
-    if(score.reasons.some(t=>String(t).includes('MACD'))) heroTags.push('MACD 轉強');
-    else if(score.tech>=35) heroTags.push('技術面尚可');
+    if(posPct!=null) heroTags.push(posPct>=80?'位置偏高':posPct<=35?'位置偏低':'位置中段');
+    if(risePct!=null) heroTags.push(risePct<5?'反彈弱':risePct<15?'小幅反彈':'已漲一段');
+    if(maBias!=null) heroTags.push(maBias <= -0.03 ? `低於MA20 ${Math.abs(Math.round(maBias*100))}%` : maBias >= 0.03 ? `高於MA20 +${Math.round(maBias*100)}%` : '貼近MA20');
     if(score.risks.some(t=>String(t).includes('量能'))) heroTags.push('量能要再確認');
     else if(score.reasons.some(t=>String(t).includes('量'))) heroTags.push('量能健康');
-    if(score.techStatus==='none') heroTags.push('技術資料不足');
-    if(score.techStatus==='partial') heroTags.push('技術資料未齊');
+    else if(score.techStatus==='none') heroTags.push('技術資料不足');
+    else if(score.techStatus==='partial') heroTags.push('技術資料未齊');
     const heroSummary=heroTags.slice(0,4).join(' · ') || '等待更多結構訊號';
     const actionText=
       score.badge==='sb-go'
@@ -1761,7 +1775,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V3.7.1，已補入 MA20 趨勢評分與一句話摘要，先用現有即時 / 收盤資料，不是完整 V10。</div>
       </div>
     `;
   }
