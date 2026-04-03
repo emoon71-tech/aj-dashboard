@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.3.3-score-marketfix">
+  <meta name="app-version" content="v2.3.2-otc-split">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1226,16 +1226,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     const tw=AppState.market.twIndex;
     const mBias=marketBiasScore();
-
-    // 大盤：完全不加分，只小扣
-    if(mBias<=-2){
-      chip -= 5;
-      risks.push('即時大盤風險盤');
-      risks.push('台股急跌，今天少做');
+    if(mBias>=1){
+      chip += 18;
+      reasons.push(isTradingTime()?'即時大盤偏多':'盤前預判偏多');
     }else if(mBias===-1){
-      chip -= 3;
+      chip -= 8;
       risks.push(isTradingTime()?'即時大盤偏空':'盤前預判偏空');
       risks.push('大盤偏空，先保命');
+    }else if(mBias<=-2){
+      chip -= 14;
+      risks.push('即時大盤風險盤');
+      risks.push('台股急跌，今天少做');
+    }else{
+      chip += 10;
+      reasons.push(isTradingTime()?'大盤震盪':'盤前觀察');
     }
 
     const flowBias=parseFlowBias(AppState.market.flowText||'');
@@ -1307,12 +1311,19 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     }
 
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
-      if(tw.chgPct < -0.5 && stockPct > 1.5){
-        chip += 3;
+      if(tw.chgPct<=-1 && stockPct>0){
+        chip += 6;
+        tech += 4;
         reasons.push('逆勢強於大盤');
-      }else if(tw.chgPct < -1 && stockPct < 0){
-        chip -= 2;
+      }
+      if(tw.chgPct<=-1 && stockPct<0){
+        chip -= 4;
         risks.push('順著大盤一起弱');
+      }
+      if(tw.chgPct<=-2 && stockPct<1){
+        chip -= 6;
+        tech -= 3;
+        risks.push('風險盤下無明顯抵抗');
       }
     }
 
@@ -1992,55 +2003,5 @@ async function fetchCodes(codes){
   window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
   </script>
   
-  
-<script>
-let __ajLastForegroundRefreshAt = 0;
-
-function shouldForegroundRefresh(minGapMs=15000){
-  const now = Date.now();
-  if(now - __ajLastForegroundRefreshAt < minGapMs) return false;
-  __ajLastForegroundRefreshAt = now;
-  return true;
-}
-
-function isTradingTime(){
-  const n=new Date(),h=n.getHours(),m=n.getMinutes(),d=n.getDay();
-  if(d===0||d===6) return false;
-  const t=h*60+m;
-  return t>=9*60+30&&t<=15*60;
-}
-
-function handleForegroundRefresh(){
-  if(document.visibilityState !== 'visible') return;
-  if(!isTradingTime()) return;
-  if(!shouldForegroundRefresh()) return;
-  setTimeout(()=>{ 
-    if(typeof refreshAll === 'function') refreshAll(); 
-  },180);
-}
-
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'){
-    handleForegroundRefresh();
-  }
-});
-
-window.addEventListener('pageshow',(e)=>{
-  if(e.persisted){
-    handleForegroundRefresh();
-  }
-});
-
-window.addEventListener('focus',()=>{
-  handleForegroundRefresh();
-});
-
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    handleForegroundRefresh();
-  },600);
-});
-</script>
-
-</body>
+  </body>
   </html>
