@@ -113,28 +113,29 @@ def is_cache_fresh(cache: Dict, max_days: int) -> bool:
         return False
 
 
-def finmind_get(token: str, dataset: str, stock_id: str, timeout: int = 20) -> List[Dict]:
+def finmind_get(token: str, dataset: str, stock_id: str, start_date: str = "2020-01-01", timeout: int = 20) -> List[Dict]:
     params = {
-        "dataset":  dataset,
-        "data_id":  stock_id,
-        "token":    token,
+        "dataset":    dataset,
+        "data_id":    stock_id,
+        "start_date": start_date,
+        "token":      token,
     }
     resp = requests.get(FINMIND_API, params=params, timeout=timeout)
     resp.raise_for_status()
     result = resp.json()
     if result.get("status") != 200:
-        raise RuntimeError(f"FinMind 錯誤：{result.get('msg', '未知錯誤')}")
+        raise RuntimeError(f"FinMind 錯誤（{dataset}）：{result.get('msg', '未知錯誤')}")
     return result.get("data", [])
 
 
 def get_latest_eps(token: str, code: str) -> Optional[float]:
     """
-    抓 TaiwanStockEPS（免費版可用）
-    欄位格式：{ "date": "2024-Q4", "stock_id": "2330", "eps": 14.45 }
+    抓 TaiwanStockFinancialStatements，篩選 type=EPS
+    欄位格式：{ "date": str, "stock_id": str, "type": str, "value": float }
     取最近 4 季加總 = 年度 EPS
     """
     try:
-        rows = finmind_get(token, "TaiwanStockEPS", code)
+        rows = finmind_get(token, "TaiwanStockFinancialStatements", code, start_date="2022-01-01")
     except Exception as e:
         print(f"  ⚠️  {code} EPS 抓取失敗：{e}")
         return None
@@ -142,15 +143,17 @@ def get_latest_eps(token: str, code: str) -> Optional[float]:
     if not rows:
         return None
 
-    # 依日期排序（最新在前）
-    rows.sort(key=lambda r: r.get("date", ""), reverse=True)
-
-    # 取最近 4 季加總
-    recent = rows[:4]
-    if not recent:
+    # 只取 type = EPS 的資料
+    eps_rows = [r for r in rows if str(r.get("type", "")).strip().upper() == "EPS"]
+    if not eps_rows:
         return None
 
-    total = sum(float(r.get("eps", 0) or 0) for r in recent)
+    # 依日期排序（最新在前）
+    eps_rows.sort(key=lambda r: r.get("date", ""), reverse=True)
+
+    # 取最近 4 季加總
+    recent = eps_rows[:4]
+    total = sum(float(r.get("value", 0) or 0) for r in recent)
     return round(total, 2)
 
 
@@ -163,7 +166,7 @@ def get_pe_range(token: str, code: str, eps: float) -> tuple[float, float]:
         return 10.0, 20.0  # 無法計算時給預設值
 
     try:
-        rows = finmind_get(token, "TaiwanStockPrice", code)
+        rows = finmind_get(token, "TaiwanStockPrice", code, start_date="2022-01-01")
     except Exception as e:
         print(f"  ⚠️  {code} 股價抓取失敗：{e}")
         return 10.0, 20.0
