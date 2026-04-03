@@ -2076,34 +2076,48 @@ async function refreshAll(){
       }
     },1000);
   }
-  
+
   async function refreshDashboard(){
-    if(AppState.ui.isRefreshing) return;
-    AppState.ui.isRefreshing=true;
-    toggleRefreshButtons(true);
-    try{
-      setStat('系統啟動中...');
-      await Promise.allSettled([fetchTwIdx(), fetchUSMarkets()]);
-      const codes=getCodesForTab(AppState.ui.currentTab);
-      if(codes.length){
-        await loadCodes(codes);
-      }else{
-        renderCards([]);
-      }
-      saveCache();
-    }catch(e){
-      console.error(e);
-      applyCacheFallback(getCodesForTab(AppState.ui.currentTab));
+  if(AppState.ui.isRefreshing) return;
+  AppState.ui.isRefreshing = true;
+  toggleRefreshButtons(true);
+
+  try{
+    setStat('系統啟動中.');
+    await Promise.allSettled([fetchTwIdx(), fetchUSMarkets()]);
+
+    const codes = getCodesForTab(AppState.ui.currentTab);
+
+    if(codes.length){
+      await loadCodes(codes);
+      await loadTechData(codes);
+
+      codes.forEach(c => {
+        if(AppState.stocks[c]){
+          computeAjieScore(c, true);
+        }
+      });
+
       renderCurrentView();
-      setStat('啟動失敗，已改用快取資料','err');
-    }finally{
-      AppState.ui.isRefreshing=false;
-      toggleRefreshButtons(false);
+    }else{
+      renderCards([]);
     }
+
+    saveCache();
+  }catch(e){
+    console.error(e);
+    applyCacheFallback(getCodesForTab(AppState.ui.currentTab));
+    renderCurrentView();
+    setStat('啟動失敗，已改用快取資料','err');
+  }finally{
+    AppState.ui.isRefreshing = false;
+    toggleRefreshButtons(false);
   }
+}
   window.addEventListener('resize',()=>{ if(!isMobileView()) { if(AppState.ui.activeCode) $('dWrap').style.display='block'; } else { $('dWrap').style.display='none'; } });
   window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
   </script>
   
   </body>
   </html>
+  
