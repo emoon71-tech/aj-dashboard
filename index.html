@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v3.7.1">
+  <meta name="app-version" content="v3.8.2">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1403,19 +1403,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
-    // === MA20 趨勢補強（V3.7.0）===
-    const ma20 = safeNumber(techData.ma20);
-    if (Number.isFinite(ma20) && Number.isFinite(price) && ma20 > 0) {
-      const maBias = (price - ma20) / ma20;
-      if (maBias > 0.03) {
-        tech += 4;
-        reasons.push(`站上MA20 +${(maBias * 100).toFixed(1)}%`);
-      } else if (maBias < -0.03) {
-        tech -= 4;
-        risks.push(`低於MA20 ${Math.abs(maBias * 100).toFixed(1)}%`);
-      }
-    }
-
     // V3.5：位置 + 已漲幅（需要 high20 / low20）
     const high20 = safeNumber(techData.high20);
     const low20  = safeNumber(techData.low20);
@@ -1448,6 +1435,40 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       } else if (riseFromLow < 0.08) {
         tech += 3;
         reasons.push('低位剛啟動');
+      }
+    }
+
+    // === MA20 趨勢補強（V3.8.2）===
+    const ma20 = safeNumber(techData.ma20);
+    let maBias = null;
+
+    if (Number.isFinite(ma20) && Number.isFinite(price) && ma20 > 0) {
+      maBias = (price - ma20) / ma20;
+
+      if (maBias > 0.05) {
+        tech += 6;
+        reasons.push(`強勢站上MA20 +${(maBias * 100).toFixed(1)}%`);
+      } else if (maBias > 0.03) {
+        tech += 4;
+        reasons.push(`站上MA20 +${(maBias * 100).toFixed(1)}%`);
+      } else if (maBias < -0.05) {
+        tech -= 6;
+        risks.push(`跌破MA20 ${Math.abs(maBias * 100).toFixed(1)}%`);
+      } else if (maBias < -0.03) {
+        tech -= 4;
+        risks.push(`低於MA20 ${Math.abs(maBias * 100).toFixed(1)}%`);
+      }
+    }
+
+    // === 組合判斷（位置 + 趨勢）===
+    if (nearHigh20 != null && maBias != null) {
+      if (nearHigh20 > 0.8 && maBias < -0.03) {
+        tech -= 3;
+        risks.push('高檔轉弱');
+      }
+      if (nearHigh20 < 0.4 && maBias > 0.03) {
+        tech += 3;
+        reasons.push('低檔轉強');
       }
     }
 
