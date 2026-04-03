@@ -1518,41 +1518,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     (codes||[]).forEach(code=>computeAjieScore(code,true));
   }
 
-  function formatPercentDisplay(value,{signed=false,digits=0}={}){
-    if(!Number.isFinite(value)) return '--';
-    const pct=(value*100).toFixed(digits);
-    return `${signed && value>0 ? '+' : ''}${pct}%`;
-  }
-
-  function getTechDynamicSummary(score){
-    const parts=[];
-    if(score.techStatus==='none') return '技術資料缺失 · 先看價格結構';
-    if(score.techStatus==='partial') return '技術資料未齊 · 先看價格結構';
-
-    if(Number.isFinite(score.nearHigh20)){
-      if(score.nearHigh20 < 0.75) parts.push('位置低檔');
-      else if(score.nearHigh20 >= 0.95) parts.push('接近高點');
-      else if(score.nearHigh20 >= 0.85) parts.push('位置偏高');
-      else parts.push('位置中段');
-    }
-
-    if(Number.isFinite(score.riseFromLow)){
-      if(score.riseFromLow < 0.08) parts.push('低位啟動');
-      else if(score.riseFromLow > 0.30) parts.push('已漲一段');
-      else if(score.riseFromLow > 0.15) parts.push('已有漲幅');
-    }
-
-    if(Number.isFinite(score.volRatio)){
-      if(score.volRatio >= 1 && score.volRatio <= 1.8) parts.push('量能健康');
-      else if(score.volRatio > 2.5) parts.push('量能過熱');
-      else if(score.volRatio < 1) parts.push('量能不足');
-    }
-
-    if(Array.isArray(score.reasons) && score.reasons.includes('MACD 前段啟動')) parts.push('MACD轉強');
-
-    return parts.slice(0,3).join(' · ') || '看強弱、位置、突破、開盤價';
-  }
-
   function sortCodes(codes){
     const next=[...codes];
     if(AppState.ui.sortMode==='score'){
@@ -1664,6 +1629,24 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const etfTitle=getEtfBadgeTitle(code);
     const chipMeta=getChipMeta(code);
     const chipBadgeClass=getChipBadgeClass(code);
+    const techSummary=[];
+    if(score.techStatus==='none') techSummary.push('無技術資料');
+    else if(score.techStatus==='partial') techSummary.push('技術資料未齊');
+    if(score.nearHigh20!=null){
+      if(score.nearHigh20>=0.95) techSummary.push('接近高點');
+      else if(score.nearHigh20>=0.85) techSummary.push('位置偏高');
+      else if(score.nearHigh20<0.75) techSummary.push('位置低檔');
+    }
+    if(score.riseFromLow!=null){
+      if(score.riseFromLow>0.30) techSummary.push('已漲一段');
+      else if(score.riseFromLow>0.15) techSummary.push('已有漲幅');
+      else if(score.riseFromLow<0.08) techSummary.push('低位啟動');
+    }
+    if(score.reasons.includes('MACD低位翻正')) techSummary.push('MACD轉強');
+    if(score.reasons.includes('量能穩健放大')) techSummary.push('量能健康');
+    if(score.risks.includes('量能不足')) techSummary.push('量能不足');
+    if(score.risks.includes('量能過熱')) techSummary.push('量能過熱');
+    const techSummaryText=techSummary.length?techSummary.join(' · '):'看強弱、位置、突破、開盤價';
     return `
       <div class="dh">
         <div>
@@ -1708,10 +1691,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ttl">技術 / 結構</div>
           <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
           <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
-          <div class="sub">${getTechDynamicSummary(score)}</div>
-          ${score.techStatus==='none' ? '<div class="hint" style="color:var(--red);margin-top:6px">⚠ 無技術資料</div>' : ''}
-          ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
-          ${(score.nearHigh20!=null || score.riseFromLow!=null) ? `<div class="hint" style="margin-top:6px;font-size:12px;color:var(--text2)">位置：${formatPercentDisplay(score.nearHigh20,{digits:1})} ・ 漲幅：${formatPercentDisplay(score.riseFromLow,{signed:true,digits:1})}</div>` : ''}
+          <div class="sub">${techSummaryText}</div>
+          ${(score.techStatus==='none' || score.techStatus==='partial' || score.nearHigh20!=null || score.riseFromLow!=null) ? `<div class="hint" style="margin-top:6px;font-size:12px;color:#aaa;line-height:1.5">${score.techStatus==='none' ? '<span style="color:var(--red)">⚠ 無技術資料</span>　' : ''}${score.techStatus==='partial' ? '<span style="color:var(--gold)">⚠ 技術資料未齊</span>　' : ''}位置：${score.nearHigh20 != null ? (score.nearHigh20*100).toFixed(1)+'%' : '--'} ・ 漲幅：${score.riseFromLow != null ? '+'+(score.riseFromLow*100).toFixed(1)+'%' : '--'}</div>` : ''}
         </div>
       </div>
       <div class="reason-list">
