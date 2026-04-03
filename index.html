@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.4.0-real">
+  <meta name="app-version" content="v2.5.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -657,29 +657,37 @@
     if(status==='觀察') return 'bg-gold';
     return 'bg-red';
   }
-  function calcSectorHeat(codes){
-    const map={};
-    (codes||[]).forEach(code=>{
-      const meta=getStockMeta(code);
-      const sector=meta.sector||'其他';
-      const score=computeAjieScore(code).total||0;
-      const shield=(meta.etf||[]).filter(x=>x && x!=='ETF').length;
-      if(!map[sector]) map[sector]={name:sector,count:0,total:0,etfCount:0};
-      map[sector].count+=1;
-      map[sector].total+=score;
-      if(shield>0) map[sector].etfCount+=1;
+function calcSectorHeat(codes){
+  const map = {};
+  (codes || []).forEach(code => {
+    const meta = getStockMeta(code);
+    const sector = meta.sector || '其他';
+    const score = computeAjieScore(code).total || 0;
+    const shield = (meta.etf || []).filter(x => x && x !== 'ETF').length;
+
+    if(!map[sector]) map[sector] = {
+      name: sector,
+      count: 0,
+      total: 0,
+      etfCount: 0,
+    };
+
+    map[sector].count += 1;
+    map[sector].total += score;
+    if(shield > 0) map[sector].etfCount += 1;
+  });
+
+  return Object.values(map)
+    .map(item => ({
+      ...item,
+      heat: item.count ? Math.round(item.total / item.count) : 0,
+    }))
+    .sort((a, b) => {
+      if(b.heat !== a.heat) return b.heat - a.heat;
+      if(b.etfCount !== a.etfCount) return b.etfCount - a.etfCount;
+      return String(a.name).localeCompare(String(b.name), 'zh-Hant');
     });
-    return Object.values(map)
-      .map(item=>({
-        ...item,
-        heat: item.count? Math.round(item.total/item.count):0,
-      }))
-      .sort((a,b)=>{
-        if(b.heat!==a.heat) return b.heat-a.heat;
-        if(b.etfCount!==a.etfCount) return b.etfCount-a.etfCount;
-        return String(a.name).localeCompare(String(b.name),'zh-Hant');
-      });
-  }
+}
   function renderSectorHeat(codes){
     const wrap=$('sectorList');
     if(!wrap) return;
@@ -903,7 +911,30 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     }
     throw lastError;
   }
-  
+  async function loadTechData(codes) {
+  try {
+    const res = await apiGetJson(`/tech?codes=${codes.join(',')}`);
+    if (!res?.items) return;
+
+    res.items.forEach(item => {
+      const code = item.code;
+      if (!AppState.stocks[code]) return;
+
+      AppState.stocks[code].tech = {
+        ma20: item.ma20,
+        avgVol20: item.avgVol20,
+        macd: item.macd,
+        macdPrev: item.macdPrev,
+        hist: item.hist,
+        histPrev: item.histPrev,
+        histArray: item.histArray || []
+      };
+    });
+
+  } catch (e) {
+    console.error('loadTechData error', e);
+  }
+}
   async function initCloudState(){
     const localRaw=localStorage.getItem(STORAGE_KEYS.pools);
     if(localRaw){
@@ -1306,6 +1337,31 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       tech += isEtf ? 8 : 5;
     }
 
+    // ★ 第3刀：MACD 進場訊號（histArray 主判斷）
+    const techData = d.tech || {};
+    const histArray = Array.isArray(techData.histArray) ? techData.histArray : [];
+    let macdEntrySignal = false;
+    if (histArray.length >= 10) {
+      const neg = histArray.filter(h => h < 0).map(h => Math.abs(h));
+      if (neg.length >= 6) {
+        const mid = Math.floor(neg.length / 2);
+        const hPrev = neg.slice(0, mid);
+        const hNow  = neg.slice(mid);
+        const prevMax = hPrev.length ? Math.max(...hPrev) : 0;
+        const nowMax  = hNow.length  ? Math.max(...hNow)  : 0;
+        const weakening = prevMax > 0 && nowMax < prevMax * 0.6;
+        const macdUp    = Number.isFinite(techData.macd) && Number.isFinite(techData.macdPrev) && techData.macd > techData.macdPrev;
+        const structure = Number.isFinite(techData.ma20) && price > techData.ma20;
+        const volumeOk  = Number.isFinite(techData.avgVol20) && safeNumber(d.volume) > techData.avgVol20 * 1.2;
+        const turning   = histArray.length >= 2 && histArray.at(-1) > histArray.at(-2);
+        macdEntrySignal = weakening && macdUp && structure && volumeOk && turning;
+      }
+    }
+    if (macdEntrySignal) {
+      tech += 10;
+      reasons.push('MACD 前段啟動');
+    }
+
     // 第1刀：逆勢強股才加分
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
       if(tw.chgPct < -0.5 && stockPct > 1.5){
@@ -1375,7 +1431,16 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
-    const score={chip,tech,total,decision,badge,note,reasons:[...new Set(reasons)].slice(0,4),risks:[...new Set(risks)].slice(0,4)};
+    const score = {
+  chip,
+  tech,
+  total,
+  decision,
+  badge,
+  note,
+  reasons: [...new Set(reasons)].slice(0, 4),
+  risks: [...new Set(risks)].slice(0, 4),
+};
     d.scoreData=score;
     d.scoreCacheKey=signature;
     AppState.stocks[code]=d;
@@ -1961,20 +2026,43 @@ async function fetchCodes(codes){
     loadCodes(codes);
   }
   
-  async function refreshAll(){
-    if(AppState.ui.isRefreshing) return;
-    AppState.ui.isRefreshing=true;
-    toggleRefreshButtons(true);
-    try{
-      await Promise.allSettled([fetchTwIdx(), fetchUSMarkets()]);
-      const codes=currentCodes();
-      if(codes.length) await fetchCodes(codes);
-      renderCurrentView();
-    }finally{
-      toggleRefreshButtons(false);
-      AppState.ui.isRefreshing=false;
+async function refreshAll(){
+  if(AppState.ui.isRefreshing) return;
+  AppState.ui.isRefreshing = true;
+  toggleRefreshButtons(true);
+
+  try{
+    await Promise.allSettled([
+      fetchTwIdx(),
+      fetchUSMarkets()
+    ]);
+
+    const codes = currentCodes();
+
+    if(codes.length){
+      await fetchCodes(codes);
+
+      // ⭐ 這兩行一定要在這裡
+      await loadTechData(codes);
+
+      codes.forEach(c => {
+        if(AppState.stocks[c]){
+          computeAjieScore(c, true);
+        }
+      });const codes = Object.keys(AppState.stocks);
+await loadTechData(codes);
+codes.forEach(c => computeAjieScore(c,true));
     }
+
+    renderCurrentView();
+
+  }catch(e){
+    console.error('refreshAll error', e);
+  }finally{
+    toggleRefreshButtons(false);
+    AppState.ui.isRefreshing = false;
   }
+}
   function setAutoRefresh(){
     clearInterval(window.__ajAutoTimer);
     const sec=currentRefreshSec();
