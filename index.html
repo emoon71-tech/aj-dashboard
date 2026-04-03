@@ -1490,20 +1490,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     let decision='觀望', badge='sb-wait', note='條件還行，但先等更漂亮的點。';
     if(mBias<=-2){
-      decision=total>=70?'逆勢觀察':'先別碰';
+      decision=total>=70?'逆勢觀察':'不建議出手';
       badge=total>=70?'sb-wait':'sb-no';
       note=total>=70?'大盤很差，這檔算逆勢，但仍以小倉觀察為主。':'今天先保命，別跟大盤硬頂。';
     }else if(mBias===-1){
       if(total>=76 && tech>=35){
         decision='逆勢觀察'; badge='sb-wait'; note='有撐，但大盤偏空，先觀察不追價。';
       }else if(total<=58){
-        decision='先別碰'; badge='sb-no'; note='盤空股弱，這口別硬吃。';
+        decision='不建議出手'; badge='sb-no'; note='盤空股弱，這口別硬吃。';
       }
     }else{
       if(total>=78 && tech>=35){
         decision='可進場'; badge='sb-go'; note='可列攻擊名單，分批比梭哈帥。';
       }else if(total<=54){
-        decision='先別碰'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
+        decision='不建議出手'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
       }
     }
 
@@ -1649,8 +1649,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const posPct=score.nearHigh20!=null?Math.round(score.nearHigh20*100):null;
     const risePct=score.riseFromLow!=null?Math.round(score.riseFromLow*100):null;
     const heroTags=[];
-    if(posPct!=null) heroTags.push(posPct>=85?'位置偏高':posPct<=35?'位置偏低':`位置 ${posPct}%`);
-    if(risePct!=null) heroTags.push(risePct>=25?`已離低點 +${risePct}%`:risePct>=0?`漲幅 +${risePct}%`:`漲幅 ${risePct}%`);
+    if(posPct!=null) heroTags.push(posPct>=85?'位置偏高':posPct<=35?'位置偏低':`位置 ${posPct}%偏高`);
+    if(risePct!=null) heroTags.push(risePct>=25?`已離低點 +${risePct}%`:risePct>=0?`反彈力 +${risePct}%`:`反彈力 ${risePct}%`);
     if(score.reasons.some(t=>String(t).includes('MACD'))) heroTags.push('MACD 轉強');
     else if(score.tech>=35) heroTags.push('技術面尚可');
     if(score.risks.some(t=>String(t).includes('量能'))) heroTags.push('量能要再確認');
@@ -1728,10 +1728,10 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
             ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
           </div>
           <div class="score-card">
-            <div class="ttl">即時結構</div>
+            <div class="ttl">漲幅</div>
             <div class="num ${col}" style="font-size:18px">${pctText}</div>
             <div class="score-bar"><div style="width:${Math.min(100, Math.max(8, Math.abs(Number(d.chgPct||0))*8))}%"></div></div>
-            <div class="sub">看日內強弱與價格位置</div>
+            <div class="sub">看當日強弱與價格位置</div>
             ${stopRef?`<div class="hint" style="margin-top:6px;color:var(--gold)">停損參考 ${stopRef.price.toLocaleString()}</div>`:''}
           </div>
         </div>
