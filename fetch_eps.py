@@ -129,29 +129,28 @@ def finmind_get(token: str, dataset: str, stock_id: str, timeout: int = 20) -> L
 
 def get_latest_eps(token: str, code: str) -> Optional[float]:
     """
-    抓 TaiwanStockFinancialStatements（財務報表）
-    找最近一年的累計 EPS
+    抓 TaiwanStockEPS（免費版可用）
+    欄位格式：{ "date": "2024-Q4", "stock_id": "2330", "eps": 14.45 }
+    取最近 4 季加總 = 年度 EPS
     """
     try:
-        rows = finmind_get(token, "TaiwanStockFinancialStatements", code)
+        rows = finmind_get(token, "TaiwanStockEPS", code)
     except Exception as e:
         print(f"  ⚠️  {code} EPS 抓取失敗：{e}")
         return None
 
-    # 找 EPS 相關欄位（type = EPS）
-    eps_rows = [r for r in rows if str(r.get("type", "")).strip() == "EPS"]
-    if not eps_rows:
+    if not rows:
         return None
 
-    # 依日期排序，取最新年度
-    eps_rows.sort(key=lambda r: r.get("date", ""), reverse=True)
+    # 依日期排序（最新在前）
+    rows.sort(key=lambda r: r.get("date", ""), reverse=True)
 
-    # 取最近 4 季加總（年度 EPS）
-    recent = eps_rows[:4]
+    # 取最近 4 季加總
+    recent = rows[:4]
     if not recent:
         return None
 
-    total = sum(float(r.get("value", 0) or 0) for r in recent)
+    total = sum(float(r.get("eps", 0) or 0) for r in recent)
     return round(total, 2)
 
 
