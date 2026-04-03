@@ -1676,20 +1676,19 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
           <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
           <div class="sub">看強弱、位置、突破、開盤價</div>
+          ${(score.nearHigh20!=null || score.riseFromLow!=null) ? `<div class="hint">位置 ${score.nearHigh20!=null ? `${Math.round(score.nearHigh20*100)}%` : '--'} · 漲幅 ${score.riseFromLow!=null ? `${score.riseFromLow >= 0 ? '+' : ''}${Math.round(score.riseFromLow*100)}%` : '--'}</div>` : ''}
           ${score.techStatus==='none' ? '<div class="hint" style="color:var(--red);margin-top:6px">⚠ 無技術資料</div>' : ''}
           ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
-          ${score.nearHigh20!=null ? `<div class="hint">20日位置：${(score.nearHigh20*100).toFixed(1)}%</div>` : ''}
-          ${score.riseFromLow!=null ? `<div class="hint">距20日低點漲幅：${(score.riseFromLow*100).toFixed(1)}%</div>` : ''}
         </div>
       </div>
       <div class="reason-list">
         <div class="reason-box">
           <div class="ttl">加分原因</div>
-          <ul>${score.reasons.length?score.reasons.map(t=>`<li>${t}</li>`).join(''):'<li>目前沒有明顯加分點</li>'}</ul>
+          <ul>${score.reasons.length?score.reasons.slice(0,2).map(t=>`<li>${t}</li>`).join(''):'<li>目前沒有明顯加分點</li>'}</ul>
         </div>
         <div class="reason-box">
           <div class="ttl">風險提醒</div>
-          <ul>${score.risks.length?score.risks.map(t=>`<li>${t}</li>`).join(''):'<li>暫時沒有明顯警訊</li>'}</ul>
+          <ul>${score.risks.length?score.risks.slice(0,3).map(t=>`<li>${t}</li>`).join(''):'<li>暫時沒有明顯警訊</li>'}</ul>
         </div>
       </div>
       <hr class="div">
