@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.5.0">
+  <meta name="app-version" content="v2.6.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1340,6 +1340,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     // ★ 第3刀：MACD 進場訊號（histArray 主判斷）
     const techData = d.tech || {};
     const histArray = Array.isArray(techData.histArray) ? techData.histArray : [];
+    const techReady = histArray.length >= 10;
     let macdEntrySignal = false;
     if (histArray.length >= 10) {
       const neg = histArray.filter(h => h < 0).map(h => Math.abs(h));
@@ -1438,6 +1439,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   decision,
   badge,
   note,
+  techReady,
+  techStatus: techReady ? 'ok' : (histArray.length > 0 ? 'partial' : 'none'),
   reasons: [...new Set(reasons)].slice(0, 4),
   risks: [...new Set(risks)].slice(0, 4),
 };
@@ -1603,7 +1606,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ttl">技術 / 結構</div>
           <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
           <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
-          <div class="sub">看強弱、位置、突破、開盤價</div>
+          <div class="sub">看強弱、位置、突破、開盤價${score.techStatus==='partial' ? ' · 技術資料未齊' : score.techStatus==='none' ? ' · 無技術資料' : ''}</div>
         </div>
       </div>
       <div class="reason-list">
@@ -1669,6 +1672,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <span class="score-badge ${score.badge}">${score.decision}</span>
           <span class="score-mini">阿吉分數 ${score.total}/100</span>
         </div>
+        ${score.techStatus==='none' ? '<div class="sep"><span class="sbg bg-red">無技術資料</span></div>' : ''}
+        ${score.techStatus==='partial' ? '<div class="sep"><span class="sbg bg-amber">技術資料未齊</span></div>' : ''}
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
         ${shieldLabel && etfTitle?`<div class="sep">${etfTitle}</div>`:''}
         <div class="sep">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張｜投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</div>
