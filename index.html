@@ -1362,6 +1362,30 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       reasons.push('MACD 前段啟動');
     }
 
+    // V2.7：量能穩健扣分版（不砍名單，只做排序修正）
+    const vol20 = Number.isFinite(techData.avgVol20) ? techData.avgVol20 : null;
+    const curVol = safeNumber(d.volume);
+    let volRatio = null;
+    if (vol20 && vol20 > 0 && curVol != null) {
+      volRatio = curVol / vol20;
+      if (volRatio < 0.8) {
+        tech -= 4;
+        risks.push('量能不足');
+      } else if (volRatio < 1.0) {
+        tech -= 2;
+        risks.push('量縮偏弱');
+      } else if (volRatio <= 1.8) {
+        tech += 4;
+        reasons.push('量能穩健放大');
+      } else if (volRatio <= 2.5) {
+        tech += 2;
+        reasons.push('量能放大');
+      } else {
+        tech -= 3;
+        risks.push('量能過熱');
+      }
+    }
+
     // 第1刀：逆勢強股才加分
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
       if(tw.chgPct < -0.5 && stockPct > 1.5){
@@ -1444,6 +1468,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   note,
   techReady: techStatus==='ok',
   techStatus,
+  volRatio,
   reasons: [...new Set(reasons)].slice(0, 4),
   risks: [...new Set(risks)].slice(0, 4),
 };
