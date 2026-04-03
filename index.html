@@ -1,10 +1,10 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="zh-TW">
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.3.2-otc-split">
+  <meta name="app-version" content="v2.4.0-real">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1226,20 +1226,16 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     const tw=AppState.market.twIndex;
     const mBias=marketBiasScore();
-    if(mBias>=1){
-      chip += 18;
-      reasons.push(isTradingTime()?'即時大盤偏多':'盤前預判偏多');
-    }else if(mBias===-1){
-      chip -= 8;
-      risks.push(isTradingTime()?'即時大盤偏空':'盤前預判偏空');
-      risks.push('大盤偏空，先保命');
-    }else if(mBias<=-2){
-      chip -= 14;
+
+    // 第1刀：大盤不加分，只小扣
+    if(mBias<=-2){
+      chip -= 5;
       risks.push('即時大盤風險盤');
       risks.push('台股急跌，今天少做');
-    }else{
-      chip += 10;
-      reasons.push(isTradingTime()?'大盤震盪':'盤前觀察');
+    }else if(mBias===-1){
+      chip -= 3;
+      risks.push(isTradingTime()?'即時大盤偏空':'盤前預判偏空');
+      risks.push('大盤偏空，先保命');
     }
 
     const flowBias=parseFlowBias(AppState.market.flowText||'');
@@ -1310,35 +1306,56 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       tech += isEtf ? 8 : 5;
     }
 
+    // 第1刀：逆勢強股才加分
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
-      if(tw.chgPct<=-1 && stockPct>0){
-        chip += 6;
-        tech += 4;
+      if(tw.chgPct < -0.5 && stockPct > 1.5){
+        chip += 3;
         reasons.push('逆勢強於大盤');
-      }
-      if(tw.chgPct<=-1 && stockPct<0){
-        chip -= 4;
+      }else if(tw.chgPct < -1 && stockPct < 0){
+        chip -= 2;
         risks.push('順著大盤一起弱');
-      }
-      if(tw.chgPct<=-2 && stockPct<1){
-        chip -= 6;
-        tech -= 3;
-        risks.push('風險盤下無明顯抵抗');
       }
     }
 
+    // 第2刀：籌碼重構（不再用舊 score 映射）
     const chipMeta=getChipMeta(code);
-    if(chipMeta.score>0){
-      chip += Math.min(8, Math.round((chipMeta.score/20)*8));
-      if(chipMeta.status==='潛伏') reasons.push('盤後籌碼偏潛伏');
-      else if(chipMeta.status==='觀察') reasons.push('法人有觀察痕跡');
-    }else if(chipMeta.status==='無'){
-      risks.push('籌碼未明顯表態');
+    const f3=safeNumber(chipMeta.foreign3d);
+    const f5=safeNumber(chipMeta.foreign5d);
+    const t3=safeNumber(chipMeta.trust3d);
+    const fDays=safeNumber(chipMeta.foreignBuyDays3);
+
+    let chipSignal=0;
+
+    // ① 方向
+    if(f3>0) chipSignal += 5;
+    else if(f3<0) chipSignal -= 5;
+
+    // ② 持續性
+    if(fDays>=3) chipSignal += 3;
+    else if(fDays>=2) chipSignal += 1;
+
+    // ③ 共鳴
+    if(f3>0 && t3>0) chipSignal += 3;
+
+    // ④ 轉折
+    if(f5<0 && f3>0 && f3>Math.abs(f5)*0.3){
+      chipSignal += 3;
+    }else if(f3<0 && f5<0 && Math.abs(f3)<Math.abs(f5)*0.4){
+      chipSignal += 1;
     }
+
+    chipSignal=Math.max(-10,Math.min(15,chipSignal));
+    chip += chipSignal;
+
+    if(chipSignal>=8) reasons.push('籌碼明顯轉強');
+    else if(chipSignal>=4) reasons.push('籌碼偏多');
+    else if(chipSignal<=-4) risks.push('籌碼偏弱');
+    else risks.push('籌碼未明顯表態');
 
     chip=clamp(Math.round(chip),0,50);
     tech=clamp(Math.round(tech),0,50);
     const total=chip+tech;
+
     let decision='觀望', badge='sb-wait', note='條件還行，但先等更漂亮的點。';
     if(mBias<=-2){
       decision=total>=70?'逆勢觀察':'先別碰';
@@ -1357,6 +1374,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         decision='先別碰'; badge='sb-no'; note='這檔現在不香，先看別人表演。';
       }
     }
+
     const score={chip,tech,total,decision,badge,note,reasons:[...new Set(reasons)].slice(0,4),risks:[...new Set(risks)].slice(0,4)};
     d.scoreData=score;
     d.scoreCacheKey=signature;
@@ -1645,7 +1663,7 @@ async function fetchCodes(codes){
           validCodes.push(code);
           AppState.stocks[code]={
             ...(AppState.stocks[code]||{}),
-            name:item.name||NAME_MAP[code]||EPS[code]?.n||code,
+            name:item.name||EPS[code]?.n||code,
             price:item.price,prev:item.prev,open:item.open,high:item.high,low:item.low,
             volume:item.volume,chg:item.chg,chgPct:item.chgPct,
             instEntry:item.instEntry,institutionalEntry:item.institutionalEntry,chipEntry:item.chipEntry,
@@ -1695,7 +1713,7 @@ async function fetchCodes(codes){
           const chg=(price!=null && prev!=null)? +(price-prev).toFixed(2) : (toNumSafe(item.Change)||0);
           AppState.stocks[code]={
             ...(AppState.stocks[code]||{}),
-            name:item.Name||NAME_MAP[code]||EPS[code]?.n||code,
+            name:item.Name||EPS[code]?.n||code,
             price,prev,open,high,low,volume,
             chg,chgPct:prev?+((chg/prev)*100).toFixed(2):0,
             source:'前端直抓(TPEX)',updatedAt:Date.now(),loading:false,error:false
