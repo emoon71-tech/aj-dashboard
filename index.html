@@ -199,6 +199,21 @@
   .reason-box .ttl{font-size:10px;color:var(--text3);margin-bottom:6px;font-weight:600}
   .reason-box ul{padding-left:16px}
   .reason-box li{font-size:11px;line-height:1.5;color:var(--text);margin:2px 0}
+  .decision-hero{background:linear-gradient(135deg,#141924,#0f1218);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .decision-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .decision-kicker{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .decision-title{font-size:22px;font-weight:800;line-height:1.1;margin-top:4px}
+  .decision-sub{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
+  .decision-score{min-width:112px;text-align:right}
+  .decision-score .num{font-size:40px;font-weight:900;line-height:1}
+  .decision-score .lab{font-size:10px;color:var(--text3);margin-top:4px}
+  .decision-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .decision-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--text3);font-weight:600}
+  .decision-summary{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.18);border:1px solid var(--border)}
+  .decision-summary .ttl{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:4px}
+  .decision-summary .txt{font-size:13px;color:var(--text);line-height:1.5;font-weight:600}
+  .detail-section{margin-top:12px}
+  .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .sort-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
   .sort-chip.on{border-color:var(--gold);color:var(--gold);background:#1a1508}
@@ -1631,6 +1646,24 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const etfTitle=getEtfBadgeTitle(code);
     const chipMeta=getChipMeta(code);
     const chipBadgeClass=getChipBadgeClass(code);
+    const posPct=score.nearHigh20!=null?Math.round(score.nearHigh20*100):null;
+    const risePct=score.riseFromLow!=null?Math.round(score.riseFromLow*100):null;
+    const heroTags=[];
+    if(posPct!=null) heroTags.push(posPct>=85?'位置偏高':posPct<=35?'位置偏低':`位置 ${posPct}%`);
+    if(risePct!=null) heroTags.push(risePct>=25?`已離低點 +${risePct}%`:risePct>=0?`漲幅 +${risePct}%`:`漲幅 ${risePct}%`);
+    if(score.reasons.some(t=>String(t).includes('MACD'))) heroTags.push('MACD 轉強');
+    else if(score.tech>=35) heroTags.push('技術面尚可');
+    if(score.risks.some(t=>String(t).includes('量能'))) heroTags.push('量能要再確認');
+    else if(score.reasons.some(t=>String(t).includes('量'))) heroTags.push('量能健康');
+    if(score.techStatus==='none') heroTags.push('技術資料不足');
+    if(score.techStatus==='partial') heroTags.push('技術資料未齊');
+    const heroSummary=heroTags.slice(0,4).join(' · ') || '等待更多結構訊號';
+    const actionText=
+      score.badge==='sb-go'
+        ? '可做，但以風險控管優先，別追太快。'
+        : score.badge==='sb-wait'
+          ? '先觀察，等量能或結構再確認。'
+          : '先避開，現在不是舒服的出手點。';
     return `
       <div class="dh">
         <div>
@@ -1640,68 +1673,96 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
             <span class="sbg bg-blue">${meta.sector||'其他'}</span>
             ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
             <span class="sbg ${chipBadgeClass}">${chipMeta.label}</span>
-            ${score.techStatus==='none' ? '<span class="sbg bg-red">無技術資料</span>' : ''}
-            ${score.techStatus==='partial' ? '<span class="sbg bg-amber">技術資料未齊</span>' : ''}
           </div>
-          <div class="sep">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張　投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張　籌碼分數 ${chipMeta.score}/20</div>
         </div>
         <div class="dp" style="text-align:right">
           <div class="p ${col}">${price?'NT$ '+price.toLocaleString():'--'}</div>
           <div class="c ${col}">${pctText}${d.chg!=null?`　${formatSignedChange(d.chg)}`:''}</div>
           ${v?`<div style="margin-top:5px"><span class="sbg ${v.bcls}">${v.label}</span></div>`:''}
-          <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
-          ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
         </div>
       </div>
-      <hr class="div">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <div style="font-size:10px;color:var(--text3);font-weight:500">阿吉快判引擎（盤勢＋估值＋日內結構）</div>
-        <span class="score-badge ${score.badge}">${score.decision}</span>
-      </div>
-      <div class="score-grid">
-        <div class="score-card">
-          <div class="ttl">總分</div>
-          <div class="num">${score.total}</div>
-          <div class="score-bar"><div style="width:${score.total}%"></div></div>
-          <div class="sub">${score.note}</div>
+
+      <div class="decision-hero">
+        <div class="decision-top">
+          <div style="flex:1;min-width:220px">
+            <div class="decision-kicker">AJ Decision Panel</div>
+            <div class="decision-title">${score.decision}</div>
+            <div class="decision-sub">現況｜${status.label}　${inst?`・ ${inst.label}`:''}</div>
+          </div>
+          <div class="decision-score">
+            <div class="num">${score.total}</div>
+            <div class="lab">阿吉分數 / 100</div>
+            <div style="margin-top:8px"><span class="score-badge ${score.badge}">${score.decision}</span></div>
+          </div>
         </div>
-        <div class="score-card">
-          <div class="ttl">籌碼 / 盤勢</div>
-          <div class="num">${score.chip}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
-          <div class="score-bar"><div style="width:${score.chip*2}%"></div></div>
-          <div class="sub">看大盤、情緒、期貨、估值</div>
+        <div class="decision-strip">
+          <span class="decision-chip">籌碼 / 盤勢 ${score.chip}/50</span>
+          <span class="decision-chip">技術 / 結構 ${score.tech}/50</span>
+          <span class="decision-chip">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張</span>
+          <span class="decision-chip">投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</span>
         </div>
-        <div class="score-card">
-          <div class="ttl">技術 / 結構</div>
-          <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
-          <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
-          <div class="sub">看強弱、位置、突破、開盤價</div>
-          ${(score.nearHigh20!=null || score.riseFromLow!=null) ? `<div class="hint">位置 ${score.nearHigh20!=null ? `${Math.round(score.nearHigh20*100)}%` : '--'} · 漲幅 ${score.riseFromLow!=null ? `${score.riseFromLow >= 0 ? '+' : ''}${Math.round(score.riseFromLow*100)}%` : '--'}</div>` : ''}
-          ${score.techStatus==='none' ? '<div class="hint" style="color:var(--red);margin-top:6px">⚠ 無技術資料</div>' : ''}
-          ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
+        <div class="decision-summary">
+          <div class="ttl">一句話結論</div>
+          <div class="txt">${heroSummary}</div>
+          <div class="hint" style="margin-top:6px">${actionText}</div>
         </div>
       </div>
-      <div class="reason-list">
-        <div class="reason-box">
-          <div class="ttl">加分原因</div>
-          <ul>${score.reasons.length?score.reasons.slice(0,2).map(t=>`<li>${t}</li>`).join(''):'<li>目前沒有明顯加分點</li>'}</ul>
-        </div>
-        <div class="reason-box">
-          <div class="ttl">風險提醒</div>
-          <ul>${score.risks.length?score.risks.slice(0,3).map(t=>`<li>${t}</li>`).join(''):'<li>暫時沒有明顯警訊</li>'}</ul>
+
+      <div class="detail-section">
+        <div class="detail-section-title">細節拆解</div>
+        <div class="score-grid">
+          <div class="score-card">
+            <div class="ttl">籌碼 / 盤勢</div>
+            <div class="num">${score.chip}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
+            <div class="score-bar"><div style="width:${score.chip*2}%"></div></div>
+            <div class="sub">看大盤、情緒、期貨、估值</div>
+            <div class="hint">籌碼分數 ${chipMeta.score}/20</div>
+          </div>
+          <div class="score-card">
+            <div class="ttl">技術 / 結構</div>
+            <div class="num">${score.tech}<span style="font-size:12px;color:var(--text3)"> / 50</span></div>
+            <div class="score-bar"><div style="width:${score.tech*2}%"></div></div>
+            <div class="sub">看強弱、位置、突破、開盤價</div>
+            ${(score.nearHigh20!=null || score.riseFromLow!=null) ? `<div class="hint">位置 ${score.nearHigh20!=null ? `${Math.round(score.nearHigh20*100)}%` : '--'} · 漲幅 ${score.riseFromLow!=null ? `${score.riseFromLow >= 0 ? '+' : ''}${Math.round(score.riseFromLow*100)}%` : '--'}</div>` : ''}
+            ${score.techStatus==='none' ? '<div class="hint" style="color:var(--red);margin-top:6px">⚠ 無技術資料</div>' : ''}
+            ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
+          </div>
+          <div class="score-card">
+            <div class="ttl">即時結構</div>
+            <div class="num ${col}" style="font-size:18px">${pctText}</div>
+            <div class="score-bar"><div style="width:${Math.min(100, Math.max(8, Math.abs(Number(d.chgPct||0))*8))}%"></div></div>
+            <div class="sub">看日內強弱與價格位置</div>
+            ${stopRef?`<div class="hint" style="margin-top:6px;color:var(--gold)">停損參考 ${stopRef.price.toLocaleString()}</div>`:''}
+          </div>
         </div>
       </div>
-      <hr class="div">
-      <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:500">估值矩陣（基於預估 EPS）</div>
-      ${valGrid(code,price)}
-      ${stopRef?`<div class="hint" style="margin-top:8px;color:var(--gold)">停損參考：${stopRef.price.toLocaleString()}${stopRef.gap!=null?`　距現價 ${stopRef.gap>0?'-':''}${Math.abs(stopRef.gap).toFixed(1)}%`:''}</div>`:''}
-      <div class="ir">
-        <div class="ic"><div class="il">昨收</div><div class="iv">${d.prev||'--'}</div></div>
-        <div class="ic"><div class="il">今開</div><div class="iv">${d.open||'--'}</div></div>
-        <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
-        <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">理由與風險</div>
+        <div class="reason-list">
+          <div class="reason-box">
+            <div class="ttl">風險提醒</div>
+            <ul>${score.risks.length?score.risks.slice(0,3).map(t=>`<li>${t}</li>`).join(''):'<li>暫時沒有明顯警訊</li>'}</ul>
+          </div>
+          <div class="reason-box">
+            <div class="ttl">加分原因</div>
+            <ul>${score.reasons.length?score.reasons.slice(0,2).map(t=>`<li>${t}</li>`).join(''):'<li>目前沒有明顯加分點</li>'}</ul>
+          </div>
+        </div>
       </div>
-      <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">估值與資料</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:500">估值矩陣（基於預估 EPS）</div>
+        ${valGrid(code,price)}
+        <div class="ir">
+          <div class="ic"><div class="il">昨收</div><div class="iv">${d.prev||'--'}</div></div>
+          <div class="ic"><div class="il">今開</div><div class="iv">${d.open||'--'}</div></div>
+          <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
+          <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
+        </div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎，先用現有即時 / 收盤資料，不是完整 V10。</div>
+      </div>
     `;
   }
 
