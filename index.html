@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v2.6.1">
+  <meta name="app-version" content="v3.5.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1386,6 +1386,41 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
+    // V3.5：位置 + 已漲幅（需要 high20 / low20）
+    const high20 = safeNumber(techData.high20);
+    const low20  = safeNumber(techData.low20);
+    let nearHigh20 = null;
+    let riseFromLow = null;
+
+    if (high20 > 0 && low20 > 0 && price > 0) {
+      nearHigh20 = price / high20;
+      riseFromLow = (price - low20) / low20;
+
+      // ① 位置判斷（nearHigh20）
+      if (nearHigh20 >= 0.95) {
+        tech -= 6;
+        risks.push('接近20日高點，追高風險');
+      } else if (nearHigh20 >= 0.85) {
+        tech -= 2;
+        risks.push('位置偏高');
+      } else if (nearHigh20 < 0.75 && riseFromLow < 0.15) {
+        tech += 3;
+        reasons.push('位置低檔安全區');
+      }
+
+      // ② 已漲幅判斷（riseFromLow）
+      if (riseFromLow > 0.30) {
+        tech -= 5;
+        risks.push('已漲超30%，主升段可能過了');
+      } else if (riseFromLow > 0.15) {
+        tech -= 2;
+        risks.push('已有漲幅，注意位置');
+      } else if (riseFromLow < 0.08) {
+        tech += 3;
+        reasons.push('低位剛啟動');
+      }
+    }
+
     // 第1刀：逆勢強股才加分
     if(tw && Number.isFinite(tw.chgPct) && Number.isFinite(stockPct)){
       if(tw.chgPct < -0.5 && stockPct > 1.5){
@@ -1469,8 +1504,10 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   techReady: techStatus==='ok',
   techStatus,
   volRatio,
-  reasons: [...new Set(reasons)].slice(0, 4),
-  risks: [...new Set(risks)].slice(0, 4),
+  nearHigh20: nearHigh20 != null ? Number(nearHigh20.toFixed(3)) : null,
+  riseFromLow: riseFromLow != null ? Number(riseFromLow.toFixed(3)) : null,
+  reasons: [...new Set(reasons)].slice(0, 5),
+  risks: [...new Set(risks)].slice(0, 5),
 };
     d.scoreData=score;
     d.scoreCacheKey=signature;
@@ -1639,6 +1676,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="sub">看強弱、位置、突破、開盤價</div>
           ${score.techStatus==='none' ? '<div class="hint" style="color:var(--red);margin-top:6px">⚠ 無技術資料</div>' : ''}
           ${score.techStatus==='partial' ? '<div class="hint" style="color:var(--gold);margin-top:6px">⚠ 技術資料未齊</div>' : ''}
+          ${score.nearHigh20!=null ? `<div class="hint">20日位置：${(score.nearHigh20*100).toFixed(1)}%</div>` : ''}
+          ${score.riseFromLow!=null ? `<div class="hint">距20日低點漲幅：${(score.riseFromLow*100).toFixed(1)}%</div>` : ''}
         </div>
       </div>
       <div class="reason-list">
