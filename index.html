@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v3.8.2">
+  <meta name="app-version" content="v4.0.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -215,6 +215,27 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
+  .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .starter-title{font-size:16px;font-weight:800;color:var(--text)}
+  .starter-sub{font-size:11px;color:var(--text3);margin-top:4px}
+  .starter-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#1a1508;border:1px solid var(--gold3);color:var(--gold);font-size:10px;font-weight:700}
+  .starter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .starter-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
+  .starter-card:hover{border-color:var(--gold3);transform:translateY(-1px)}
+  .starter-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .starter-kicker .name{font-size:13px;font-weight:800;color:var(--text)}
+  .starter-kicker .code{font-size:10px;color:var(--text3)}
+  .starter-score{font-size:11px;color:var(--gold);font-weight:700}
+  .starter-line{font-size:12px;color:var(--text);font-weight:700;line-height:1.5}
+  .starter-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .starter-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
+  .st-green{background:#0a2015;border-color:var(--green);color:var(--green)}
+  .st-gold{background:#1a1508;border-color:var(--gold);color:var(--gold)}
+  .st-blue{background:#0a1428;border-color:var(--blue);color:var(--blue)}
+  .starter-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
+  .starter-empty b{color:var(--gold)}
+
   .sort-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
   .sort-chip.on{border-color:var(--gold);color:var(--gold);background:#1a1508}
   .rank-badge{position:absolute;top:8px;right:8px;font-size:10px;padding:2px 7px;border-radius:999px;background:#1a1508;border:1px solid var(--gold3);color:var(--gold)}
@@ -721,6 +742,104 @@ function calcSectorHeat(codes){
     $('sectorPulseText').textContent=`最強族群：${top.name} · 平均分數 ${top.heat}`;
     $('sectorPulseSub').textContent=`前五族群依目前畫面股票即時計分統計；有 ETF 成分的檔數越多，護體感越強。`;
     wrap.innerHTML=list.map(item=>`<span class="kpi-chip">${item.name} ${item.heat}分 · ETF ${item.etfCount}/${item.count}</span>`).join('');
+  }
+
+  function getEarlyStarterCandidates(codes){
+    return (codes || []).map(code=>{
+      const d=AppState.stocks[code]||{};
+      const tech=d.tech||{};
+      const score=computeAjieScore(code);
+      const price=safeNumber(d.price);
+      const ma20=safeNumber(tech.ma20);
+      const avgVol20=safeNumber(tech.avgVol20);
+      const volume=safeNumber(d.volume);
+      const hist=safeNumber(tech.hist);
+      const histPrev=safeNumber(tech.histPrev);
+      const histArray=Array.isArray(tech.histArray)?tech.histArray.filter(v=>Number.isFinite(Number(v))).map(Number):[];
+      const volRatio=Number.isFinite(score.volRatio)?score.volRatio:(avgVol20>0 && volume>0 ? volume/avgVol20 : null);
+      const maBias=(Number.isFinite(ma20) && Number.isFinite(price) && ma20>0)?((price-ma20)/ma20):null;
+      const nearHigh20=Number.isFinite(score.nearHigh20)?score.nearHigh20:null;
+      const riseFromLow=Number.isFinite(score.riseFromLow)?score.riseFromLow:null;
+
+      const macdTurnUp=(Number.isFinite(histPrev) && Number.isFinite(hist) && histPrev<=0 && hist>0)
+        || (histArray.length>=3 && histArray.at(-1)>histArray.at(-2) && histArray.at(-2)>histArray.at(-3) && histArray.at(-1)>-0.05);
+
+      const positionOk=nearHigh20!=null && nearHigh20<0.68;
+      const maOk=maBias!=null && maBias>0.03;
+      const volOk=volRatio!=null && volRatio>=0.8 && volRatio<=2.2;
+      const setupOk=(score.reasons||[]).some(t=>String(t).includes('低檔轉強') || String(t).includes('低位剛啟動'));
+
+      const starterScore=
+        (positionOk?28:0) +
+        (maOk?26:0) +
+        (macdTurnUp?24:0) +
+        (volOk?12:0) +
+        (setupOk?10:0) +
+        Math.max(0, Math.min(12, Math.round(((score.total||0)-50)/2)));
+
+      const qualifies = maOk && positionOk && volOk && (macdTurnUp || setupOk);
+
+      return {
+        code,
+        name:d.name||EPS[code]?.n||code,
+        score,
+        starterScore,
+        qualifies,
+        price,
+        maBias,
+        nearHigh20,
+        riseFromLow,
+        volRatio,
+        macdTurnUp,
+        positionOk,
+        volOk,
+        setupOk,
+      };
+    })
+    .filter(item=>item.qualifies)
+    .sort((a,b)=>{
+      if(b.starterScore!==a.starterScore) return b.starterScore-a.starterScore;
+      if((b.score.total||0)!==(a.score.total||0)) return (b.score.total||0)-(a.score.total||0);
+      return String(a.code).localeCompare(String(b.code),'zh-Hant');
+    })
+    .slice(0,5);
+  }
+
+  function renderEarlyStarter(codes){
+    const wrap=$('starterGrid');
+    const badge=$('starterBadge');
+    if(!wrap || !badge) return;
+
+    const list=getEarlyStarterCandidates(codes);
+    if(!list.length){
+      badge.textContent='暫無訊號';
+      wrap.innerHTML=`<div class="starter-empty"><b>今天還沒看到漂亮的前段啟動。</b> 先等位置、MA20、MACD、量能四件事一起站好。</div>`;
+      return;
+    }
+
+    badge.textContent=`抓到 ${list.length} 檔`;
+    wrap.innerHTML=list.map((item,idx)=>{
+      const maText=item.maBias!=null ? `高於MA20 +${Math.round(item.maBias*100)}%` : 'MA20待補';
+      const posText=item.nearHigh20!=null ? (item.nearHigh20<0.4?'位置偏低':item.nearHigh20<0.68?'位置中低':'位置偏高') : '位置待補';
+      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
+      const line=`${posText} · ${maText} · ${item.macdTurnUp?'MACD 轉強':'結構轉強'}`;
+      return `
+        <div class="starter-card" onclick="showDetail('${item.code}')">
+          <div class="starter-kicker">
+            <div>
+              <div class="name">#${idx+1} ${item.name}</div>
+              <div class="code">${item.code}</div>
+            </div>
+            <div class="starter-score">前段分 ${item.starterScore}</div>
+          </div>
+          <div class="starter-line">${line}</div>
+          <div class="starter-tags">
+            <span class="starter-tag st-green">${maText}</span>
+            <span class="starter-tag st-blue">${volText}</span>
+            <span class="starter-tag st-gold">${item.setupOk?'低檔轉強':'前段觀察'}</span>
+          </div>
+        </div>`;
+    }).join('');
   }
 
   const CONFIG={
@@ -1796,7 +1915,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V3.7.1，已補入 MA20 趨勢評分與一句話摘要，先用現有即時 / 收盤資料，不是完整 V10。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.0.0，已補入前段啟動雷達、MA20 趨勢評分與位置/趨勢組合判斷，先用現有即時 / 收盤資料，不是完整 V10。</div>
       </div>
     `;
   }
@@ -2094,12 +2213,14 @@ async function fetchCodes(codes){
     await fetchCodes(codes);
     renderCards(codes);
     renderSectorHeat(codes);
+    renderEarlyStarter(codes);
   }
   function renderCurrentView(){
     const codes=currentCodes();
     hydrateScores(codes);
     renderCards(codes);
     renderSectorHeat(codes);
+    renderEarlyStarter(codes);
     if(AppState.ui.activeCode && codes.includes(AppState.ui.activeCode)){
       showDetail(AppState.ui.activeCode);
     }else if(!isMobileView()){
