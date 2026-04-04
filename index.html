@@ -318,7 +318,13 @@
         <div class="logo-sub">AJ Stock Dashboard · 價值投資策略</div>
       </div>
     </div>
-    <div class="topright">
+    <div class="topright"><div style="display:flex;align-items:center;gap:8px;">
+  <input
+    id="globalSearch"
+    placeholder="可寫 2330、AAPL 查詢"
+    style="background:#0f1218;border:1px solid #5b9cf6;border-radius:10px;padding:9px 14px;color:#e8e0d0;font-size:14px;width:300px;outline:none;box-shadow:0 0 0 1px rgba(91,156,246,.18) inset;"
+  >
+</div>
       <span id="ts">--</span>
       <span class="mkt-badge mkt-close" id="mktBadge"><span class="dot" id="mktDot" style="background:#5a5040"></span><span id="mktTxt">收盤</span></span>
       <div class="version-wrap">
@@ -1433,6 +1439,74 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const signature=getScoreSignature(code);
     if(!force && d.scoreData && d.scoreCacheKey===signature) return d.scoreData;
 
+    // 🔒 美股評分（英文代號，滿分100）
+    if(!/^\d+$/.test(code)){
+      const price=safeNumber(d.price);
+      const tech=d.tech||{};
+      const fear=AppState.market.fearScore;
+      const reasons=[], risks=[];
+
+      // 籌碼30分 → 大盤情緒15 + 當日強弱15
+      let chip=0;
+      const chgPct=safeNumber(d.chgPct);
+      if(Number.isFinite(fear)){
+        // 極度恐慌（<25）：要搭配股票本身上漲才加分，否則只是跟著跌
+        if(fear<=25){
+          if(Number.isFinite(chgPct) && chgPct>=0){
+            chip+=12; reasons.push('極度恐慌中逆勢守穩，反向訊號');
+          }else{
+            chip+=3; risks.push('極度恐慌+下跌，等底部確認');
+          }
+        } else if(fear<=45){
+          chip+=7; risks.push('市場偏恐慌，謹慎操作');
+        } else if(fear<=60){
+          chip+=10;
+        } else if(fear<=75){
+          chip+=13; reasons.push('市場偏貪婪，趨勢有利');
+        } else {
+          chip+=5; risks.push('市場極度貪婪，注意反轉');
+        }
+      }else{ chip+=8; }
+      if(Number.isFinite(chgPct)){
+        chip += chgPct>=3?15:chgPct>=1?10:chgPct>=0?7:chgPct>=-2?4:0;
+        if(chgPct>=3) reasons.push('今日強勢上漲');
+        if(chgPct<=-3) risks.push('今日大跌，注意');
+      }else{ chip+=7; }
+
+      // 技術40分 → MA20 20 + MACD 20
+      let techScore=0;
+      const ma20=safeNumber(tech.ma20);
+      const hist=tech.hist, histPrev=tech.histPrev;
+      if(Number.isFinite(price)&&Number.isFinite(ma20)){
+        const bias=(price-ma20)/ma20;
+        if(bias>0.03){techScore+=20;reasons.push('站上MA20');}
+        else if(bias>-0.03){techScore+=12;}
+        else{risks.push('跌破MA20');}
+      }else{techScore+=10;}
+      if(Number.isFinite(hist)&&Number.isFinite(histPrev)){
+        if(histPrev<=0&&hist>0){techScore+=20;reasons.push('MACD翻正');}
+        else if(hist>0){techScore+=12;}
+        else{risks.push('MACD偏弱');}
+      }else{techScore+=10;}
+
+      // 漲幅30分
+      let rise=15;
+      if(Number.isFinite(chgPct)){
+        rise=chgPct>=3?30:chgPct>=1?20:chgPct>=0?15:chgPct>=-2?8:3;
+      }
+
+      const total=Math.min(100,chip+techScore+rise);
+      const decision=total>=75?'前段啟動':total>=55?'待觀察':'先別碰';
+      const badge=total>=75?'sb-bull':total>=55?'sb-wait':'sb-bear';
+      // 換算成 /50 顯示（UI 固定用 /50）
+      const chipDisplay=Math.round(chip*50/30);
+      const techDisplay=Math.round(techScore*50/40);
+      const scoreData={total,chip:chipDisplay,tech:techDisplay,rise,decision,badge,verdict:decision,reasons,risks,details:[],isUS:true};
+      d.scoreData=scoreData; d.scoreCacheKey=signature;
+      AppState.stocks[code]=d;
+      return scoreData;
+    }
+
     const ep=EPS[code];
     const price=safeNumber(d.price), prev=safeNumber(d.prev), open=safeNumber(d.open), high=safeNumber(d.high), low=safeNumber(d.low);
     const reasons=[], risks=[];
@@ -1900,12 +1974,11 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div class="decision-strip">
           <span class="decision-chip">籌碼 / 盤勢 ${score.chip}/50</span>
           <span class="decision-chip">技術 / 結構 ${score.tech}/50</span>
-          <span class="decision-chip">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張</span>
-          <span class="decision-chip">投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</span>
+          ${score.isUS ? '<span class="decision-chip">🇺🇸 美股評分模式</span>' : `<span class="decision-chip">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張</span><span class="decision-chip">投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</span>`}
         </div>
         <div class="decision-summary">
           <div class="ttl">一句話結論</div>
-          <div class="txt">${heroSummary}</div>
+          <div class="txt">${score.isUS ? (score.reasons.slice(0,2).join('・') || '美股技術評估中') : heroSummary}</div>
           <div class="hint" style="margin-top:6px">${actionText}</div>
         </div>
       </div>
@@ -2460,5 +2533,185 @@ async function refreshAll(){
   window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
   </script>
   
-  </body>
+
+
+<script>
+(function(){
+  function normalizeSearchInput(raw){
+    return String(raw || '').trim().toUpperCase();
+  }
+  function isTwCode(code){
+    return /^\d{4,6}$/.test(code);
+  }
+
+  async function fetchUsQuote(symbol){
+    const raw = await apiGetJson(`/us?symbols=${encodeURIComponent(symbol)}`, { timeout: 12000, retries: 1 });
+    const item = (raw?.data || [])[0];
+    if(!item) throw new Error('no us quote');
+    return {
+      code: symbol,
+      name: item.name || symbol,
+      price: Number(item.price),
+      prev: Number(item.prev),
+      open: Number(item.open),
+      high: Number(item.high),
+      low: Number(item.low),
+      volume: Number(item.volume),
+      chg: Number(item.chg),
+      chgPct: Number(item.chgPct),
+      time: item.time || null,
+      source: item.source || 'worker-us'
+    };
+  }
+
+  async function fetchUsTech(symbol){
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=6mo&includePrePost=false&events=div%2Csplits`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('US tech fetch failed');
+    const raw = await res.json();
+    const result = raw?.chart?.result?.[0];
+    const quote = result?.indicators?.quote?.[0];
+    if(!quote) return {};
+
+    const rows = [];
+    for(let i=0;i<(quote.close||[]).length;i++){
+      const close = quote.close?.[i];
+      if(close == null || !isFinite(close)) continue;
+      rows.push({
+        close: Number(close),
+        high: Number.isFinite(quote.high?.[i]) ? Number(quote.high[i]) : Number(close),
+        low: Number.isFinite(quote.low?.[i]) ? Number(quote.low[i]) : Number(close),
+        volume: Number.isFinite(quote.volume?.[i]) ? Number(quote.volume[i]) : 0
+      });
+    }
+    if(rows.length < 35) return {};
+
+    const closes = rows.map(r=>r.close);
+    const highs = rows.map(r=>r.high);
+    const lows = rows.map(r=>r.low);
+    const volumes = rows.map(r=>r.volume);
+
+    const sma = (arr, n) => arr.length >= n ? +((arr.slice(-n).reduce((a,b)=>a+b,0))/n).toFixed(2) : null;
+    const ema = (arr, n) => {
+      const k = 2/(n+1);
+      let e = arr[0];
+      const out = [e];
+      for(let i=1;i<arr.length;i++){
+        e = arr[i] * k + e * (1-k);
+        out.push(e);
+      }
+      return out;
+    };
+
+    const ema12 = ema(closes, 12);
+    const ema26 = ema(closes, 26);
+    const macdLine = closes.map((_, i) => ema12[i] - ema26[i]);
+    const signal = ema(macdLine, 9);
+    const hist = macdLine.map((m, i) => m - signal[i]);
+    const last = hist.length - 1;
+
+    return {
+      ok: true,
+      ma20: sma(closes, 20),
+      avgVol20: sma(volumes, 20),
+      macd: +macdLine[last].toFixed(3),
+      macdPrev: +(macdLine[last - 1] ?? macdLine[last]).toFixed(3),
+      hist: +hist[last].toFixed(3),
+      histPrev: +(hist[last - 1] ?? hist[last]).toFixed(3),
+      histArray: hist.slice(-20).map(v => +v.toFixed(3)),
+      high20: highs.length >= 20 ? +Math.max(...highs.slice(-20)).toFixed(2) : null,
+      low20: lows.length >= 20 ? +Math.min(...lows.slice(-20)).toFixed(2) : null,
+      updatedAt: Date.now()
+    };
+  }
+
+  async function searchAndShow(code){
+    if(!code) return;
+    if(window.setStat) setStat(`搜尋 ${code}...`, 'load');
+
+    try{
+      let stock = null;
+      let tech = {};
+
+      if(isTwCode(code)){
+        const rt = await apiGetJson(`/realtime?codes=${encodeURIComponent(code)}`, { timeout: 12000, retries: 1 });
+        stock = (rt?.data || [])[0] || null;
+        try{
+          const tj = await apiGetJson(`/tech?codes=${encodeURIComponent(code)}`, { timeout: 12000, retries: 1 });
+          tech = (tj?.items || [])[0] || {};
+        }catch(_){}
+      }else{
+        stock = await fetchUsQuote(code);
+        try{
+          tech = await fetchUsTech(code);
+        }catch(err){
+          console.warn('US tech skipped', err);
+        }
+      }
+
+      if(!stock || !stock.code || !Number.isFinite(Number(stock.price))){
+        alert(`找不到 ${code}`);
+        if(window.setStat) setStat(`查無 ${code}`, 'err');
+        return;
+      }
+
+      AppState.stocks[code] = {
+        ...(AppState.stocks[code] || {}),
+        name: stock.name || code,
+        price: stock.price,
+        prev: stock.prev,
+        open: stock.open,
+        high: stock.high,
+        low: stock.low,
+        volume: stock.volume,
+        chg: stock.chg,
+        chgPct: stock.chgPct,
+        source: stock.source || 'search',
+        updatedAt: Date.now(),
+        loading: false,
+        error: false,
+        tech: {
+          ...(AppState.stocks[code]?.tech || {}),
+          ...tech
+        }
+      };
+
+      if(window.computeAjieScore) computeAjieScore(code, true);
+      if(window.renderCards) renderCards([code]);
+      if(window.renderSectorHeat) renderSectorHeat([code]);
+      if(window.showDetail) showDetail(code);
+
+      const input = document.getElementById('globalSearch');
+      if(input) input.value = code;
+      if(window.setStat) setStat(`${code} 已開啟股票快判`, 'ok');
+    }catch(err){
+      console.error('searchAndShow error:', err);
+      alert(`查詢失敗：${code}`);
+      if(window.setStat) setStat(`查詢 ${code} 失敗`, 'err');
+    }
+  }
+
+  function bindSearchBox(){
+    const oldInput = document.getElementById('globalSearch');
+    if(!oldInput) return;
+    const newInput = oldInput.cloneNode(true);
+    oldInput.parentNode.replaceChild(newInput, oldInput);
+    newInput.placeholder = '可寫 2330、AMD 直接快判';
+    newInput.addEventListener('keydown', async function(e){
+      if(e.key !== 'Enter') return;
+      e.preventDefault();
+      e.stopPropagation();
+      await searchAndShow(normalizeSearchInput(newInput.value));
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bindSearchBox);
+  }else{
+    bindSearchBox();
+  }
+})();
+</script>
+
+</body>
   </html>
