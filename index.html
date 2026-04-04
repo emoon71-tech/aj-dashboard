@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.1">
+  <meta name="app-version" content="v4.3.2">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -364,7 +364,7 @@
       <div class="logo-icon">阿</div>
       <div>
         <div class="logo-text">阿吉股票儀表板</div>
-        <div class="logo-sub">AJ Stock Dashboard · 回測驗證版</div>
+        <div class="logo-sub">AJ Stock Dashboard · 回測快判整合版</div>
       </div>
     </div>
     <div class="topright">
@@ -379,9 +379,9 @@
 
   <div class="search-header">
     <div class="search-row">
-      <input class="inp" id="stockSearchInp" placeholder="搜尋股號或股名，例如 2330、台積電" />
-      <button class="btn btn-gold btn-sm" onclick="runStockSearch()">搜尋</button>
-      <span class="search-tip">只搜尋目前已載入股票，結果會直接給你快判與回測入口</span>
+      <input class="inp" id="stockSearchInp" placeholder="任意股票查詢，例如 2330、3008、NVDA" />
+      <button class="btn btn-gold btn-sm" onclick="runStockSearch()">查詢</button>
+      <span class="search-tip">不限股池，直接打 Worker 抓即時資料，先給你快判再開回測</span>
     </div>
     <div class="search-results" id="searchResults"></div>
   </div>
@@ -949,7 +949,7 @@ function renderEarlyStarter(codes){
     const curSignal=getCurrentSignalProfile(item.code);
     const line=`${posText} · ${maText} · ${item.macdTurnUp?'MACD 轉強':'結構轉強'}`;
     return `
-      <div class="starter-card" onclick="openBacktestModal('${item.code}')">
+      <div class="starter-card" onclick="showDetail('${item.code}')">
         <div class="starter-kicker">
           <div>
             <div class="name">#${idx+1} ${item.name}</div>
@@ -2074,7 +2074,7 @@ function renderCards(codes){
     const pctText=d.chgPct!=null?(d.chgPct>0?'▲':d.chgPct<0?'▼':'•')+' '+Math.abs(Number(d.chgPct)).toFixed(2)+'%　'+formatSignedChange(d.chg):'--';
     const el=document.createElement('div');
     el.className='sc'+(code===AppState.ui.activeCode?' active':'');
-    el.onclick=()=>openBacktestModal(code);
+    el.onclick=()=>showDetail(code);
     const meta=getStockMeta(code);
     const shieldLabel=getEtfShieldLabel(code);
     const etfTitle=getEtfBadgeTitle(code);
@@ -2718,53 +2718,25 @@ async function refreshAll(){
     if(modal) modal.classList.remove('show');
     document.body.classList.remove('body-lock');
   }
-  function parseYahooChartPayload(j, fallbackSymbol=''){
-    const r=j?.chart?.result?.[0];
-    const q=r?.indicators?.quote?.[0];
-    if(!r || !q) throw new Error(j?.chart?.error?.description || 'No chart data');
-    const timestamps=r.timestamp||[];
-    const opens=q.open||[], highs=q.high||[], lows=q.low||[], closes=q.close||[], volumes=q.volume||[];
-    const out=[];
-    timestamps.forEach((ts,idx)=>{
-      const o=Number(opens[idx]), h=Number(highs[idx]), l=Number(lows[idx]), c=Number(closes[idx]), v=Number(volumes[idx]);
-      if([o,h,l,c].every(Number.isFinite)) out.push({ts, open:o, high:h, low:l, close:c, volume:Number.isFinite(v)?v:0});
-    });
-    const metaSymbol=r?.meta?.symbol || fallbackSymbol || '';
-    if(out.length<80) throw new Error('Yahoo 歷史資料不足');
-    return {symbol:metaSymbol, candles:out};
-  }
   async function fetchYahooHistory(code){
-    const cleanCode=String(code||'').trim();
-    if(!cleanCode) throw new Error('缺少股票代號');
-
-    const proxyUrl=`${CONFIG.workerUrl}/yahoo-proxy?code=${encodeURIComponent(cleanCode)}&range=1y&interval=1d`;
+    const raw=String(code||'').trim().toUpperCase();
+    if(!raw) throw new Error('缺少股票代號');
     try{
-      const res=await fetch(proxyUrl,{cache:'no-store'});
-      if(!res.ok){
-        let detail=`HTTP ${res.status}`;
-        try{
-          const errJson=await res.json();
-          detail=errJson?.error || errJson?.message || detail;
-        }catch(_){ }
-        if(res.status===404) throw new Error('Worker 尚未加入 /yahoo-proxy 路由');
-        throw new Error(detail);
-      }
-      const j=await res.json();
-      return parseYahooChartPayload(j, cleanCode);
+      const j=await apiGetJson(`/yahoo-proxy?code=${encodeURIComponent(raw)}`,{timeout:15000,retries:1});
+      const r=j?.chart?.result?.[0];
+      const q=r?.indicators?.quote?.[0];
+      if(!r || !q) throw new Error('No chart data');
+      const timestamps=r.timestamp||[];
+      const opens=q.open||[], highs=q.high||[], lows=q.low||[], closes=q.close||[], volumes=q.volume||[];
+      const out=[];
+      timestamps.forEach((ts,idx)=>{
+        const o=Number(opens[idx]), h=Number(highs[idx]), l=Number(lows[idx]), c=Number(closes[idx]), v=Number(volumes[idx]);
+        if([o,h,l,c].every(Number.isFinite)) out.push({ts, open:o, high:h, low:l, close:c, volume:Number.isFinite(v)?v:0});
+      });
+      if(out.length>=80) return {symbol:r?.meta?.symbol || raw, candles:out};
+      throw new Error('Yahoo 歷史資料不足');
     }catch(err){
-      const suffixes=['TW','TWO'];
-      let lastErr=err;
-      for(const suffix of suffixes){
-        try{
-          const symbol=`${cleanCode}.${suffix}`;
-          const url=`https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d&includePrePost=false&events=div%2Csplits`;
-          const res=await fetch(url,{cache:'no-store'});
-          if(!res.ok) throw new Error(`HTTP ${res.status}`);
-          const j=await res.json();
-          return parseYahooChartPayload(j, symbol);
-        }catch(innerErr){ lastErr=innerErr; }
-      }
-      throw lastErr || new Error('Yahoo 歷史資料不足');
+      throw new Error(err?.message || 'Yahoo 歷史資料不足');
     }
   }
   function analyzeHistorySignal(candles){
@@ -2919,7 +2891,87 @@ async function refreshAll(){
       </div>
     </div>`;
   }
-  function runStockSearch(isTyping=false, forceCode=''){
+  function findLocalSearchCode(query){
+    const raw=String(query||'').trim();
+    if(!raw) return '';
+    const key=raw.toLowerCase();
+    const codes=currentCodes();
+    const exactCode=codes.find(code=>String(code)===raw);
+    if(exactCode) return exactCode;
+    const exactName=codes.find(code=>String(AppState.stocks[code]?.name || EPS[code]?.n || '').toLowerCase()===key);
+    if(exactName) return exactName;
+    const fuzzy=codes.find(code=>{
+      const name=String(AppState.stocks[code]?.name || EPS[code]?.n || '').toLowerCase();
+      return String(code).includes(raw) || name.includes(key);
+    });
+    return fuzzy || '';
+  }
+  function normalizeSearchStock(item, code, market='TW'){
+    if(!item) return null;
+    const finalCode=String(code||item.code||item.symbol||'').trim().toUpperCase();
+    if(!finalCode) return null;
+    const prev=safeNumber(item.prev);
+    const price=safeNumber(item.price);
+    const chg=safeNumber(item.chg);
+    const chgPct=safeNumber(item.chgPct);
+    const merged={
+      ...(AppState.stocks[finalCode]||{}),
+      code:finalCode,
+      name:item.name || AppState.stocks[finalCode]?.name || EPS[finalCode]?.n || finalCode,
+      price,
+      prev,
+      open:safeNumber(item.open),
+      high:safeNumber(item.high),
+      low:safeNumber(item.low),
+      volume:safeNumber(item.volume),
+      chg:chg!=null ? chg : (price!=null && prev!=null ? +(price-prev).toFixed(2) : null),
+      chgPct:chgPct!=null ? chgPct : (price!=null && prev ? +(((price-prev)/prev)*100).toFixed(2) : null),
+      source:item.source || (market==='US'?'us-yahoo':'worker-search'),
+      market,
+      isUS:market==='US',
+      error:item.error || null,
+      loading:false,
+    };
+    AppState.stocks[finalCode]=merged;
+    return finalCode;
+  }
+  async function fetchSearchStock(query){
+    const raw=String(query||'').trim();
+    if(!raw) throw new Error('請輸入股號');
+    const localCode=findLocalSearchCode(raw);
+    if(localCode) return localCode;
+
+    const upper=raw.toUpperCase();
+    if(/^\d{4,6}$/.test(upper)){
+      const rt=await apiGetJson(`/realtime?codes=${encodeURIComponent(upper)}`,{timeout:12000,retries:1});
+      const item=rt?.data?.[0];
+      const hasPrice=item && (safeNumber(item.price)!=null || safeNumber(item.prev)!=null);
+      if(!item || item.error==='unavailable' || !hasPrice){
+        throw new Error('查無此股票');
+      }
+      const code=normalizeSearchStock(item, upper, 'TW');
+      try{
+        await loadTechData([code]);
+        computeAjieScore(code,true);
+      }catch(_){}
+      return code;
+    }
+
+    if(/^[A-Z^][A-Z0-9.\-^]{0,9}$/.test(upper)){
+      const us=await apiGetJson(`/us?symbols=${encodeURIComponent(upper)}`,{timeout:12000,retries:1});
+      const item=us?.data?.[0];
+      const hasPrice=item && (safeNumber(item.price)!=null || safeNumber(item.prev)!=null);
+      if(!item || item.error || !hasPrice){
+        throw new Error('查無此股票');
+      }
+      const code=normalizeSearchStock(item, upper, 'US');
+      computeAjieScore(code,true);
+      return code;
+    }
+
+    throw new Error('查無此股票');
+  }
+  async function runStockSearch(isTyping=false, forceCode=''){
     const wrap=$('searchResults');
     const input=$('stockSearchInp');
     if(!wrap || !input) return;
@@ -2930,20 +2982,15 @@ async function refreshAll(){
       wrap.innerHTML='';
       return;
     }
-    const codes=currentCodes();
-    const matched=(forceCode?[forceCode]:codes.filter(code=>{
-      const name=String(AppState.stocks[code]?.name || EPS[code]?.n || '').toLowerCase();
-      const key=String(q).toLowerCase();
-      return String(code).includes(q) || name.includes(key);
-    }));
-    if(!matched.length){
-      wrap.classList.add('show');
-      wrap.innerHTML=`<div class="search-card"><div class="search-card-title">找不到 ${q}</div><div class="search-card-sub">只會在目前已載入的股票裡搜尋</div></div>`;
-      return;
-    }
     wrap.classList.add('show');
-    wrap.innerHTML=buildSearchCard(matched[0]);
-    if(!isTyping) wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+    wrap.innerHTML=`<div class="search-card"><div class="search-card-title">查詢 ${q}</div><div class="search-card-sub">正在透過 Worker 抓即時資料…</div></div>`;
+    try{
+      const code=await fetchSearchStock(q);
+      wrap.innerHTML=buildSearchCard(code);
+      if(!isTyping) wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }catch(err){
+      wrap.innerHTML=`<div class="search-card"><div class="search-card-title">查無此股票</div><div class="search-card-sub">${err?.message || q}</div></div>`;
+    }
   }
 
   window.addEventListener('resize',()=>{ if(!isMobileView()) { if(AppState.ui.activeCode) $('dWrap').style.display='block'; } else { $('dWrap').style.display='none'; } });
