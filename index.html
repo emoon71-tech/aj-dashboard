@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.3">
+  <meta name="app-version" content="v4.3.4">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -283,6 +283,27 @@
   .replay-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .replay-date{min-width:150px}
   .replay-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#0a1428;border:1px solid var(--blue);color:var(--blue);font-size:10px;font-weight:700}
+
+  .replay-date-wrap{position:relative;min-width:170px}
+  .replay-date-btn{min-width:170px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0f1218;color:var(--text);border-color:var(--gold3);box-shadow:0 0 0 1px rgba(212,169,71,.12) inset}
+  .replay-date-btn:hover{border-color:var(--gold);box-shadow:0 0 0 1px rgba(212,169,71,.18) inset,0 0 14px rgba(212,169,71,.08)}
+  .replay-date-btn.open{border-color:var(--gold);background:#141106}
+  .replay-date-caret{color:var(--gold);font-size:11px;line-height:1}
+  .replay-calendar{position:absolute;top:calc(100% + 8px);left:0;z-index:10020;width:320px;background:linear-gradient(180deg,#121821,#0d1118);border:1px solid var(--gold3);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.45);padding:12px;display:none}
+  .replay-calendar.open{display:block}
+  .replay-cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .replay-cal-title{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.04em}
+  .replay-cal-nav{width:32px;height:32px;border-radius:10px;border:1px solid var(--border2);background:var(--bg);color:var(--gold);font-size:18px;cursor:pointer;transition:all .2s}
+  .replay-cal-nav:hover{border-color:var(--gold);background:#171207}
+  .replay-cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:8px}
+  .replay-cal-week span{font-size:10px;color:var(--text3);text-align:center;padding:4px 0}
+  .replay-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .replay-cal-day{height:38px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s}
+  .replay-cal-day:hover{border-color:var(--gold);transform:translateY(-1px)}
+  .replay-cal-day.muted{color:var(--text3);opacity:.55}
+  .replay-cal-day.today{border-color:var(--blue);color:var(--blue)}
+  .replay-cal-day.selected{background:#1a1508;border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 1px rgba(212,169,71,.14) inset}
+  .replay-cal-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px}
   .version-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
   .ver-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#1a1508;border:1px solid var(--gold3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.04em}
   .update-toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(15,18,24,.96);border:1px solid var(--gold);color:var(--text);padding:10px 12px;border-radius:12px;box-shadow:0 16px 42px rgba(0,0,0,.36);z-index:10001;display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:min(92vw,520px)}
@@ -299,6 +320,8 @@
   @media (max-width: 720px){
     body{padding:12px}
     .topbar,.dh,.pool-top,.cfg-row,.pool-name-row,.pool-add-row,.replay-inline{flex-direction:column;align-items:stretch}
+    .replay-date-wrap,.replay-date-btn{width:100%}
+    .replay-calendar{width:100%;min-width:0}
     .topright{justify-content:space-between}
     .idx-grid{grid-template-columns:1fr}
     .egrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -329,7 +352,28 @@
           placeholder="可寫 2330、AAPL 查詢"
           style="background:#0f1218;border:1px solid #5b9cf6;border-radius:10px;padding:9px 14px;color:#e8e0d0;font-size:14px;width:300px;outline:none;box-shadow:0 0 0 1px rgba(91,156,246,.18) inset;"
         >
-        <input class="inp replay-date" type="date" id="replayDate">
+        <div class="replay-date-wrap">
+          <input type="hidden" id="replayDate">
+          <button class="inp replay-date-btn" type="button" id="replayDateBtn" onclick="toggleReplayCalendar()">
+            <span id="replayDateText">選擇日期</span>
+            <span class="replay-date-caret">▾</span>
+          </button>
+          <div class="replay-calendar" id="replayCalendar">
+            <div class="replay-cal-head">
+              <button type="button" class="replay-cal-nav" onclick="shiftReplayCalendar(-1)">‹</button>
+              <div class="replay-cal-title" id="replayCalTitle">2026/04</div>
+              <button type="button" class="replay-cal-nav" onclick="shiftReplayCalendar(1)">›</button>
+            </div>
+            <div class="replay-cal-week">
+              <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+            </div>
+            <div class="replay-cal-grid" id="replayCalGrid"></div>
+            <div class="replay-cal-foot">
+              <button type="button" class="btn btn-sm mode-inactive" onclick="setReplayDateToday()">今天</button>
+              <button type="button" class="btn btn-sm btn-gold" onclick="closeReplayCalendar()">關閉</button>
+            </div>
+          </div>
+        </div>
         <button class="btn btn-blue btn-sm" id="replayBtn" onclick="startReplay()">歷史回放</button>
         <button class="btn btn-green btn-sm" id="liveBtn" onclick="backToLive()">回即時</button>
       </div>
@@ -1048,23 +1092,140 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     $('tab-ai').classList.add('on');
     $('codeInp').addEventListener('keydown',e=>{if(e.key==='Enter') addCodes();});
     $('poolNameInp').addEventListener('keydown',e=>{if(e.key==='Enter') savePool();});
-    $('replayDate')?.addEventListener('change',e=>{AppState.replay.date=e.target.value; updateModeChip();});
+    const replayInput=$('replayDate');
+    if(replayInput){
+      replayInput.addEventListener('change',e=>setReplayDateValue(e.target.value,{close:false}));
+    }
+    if(!document.body.dataset.replayCalendarBound){
+      document.addEventListener('click',e=>{
+        const wrap=$('replayDateBtn')?.closest('.replay-date-wrap');
+        if(!wrap || !wrap.contains(e.target)) closeReplayCalendar();
+      });
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeReplayCalendar(); });
+      document.body.dataset.replayCalendarBound='1';
+    }
   }
   
+  function formatReplayDateDisplay(dateStr){
+    if(!dateStr) return '選擇日期';
+    return String(dateStr).replace(/-/g,'/');
+  }
+  function parseReplayDateValue(dateStr){
+    if(!dateStr) return null;
+    const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateStr).trim());
+    if(!m) return null;
+    const y=Number(m[1]), mo=Number(m[2])-1, d=Number(m[3]);
+    const dt=new Date(y,mo,d);
+    return Number.isFinite(dt.getTime())?dt:null;
+  }
+  function formatReplayDateValue(dt){
+    const y=dt.getFullYear();
+    const m=String(dt.getMonth()+1).padStart(2,'0');
+    const d=String(dt.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+  function syncReplayDateDisplay(){
+    const input=$('replayDate');
+    const textEl=$('replayDateText');
+    if(textEl) textEl.textContent=formatReplayDateDisplay(input?.value||'');
+  }
+  function setReplayCalendarMonth(dateLike){
+    const base=dateLike instanceof Date ? dateLike : new Date();
+    AppState.replay.calendarMonth=new Date(base.getFullYear(),base.getMonth(),1);
+  }
+  function setReplayDateValue(dateStr,{close=true,render=true}={}){
+    const input=$('replayDate');
+    if(!input || !dateStr) return;
+    input.value=dateStr;
+    AppState.replay.date=dateStr;
+    const parsed=parseReplayDateValue(dateStr);
+    if(parsed) setReplayCalendarMonth(parsed);
+    syncReplayDateDisplay();
+    updateModeChip();
+    if(render) renderReplayCalendar();
+    if(close) closeReplayCalendar();
+  }
   function ensureReplayDateDefault(){
     const el=$('replayDate');
     if(!el) return;
     if(el.value) {
       AppState.replay.date=el.value;
+      const parsed=parseReplayDateValue(el.value);
+      if(parsed) setReplayCalendarMonth(parsed);
+      syncReplayDateDisplay();
       return;
     }
     const d=new Date();
     d.setDate(d.getDate()-1);
-    const y=d.getFullYear();
-    const m=String(d.getMonth()+1).padStart(2,'0');
-    const day=String(d.getDate()).padStart(2,'0');
-    el.value=`${y}-${m}-${day}`;
-    AppState.replay.date=el.value;
+    setReplayDateValue(formatReplayDateValue(d),{close:false,render:false});
+  }
+  function openReplayCalendar(){
+    const panel=$('replayCalendar');
+    const btn=$('replayDateBtn');
+    if(!panel || !btn) return;
+    const parsed=parseReplayDateValue($('replayDate')?.value||'') || new Date();
+    if(!AppState.replay.calendarMonth) setReplayCalendarMonth(parsed);
+    renderReplayCalendar();
+    panel.classList.add('open');
+    btn.classList.add('open');
+  }
+  function closeReplayCalendar(){
+    const panel=$('replayCalendar');
+    const btn=$('replayDateBtn');
+    panel?.classList.remove('open');
+    btn?.classList.remove('open');
+  }
+  function toggleReplayCalendar(){
+    const panel=$('replayCalendar');
+    if(panel?.classList.contains('open')) closeReplayCalendar();
+    else openReplayCalendar();
+  }
+  function shiftReplayCalendar(delta){
+    const cur=AppState.replay.calendarMonth || parseReplayDateValue($('replayDate')?.value||'') || new Date();
+    AppState.replay.calendarMonth=new Date(cur.getFullYear(),cur.getMonth()+delta,1);
+    renderReplayCalendar();
+  }
+  function setReplayDateToday(){
+    setReplayDateValue(formatReplayDateValue(new Date()));
+  }
+  function selectReplayDate(dateStr){
+    setReplayDateValue(dateStr);
+  }
+  function renderReplayCalendar(){
+    const grid=$('replayCalGrid');
+    const title=$('replayCalTitle');
+    if(!grid || !title) return;
+    const selected=parseReplayDateValue($('replayDate')?.value||'');
+    const base=AppState.replay.calendarMonth || selected || new Date();
+    const monthStart=new Date(base.getFullYear(),base.getMonth(),1);
+    AppState.replay.calendarMonth=monthStart;
+    title.textContent=`${monthStart.getFullYear()}/${String(monthStart.getMonth()+1).padStart(2,'0')}`;
+    const firstDay=monthStart.getDay();
+    const daysInMonth=new Date(monthStart.getFullYear(),monthStart.getMonth()+1,0).getDate();
+    const prevMonthDays=new Date(monthStart.getFullYear(),monthStart.getMonth(),0).getDate();
+    const today=formatReplayDateValue(new Date());
+    const selectedValue=selected?formatReplayDateValue(selected):'';
+    const cells=[];
+    for(let i=firstDay-1;i>=0;i--){
+      const dt=new Date(monthStart.getFullYear(),monthStart.getMonth()-1,prevMonthDays-i);
+      cells.push({date:formatReplayDateValue(dt),day:dt.getDate(),muted:true});
+    }
+    for(let day=1;day<=daysInMonth;day++){
+      const dt=new Date(monthStart.getFullYear(),monthStart.getMonth(),day);
+      cells.push({date:formatReplayDateValue(dt),day,muted:false});
+    }
+    while(cells.length<42){
+      const day=cells.length-(firstDay+daysInMonth)+1;
+      const dt=new Date(monthStart.getFullYear(),monthStart.getMonth()+1,day);
+      cells.push({date:formatReplayDateValue(dt),day:dt.getDate(),muted:true});
+    }
+    grid.innerHTML=cells.map(cell=>{
+      const cls=['replay-cal-day'];
+      if(cell.muted) cls.push('muted');
+      if(cell.date===today) cls.push('today');
+      if(cell.date===selectedValue) cls.push('selected');
+      return `<button type="button" class="${cls.join(' ')}" onclick="selectReplayDate('${cell.date}')">${cell.day}</button>`;
+    }).join('');
   }
   function updateModeChip(){
     const chip=$('modeChip');
