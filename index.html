@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.0">
+  <meta name="app-version" content="v4.3.1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -2718,30 +2718,54 @@ async function refreshAll(){
     if(modal) modal.classList.remove('show');
     document.body.classList.remove('body-lock');
   }
+  function parseYahooChartPayload(j, fallbackSymbol=''){
+    const r=j?.chart?.result?.[0];
+    const q=r?.indicators?.quote?.[0];
+    if(!r || !q) throw new Error(j?.chart?.error?.description || 'No chart data');
+    const timestamps=r.timestamp||[];
+    const opens=q.open||[], highs=q.high||[], lows=q.low||[], closes=q.close||[], volumes=q.volume||[];
+    const out=[];
+    timestamps.forEach((ts,idx)=>{
+      const o=Number(opens[idx]), h=Number(highs[idx]), l=Number(lows[idx]), c=Number(closes[idx]), v=Number(volumes[idx]);
+      if([o,h,l,c].every(Number.isFinite)) out.push({ts, open:o, high:h, low:l, close:c, volume:Number.isFinite(v)?v:0});
+    });
+    const metaSymbol=r?.meta?.symbol || fallbackSymbol || '';
+    if(out.length<80) throw new Error('Yahoo 歷史資料不足');
+    return {symbol:metaSymbol, candles:out};
+  }
   async function fetchYahooHistory(code){
-    const suffixes=['TW','TWO'];
-    let lastErr=null;
-    for(const suffix of suffixes){
-      try{
-        const symbol=`${code}.${suffix}`;
-        const url=`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d&includePrePost=false&events=div%2Csplits`;
-        const res=await fetch(url,{cache:'no-store'});
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const j=await res.json();
-        const r=j?.chart?.result?.[0];
-        const q=r?.indicators?.quote?.[0];
-        if(!r || !q) throw new Error('No chart data');
-        const timestamps=r.timestamp||[];
-        const opens=q.open||[], highs=q.high||[], lows=q.low||[], closes=q.close||[], volumes=q.volume||[];
-        const out=[];
-        timestamps.forEach((ts,idx)=>{
-          const o=Number(opens[idx]), h=Number(highs[idx]), l=Number(lows[idx]), c=Number(closes[idx]), v=Number(volumes[idx]);
-          if([o,h,l,c].every(Number.isFinite)) out.push({ts, open:o, high:h, low:l, close:c, volume:Number.isFinite(v)?v:0});
-        });
-        if(out.length>=80) return {symbol, candles:out};
-      }catch(err){ lastErr=err; }
+    const cleanCode=String(code||'').trim();
+    if(!cleanCode) throw new Error('缺少股票代號');
+
+    const proxyUrl=`${CONFIG.workerUrl}/yahoo-proxy?code=${encodeURIComponent(cleanCode)}&range=1y&interval=1d`;
+    try{
+      const res=await fetch(proxyUrl,{cache:'no-store'});
+      if(!res.ok){
+        let detail=`HTTP ${res.status}`;
+        try{
+          const errJson=await res.json();
+          detail=errJson?.error || errJson?.message || detail;
+        }catch(_){ }
+        if(res.status===404) throw new Error('Worker 尚未加入 /yahoo-proxy 路由');
+        throw new Error(detail);
+      }
+      const j=await res.json();
+      return parseYahooChartPayload(j, cleanCode);
+    }catch(err){
+      const suffixes=['TW','TWO'];
+      let lastErr=err;
+      for(const suffix of suffixes){
+        try{
+          const symbol=`${cleanCode}.${suffix}`;
+          const url=`https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d&includePrePost=false&events=div%2Csplits`;
+          const res=await fetch(url,{cache:'no-store'});
+          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          const j=await res.json();
+          return parseYahooChartPayload(j, symbol);
+        }catch(innerErr){ lastErr=innerErr; }
+      }
+      throw lastErr || new Error('Yahoo 歷史資料不足');
     }
-    throw lastErr || new Error('Yahoo 歷史資料不足');
   }
   function analyzeHistorySignal(candles){
     if(!Array.isArray(candles) || candles.length<60) return {qualifies:false, signalType:'待觀察'};
