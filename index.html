@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.2">
+  <meta name="app-version" content="v4.1.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -306,56 +306,7 @@
     .score-grid,.reason-list{grid-template-columns:1fr}
   }
   
-  
-  .search-header{position:sticky;top:8px;z-index:40;background:rgba(8,10,15,.92);backdrop-filter:blur(10px);border:1px solid var(--border2);border-radius:12px;padding:10px 12px;margin-bottom:14px}
-  .search-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .search-row .inp{flex:1;min-width:220px}
-  .search-tip{font-size:10px;color:var(--text3)}
-  .search-results{display:none;margin-top:10px}
-  .search-results.show{display:block}
-  .search-card{background:var(--bg2);border:1px solid var(--gold3);border-radius:10px;padding:12px}
-  .search-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}
-  .search-card-title{font-size:15px;font-weight:800}
-  .search-card-sub{font-size:10px;color:var(--text3);margin-top:2px}
-  .search-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
-  .search-pill{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
-  .risk-low{background:#0a2015;border-color:var(--green);color:var(--green)}
-  .risk-mid{background:#1a1508;border-color:var(--gold);color:var(--gold)}
-  .risk-high{background:#1e0a0a;border-color:var(--red);color:var(--red)}
-  .detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .mini-metric{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
-  .mini-metric .lab{font-size:10px;color:var(--text3);margin-bottom:3px}
-  .mini-metric .val{font-size:16px;font-weight:800}
-  .card-action-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .signal-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid;background:#0f1218;border-color:var(--border2);color:var(--text2)}
-  .bt-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.68);z-index:80;padding:18px}
-  .bt-modal.show{display:flex}
-  .bt-sheet{width:min(1180px,96vw);max-height:92vh;overflow:auto;background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:18px;padding:18px}
-  .bt-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-  .bt-title{font-size:24px;font-weight:900}
-  .bt-sub{font-size:11px;color:var(--text3);margin-top:4px}
-  .bt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .bt-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px}
-  .bt-panel-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
-  .bt-panel-title .ttl{font-size:14px;font-weight:800}
-  .bt-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .bt-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 10px}
-  .bt-kpi .lab{font-size:10px;color:var(--text3);margin-bottom:3px}
-  .bt-kpi .val{font-size:17px;font-weight:800}
-  .bt-table{width:100%;border-collapse:collapse;margin-top:10px}
-  .bt-table th,.bt-table td{padding:8px 6px;border-bottom:1px solid var(--border);font-size:11px;text-align:left;vertical-align:top}
-  .bt-table th{color:var(--text3);font-weight:700}
-  .bt-empty{padding:18px 0;color:var(--text3);font-size:12px}
-  .bt-loader{padding:28px 0;text-align:center;color:var(--gold);font-size:13px}
-  .bt-tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .mono{font-variant-numeric:tabular-nums}
-  @media (max-width: 860px){
-    .bt-grid,.search-card-grid,.bt-kpis{grid-template-columns:1fr}
-    .bt-sheet{padding:14px}
-    .search-header{top:4px}
-  }
-
-</style>
+  </style>
   </head>
   <body>
   
@@ -364,7 +315,7 @@
       <div class="logo-icon">阿</div>
       <div>
         <div class="logo-text">阿吉股票儀表板</div>
-        <div class="logo-sub">AJ Stock Dashboard · 回測快判整合版</div>
+        <div class="logo-sub">AJ Stock Dashboard · 價值投資策略</div>
       </div>
     </div>
     <div class="topright">
@@ -375,15 +326,6 @@
         <button class="btn btn-gold btn-sm" id="forceUpdateBtn" onclick="forceReload()">強制更新</button>
       </div>
     </div>
-  </div>
-
-  <div class="search-header">
-    <div class="search-row">
-      <input class="inp" id="stockSearchInp" placeholder="任意股票查詢，例如 2330、3008、NVDA" />
-      <button class="btn btn-gold btn-sm" onclick="runStockSearch()">查詢</button>
-      <span class="search-tip">不限股池，直接打 Worker 抓即時資料，先給你快判再開回測</span>
-    </div>
-    <div class="search-results" id="searchResults"></div>
   </div>
   
   <!-- Worker 狀態 -->
@@ -554,24 +496,6 @@
     </div>
   </div>
   
-  <div id="backtestModal" class="bt-modal" onclick="handleBacktestBackdrop(event)">
-    <div class="bt-sheet">
-      <div class="bt-head">
-        <div>
-          <div class="decision-kicker">AJ Backtest Lab</div>
-          <div class="bt-title" id="btTitle">回測驗證</div>
-          <div class="bt-sub" id="btSub">等待載入歷史資料</div>
-          <div class="bt-tag-row" id="btTagRow"></div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-blue btn-sm" id="btOpenDetailBtn">股票快判</button>
-          <button class="btn btn-gold btn-sm" onclick="closeBacktestModal()">關閉</button>
-        </div>
-      </div>
-      <div id="btBody"><div class="bt-loader">正在讀取 Yahoo 歷史資料…</div></div>
-    </div>
-  </div>
-
   <div style="height:28px"></div>
   
   
@@ -928,46 +852,44 @@ function calcSectorHeat(codes){
     .slice(0,5);
   }
 
-  
-function renderEarlyStarter(codes){
-  const wrap=$('starterGrid');
-  const badge=$('starterBadge');
-  if(!wrap || !badge) return;
+  function renderEarlyStarter(codes){
+    const wrap=$('starterGrid');
+    const badge=$('starterBadge');
+    if(!wrap || !badge) return;
 
-  const list=getEarlyStarterCandidates(codes);
-  if(!list.length){
-    badge.textContent='暫無訊號';
-    wrap.innerHTML=`<div class="starter-empty"><b>今天還沒看到漂亮的前段啟動。</b> 先等位置、MA20、MACD、量能四件事一起站好。</div>`;
-    return;
+    const list=getEarlyStarterCandidates(codes);
+    if(!list.length){
+      badge.textContent='暫無訊號';
+      wrap.innerHTML=`<div class="starter-empty"><b>今天還沒看到漂亮的前段啟動。</b> 先等位置、MA20、MACD、量能四件事一起站好。</div>`;
+      return;
+    }
+
+    badge.textContent=`抓到 ${list.length} 檔`;
+    wrap.innerHTML=list.map((item,idx)=>{
+      const maText=item.maBias!=null ? `高於MA20 +${Math.round(item.maBias*100)}%` : 'MA20待補';
+      const posText=item.nearHigh20!=null ? (item.nearHigh20<0.4?'位置偏低':item.nearHigh20<0.68?'位置中低':'位置偏高') : '位置待補';
+      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
+      const line=`${posText} · ${maText} · ${item.macdTurnUp?'MACD 轉強':'結構轉強'}`;
+      return `
+        <div class="starter-card" onclick="showDetail('${item.code}')">
+          <div class="starter-kicker">
+            <div>
+              <div class="name">#${idx+1} ${item.name}</div>
+              <div class="code">${item.code}</div>
+            </div>
+            <div class="starter-score">前段分 ${item.starterScore}</div>
+          </div>
+          <div class="starter-line">${line}</div>
+          <div class="starter-tags">
+            <span class="starter-tag st-green">${maText}</span>
+            <span class="starter-tag st-blue">${volText}</span>
+            <span class="starter-tag st-gold">${item.setupOk?'低檔轉強':'前段觀察'}</span>
+          </div>
+        </div>`;
+    }).join('');
   }
 
-  badge.textContent=`抓到 ${list.length} 檔`;
-  wrap.innerHTML=list.map((item,idx)=>{
-    const maText=item.maBias!=null ? `高於MA20 +${Math.round(item.maBias*100)}%` : 'MA20待補';
-    const posText=item.nearHigh20!=null ? (item.nearHigh20<0.4?'位置偏低':item.nearHigh20<0.68?'位置中低':'位置偏高') : '位置待補';
-    const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
-    const curSignal=getCurrentSignalProfile(item.code);
-    const line=`${posText} · ${maText} · ${item.macdTurnUp?'MACD 轉強':'結構轉強'}`;
-    return `
-      <div class="starter-card" onclick="showDetail('${item.code}')">
-        <div class="starter-kicker">
-          <div>
-            <div class="name">#${idx+1} ${item.name}</div>
-            <div class="code">${item.code}</div>
-          </div>
-          <div class="starter-score">前段分 ${item.starterScore}</div>
-        </div>
-        <div class="starter-line">${line}</div>
-        <div class="starter-tags">
-          <span class="starter-tag st-green">${maText}</span>
-          <span class="starter-tag st-blue">${volText}</span>
-          <span class="starter-tag st-gold">${curSignal.signalType}</span>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-const CONFIG={
+  const CONFIG={
     workerUrl:'https://damp-river-be4d.emoon71.workers.dev',
     timeoutMs:10000,
     retries:2,
@@ -997,7 +919,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,searchQuery:'',lastBacktestCode:null},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -1104,17 +1026,11 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   }
   const queueMetaSave=debounce(()=>saveCloudState(true),500);
   
-  
-function bindShortcuts(){
-  $('tab-ai').classList.add('on');
-  $('codeInp').addEventListener('keydown',e=>{if(e.key==='Enter') addCodes();});
-  $('poolNameInp').addEventListener('keydown',e=>{if(e.key==='Enter') savePool();});
-  const sInp=$('stockSearchInp');
-  if(sInp){
-    sInp.addEventListener('keydown',e=>{ if(e.key==='Enter') runStockSearch(); });
-    sInp.addEventListener('input',()=>runStockSearch(true));
+  function bindShortcuts(){
+    $('tab-ai').classList.add('on');
+    $('codeInp').addEventListener('keydown',e=>{if(e.key==='Enter') addCodes();});
+    $('poolNameInp').addEventListener('keydown',e=>{if(e.key==='Enter') savePool();});
   }
-}
   
   function isTradingTime(){
     const n=new Date(),h=n.getHours(),m=n.getMinutes(),d=n.getDay();
@@ -1992,12 +1908,6 @@ function bindShortcuts(){
           <div class="txt">${heroSummary}</div>
           <div class="hint" style="margin-top:6px">${actionText}</div>
         </div>
-        <div class="detail-actions">
-          <button class="btn btn-gold btn-sm" onclick="openBacktestModal('${code}')">回測這檔</button>
-          <button class="btn btn-blue btn-sm" onclick="runStockSearch(false,'${code}')">搜尋小卡</button>
-          <span class="signal-tag">${getCurrentSignalProfile(code).signalType}</span>
-          <span class="search-pill ${getRiskLabel(score).cls}">${getRiskLabel(score).text}</span>
-        </div>
       </div>
 
       <div class="detail-section">
@@ -2053,74 +1963,65 @@ function bindShortcuts(){
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.0，已補入前段雷達、signalType、搜尋小卡與 Yahoo 歷史回測 Modal。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.0.0，已補入前段啟動雷達、MA20 趨勢評分與位置/趨勢組合判斷，先用現有即時 / 收盤資料，不是完整 V10。</div>
       </div>
     `;
   }
 
-  
-function renderCards(codes){
-  const g=$('egrid');
-  g.innerHTML='';
-  const sorted=sortCodes(codes);
-  sorted.forEach((code,idx)=>{
-    const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
-    const v=ep&&price?valLabel(price,ep):null;
-    const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
-    const score=computeAjieScore(code);
-    const status=getStatusMeta(code);
-    const inst=getInstitutionMeta(d);
-    const stopRef=calcStopRef(code, price);
-    const pctText=d.chgPct!=null?(d.chgPct>0?'▲':d.chgPct<0?'▼':'•')+' '+Math.abs(Number(d.chgPct)).toFixed(2)+'%　'+formatSignedChange(d.chg):'--';
-    const el=document.createElement('div');
-    el.className='sc'+(code===AppState.ui.activeCode?' active':'');
-    el.onclick=()=>showDetail(code);
-    const meta=getStockMeta(code);
-    const shieldLabel=getEtfShieldLabel(code);
-    const etfTitle=getEtfBadgeTitle(code);
-    const chipMeta=getChipMeta(code);
-    const chipBadgeClass=getChipBadgeClass(code);
-    const curSignal=getCurrentSignalProfile(code);
-    const riskLabel=getRiskLabel(score);
-    el.innerHTML=`
-      <div class="rank-badge">#${idx+1} ${score.total}</div>
-      <div class="sn">${d.name||ep?.n||code}</div>
-      <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
-      <div class="badge-row">
-        <span class="sbg bg-blue">${meta.sector||'其他'}</span>
-        ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
-        <span class="sbg ${chipBadgeClass}">${chipMeta.label}</span>
-        ${v?`<span class="sbg ${v.bcls}">${v.label}</span>`:''}
-        <span class="signal-tag">${curSignal.signalType}</span>
-        ${score.techStatus==='none' ? '<span class="sbg bg-red">無技術資料</span>' : ''}
-        ${score.techStatus==='partial' ? '<span class="sbg bg-amber">技術資料未齊</span>' : ''}
-      </div>
-      ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
-      <div class="sp ${col}">${price?price.toLocaleString():'--'}</div>
-      <div class="sch ${col}">${pctText}</div>
-      <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
-      <div class="score-row">
-        <span class="score-badge ${score.badge}">${score.decision}</span>
-        <span class="score-mini">阿吉分數 ${score.total}/100</span>
-      </div>
-      ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
-      ${shieldLabel && etfTitle?`<div class="sep">${etfTitle}</div>`:''}
-      <div class="sep">${curSignal.summary}</div>
-      <div class="sep">${riskLabel.text}｜外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張｜投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</div>
-      <div class="sep">籌碼分數 ${chipMeta.score}/20</div>
-      ${stopRef?`<div class="sep">停損參考 ${stopRef.price.toLocaleString()}</div>`:''}
-      <div class="card-action-row">
-        <button class="btn btn-blue btn-sm" onclick="event.stopPropagation();showDetail('${code}')">快判</button>
-        <button class="btn btn-gold btn-sm" onclick="event.stopPropagation();openBacktestModal('${code}')">回測</button>
-      </div>
-      ${d.error?'<div class="sep" style="color:var(--red)">抓取失敗</div>':''}
-      ${d.loading?'<div class="sov">載入...</div>':''}
-    `;
-    g.appendChild(el);
-  });
-}
+  function renderCards(codes){
+    const g=$('egrid');
+    g.innerHTML='';
+    const sorted=sortCodes(codes);
+    sorted.forEach((code,idx)=>{
+      const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
+      const v=ep&&price?valLabel(price,ep):null;
+      const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
+      const score=computeAjieScore(code);
+      const status=getStatusMeta(code);
+      const inst=getInstitutionMeta(d);
+      const stopRef=calcStopRef(code, price);
+      const pctText=d.chgPct!=null?(d.chgPct>0?'▲':d.chgPct<0?'▼':'•')+' '+Math.abs(Number(d.chgPct)).toFixed(2)+'%　'+formatSignedChange(d.chg):'--';
+      const el=document.createElement('div');
+      el.className='sc'+(code===AppState.ui.activeCode?' active':'');
+      el.onclick=()=>showDetail(code);
+      const meta=getStockMeta(code);
+      const shieldLabel=getEtfShieldLabel(code);
+      const etfTitle=getEtfBadgeTitle(code);
+      const chipMeta=getChipMeta(code);
+      const chipBadgeClass=getChipBadgeClass(code);
+      el.innerHTML=`
+        <div class="rank-badge">#${idx+1} ${score.total}</div>
+        <div class="sn">${d.name||ep?.n||code}</div>
+        <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
+        <div class="badge-row">
+          <span class="sbg bg-blue">${meta.sector||'其他'}</span>
+          ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
+          <span class="sbg ${chipBadgeClass}">${chipMeta.label}</span>
+          ${v?`<span class="sbg ${v.bcls}">${v.label}</span>`:''}
+          ${score.techStatus==='none' ? '<span class="sbg bg-red">無技術資料</span>' : ''}
+          ${score.techStatus==='partial' ? '<span class="sbg bg-amber">技術資料未齊</span>' : ''}
+        </div>
+        ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
+        <div class="sp ${col}">${price?price.toLocaleString():'--'}</div>
+        <div class="sch ${col}">${pctText}</div>
+        <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
+        <div class="score-row">
+          <span class="score-badge ${score.badge}">${score.decision}</span>
+          <span class="score-mini">阿吉分數 ${score.total}/100</span>
+        </div>
+        ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
+        ${shieldLabel && etfTitle?`<div class="sep">${etfTitle}</div>`:''}
+        <div class="sep">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張｜投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</div>
+        <div class="sep">籌碼分數 ${chipMeta.score}/20</div>
+        ${stopRef?`<div class="sep">停損參考 ${stopRef.price.toLocaleString()}</div>`:''}
+        ${d.error?'<div class="sep" style="color:var(--red)">抓取失敗</div>':''}
+        ${d.loading?'<div class="sov">載入...</div>':''}
+      `;
+      g.appendChild(el);
+    });
+  }
 
-function showDetail(code){
+  function showDetail(code){
     AppState.ui.activeCode=code;
     const html=renderDetailHtml(code);
     $('detailMobile').innerHTML=html;
@@ -2368,7 +2269,6 @@ async function fetchCodes(codes){
     renderCards(codes);
     renderSectorHeat(codes);
     renderEarlyStarter(codes);
-    if(AppState.ui.searchQuery) runStockSearch(true);
     if(AppState.ui.activeCode && codes.includes(AppState.ui.activeCode)){
       showDetail(AppState.ui.activeCode);
     }else if(!isMobileView()){
@@ -2556,445 +2456,8 @@ async function refreshAll(){
     toggleRefreshButtons(false);
   }
 }
-
-  function avg(arr){
-    if(!Array.isArray(arr) || !arr.length) return null;
-    const nums=arr.map(Number).filter(Number.isFinite);
-    if(!nums.length) return null;
-    return nums.reduce((a,b)=>a+b,0)/nums.length;
-  }
-  function emaSeries(values, period){
-    const out=[];
-    const k=2/(period+1);
-    let prev=null;
-    values.forEach((v,idx)=>{
-      const n=Number(v);
-      if(!Number.isFinite(n)) return out.push(prev);
-      if(prev==null){
-        if(idx+1<period){ out.push(null); return; }
-        const seed=avg(values.slice(idx+1-period, idx+1));
-        prev=seed;
-        out.push(prev);
-        return;
-      }
-      prev=(n-prev)*k+prev;
-      out.push(prev);
-    });
-    return out;
-  }
-  function classifySignalType(meta){
-    if(!meta) return '待觀察';
-    if(meta.macdTurnUp && Number(meta.volRatio)>1.2) return '前段啟動';
-    if(Number(meta.nearHigh20)>0.6 && Number(meta.nearHigh20)<0.75) return '突破前夕';
-    if(meta.price!=null && meta.ma20!=null && meta.pullbackNearMA20 && meta.price>meta.ma20) return '整理二次';
-    return meta.qualifies ? '候選訊號' : '待觀察';
-  }
-  function getRiskLabel(score){
-    if(!score) return {text:'風險未知',cls:'risk-mid'};
-    if(score.badge==='sb-go') return {text:'低風險',cls:'risk-low'};
-    if(score.badge==='sb-no') return {text:'高風險',cls:'risk-high'};
-    return {text:'中風險',cls:'risk-mid'};
-  }
-  function getCurrentSignalProfile(code){
-    const d=AppState.stocks[code]||{};
-    const score=computeAjieScore(code);
-    const tech=d.tech||{};
-    const price=safeNumber(d.price);
-    const ma20=safeNumber(tech.ma20);
-    const volRatio=score.volRatio;
-    const hist=safeNumber(tech.hist);
-    const histPrev=safeNumber(tech.histPrev);
-    const nearHigh20=score.nearHigh20;
-    const pullbackNearMA20=price!=null && ma20!=null && ma20>0 ? Math.abs((price-ma20)/ma20)<=0.03 : false;
-    const macdTurnUp=histPrev!=null && hist!=null ? histPrev<=0 && hist>0 : false;
-    const meta={price,ma20,volRatio,nearHigh20,pullbackNearMA20,macdTurnUp,qualifies:score.badge==='sb-go'};
-    const signalType=classifySignalType(meta);
-    let summary='訊號還在醞釀';
-    if(signalType==='前段啟動') summary='MACD翻正＋量能同步，有前段味道';
-    else if(signalType==='突破前夕') summary='位置貼近壓力，等表態別亂追';
-    else if(signalType==='整理二次') summary='貼近MA20整理，像第二槍預備';
-    return {signalType,summary,macdTurnUp,pullbackNearMA20};
-  }
-  function formatPct(n,digits=2){
-    const num=Number(n);
-    if(!Number.isFinite(num)) return '--';
-    return `${num>=0?'+':''}${num.toFixed(digits)}%`;
-  }
-  function formatDate(ts){
-    if(!Number.isFinite(ts)) return '--';
-    const d=new Date(ts*1000);
-    const y=d.getFullYear();
-    const m=String(d.getMonth()+1).padStart(2,'0');
-    const day=String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-  function computeDrawdownFromTrades(trades){
-    let equity=1, peak=1, maxDd=0;
-    (trades||[]).forEach(t=>{
-      equity*=1+(Number(t.returnPct)||0)/100;
-      peak=Math.max(peak,equity);
-      const dd=(equity-peak)/peak*100;
-      if(dd<maxDd) maxDd=dd;
-    });
-    return maxDd;
-  }
-  function summarizeTrades(trades){
-    const list=(trades||[]).filter(Boolean);
-    const wins=list.filter(t=>Number(t.returnPct)>0);
-    const losses=list.filter(t=>Number(t.returnPct)<=0);
-    const returns=list.map(t=>Number(t.returnPct)||0);
-    const avgReturn=returns.length?avg(returns):0;
-    const avgWin=wins.length?avg(wins.map(t=>Number(t.returnPct)||0)):0;
-    const avgLoss=losses.length?avg(losses.map(t=>Number(t.returnPct)||0)):0;
-    const grossWin=wins.reduce((s,t)=>s+(Number(t.returnPct)||0),0);
-    const grossLoss=Math.abs(losses.reduce((s,t)=>s+(Number(t.returnPct)||0),0));
-    const pf=grossLoss>0?grossWin/grossLoss:(grossWin>0?999:0);
-    const expectancy=avgReturn;
-    return {
-      signalCount:list.length,
-      winRate:list.length?(wins.length/list.length*100):0,
-      avgReturn:avgReturn||0,
-      avgWin:avgWin||0,
-      avgLoss:avgLoss||0,
-      maxDrawdown:computeDrawdownFromTrades(list),
-      profitFactor:pf,
-      expectancy:expectancy||0,
-      recent:list.slice(-3).reverse(),
-      byType:buildTypeStats(list)
-    };
-  }
-  function buildTypeStats(trades){
-    const map={};
-    (trades||[]).forEach(t=>{
-      const key=t.signalType||'待觀察';
-      (map[key] ||= []).push(t);
-    });
-    return Object.entries(map).map(([signalType,items])=>{
-      const s=summarizeTradesLite(items);
-      return {signalType,...s};
-    }).sort((a,b)=>b.signalCount-a.signalCount);
-  }
-  function summarizeTradesLite(items){
-    const wins=items.filter(t=>Number(t.returnPct)>0).length;
-    const count=items.length;
-    return {
-      signalCount:count,
-      winRate:count?(wins/count*100):0,
-      avgReturn:count?avg(items.map(t=>Number(t.returnPct)||0)):0
-    };
-  }
-  function buildMetricCard(label, value, extra=''){
-    return `<div class="bt-kpi"><div class="lab">${label}</div><div class="val mono">${value}</div>${extra?`<div class="hint" style="margin-top:4px">${extra}</div>`:''}</div>`;
-  }
-  function renderBacktestStatBlock(title, configLabel, summary){
-    const typeRows=(summary.byType||[]).map(item=>`<tr><td>${item.signalType}</td><td class="mono">${item.signalCount}</td><td class="mono">${item.winRate.toFixed(1)}%</td><td class="mono">${formatPct(item.avgReturn)}</td></tr>`).join('') || '<tr><td colspan="4" class="bt-empty">沒有分類訊號</td></tr>';
-    const recentRows=(summary.recent||[]).map(item=>`<tr><td>${item.entryDate}</td><td>${item.signalType}</td><td class="mono">${formatNum(item.entry,2)}</td><td class="mono">${item.resultLabel}</td><td class="mono">${formatPct(item.returnPct)}</td></tr>`).join('') || '<tr><td colspan="5" class="bt-empty">沒有最近訊號</td></tr>';
-    return `
-      <div class="bt-panel">
-        <div class="bt-panel-title"><div class="ttl">${title}</div><div class="search-pill risk-mid">${configLabel}</div></div>
-        <div class="bt-kpis">
-          ${buildMetricCard('勝率', `${summary.winRate.toFixed(1)}%`, `訊號 ${summary.signalCount} 筆`)}
-          ${buildMetricCard('平均報酬', formatPct(summary.avgReturn), `期望值 ${formatPct(summary.expectancy)}`)}
-          ${buildMetricCard('盈虧比', summary.profitFactor>=999?'∞':summary.profitFactor.toFixed(2), `Max DD ${formatPct(summary.maxDrawdown)}`)}
-          ${buildMetricCard('平均獲利', formatPct(summary.avgWin))}
-          ${buildMetricCard('平均虧損', formatPct(summary.avgLoss))}
-          ${buildMetricCard('最近訊號', `${summary.recent.length} 筆`, '看下面表格')}
-        </div>
-        <div class="detail-section" style="margin-top:12px">
-          <div class="detail-section-title">signalType 勝率拆解</div>
-          <table class="bt-table"><thead><tr><th>類型</th><th>訊號數</th><th>勝率</th><th>平均報酬</th></tr></thead><tbody>${typeRows}</tbody></table>
-        </div>
-        <div class="detail-section" style="margin-top:12px">
-          <div class="detail-section-title">最近 3 筆訊號</div>
-          <table class="bt-table"><thead><tr><th>日期</th><th>類型</th><th>進場</th><th>結果</th><th>報酬</th></tr></thead><tbody>${recentRows}</tbody></table>
-        </div>
-      </div>`;
-  }
-  function handleBacktestBackdrop(e){
-    if(e.target && e.target.id==='backtestModal') closeBacktestModal();
-  }
-  function closeBacktestModal(){
-    const modal=$('backtestModal');
-    if(modal) modal.classList.remove('show');
-    document.body.classList.remove('body-lock');
-  }
-  async function fetchYahooHistory(code){
-    const raw=String(code||'').trim().toUpperCase();
-    if(!raw) throw new Error('缺少股票代號');
-    try{
-      const j=await apiGetJson(`/yahoo-proxy?code=${encodeURIComponent(raw)}`,{timeout:15000,retries:1});
-      const r=j?.chart?.result?.[0];
-      const q=r?.indicators?.quote?.[0];
-      if(!r || !q) throw new Error('No chart data');
-      const timestamps=r.timestamp||[];
-      const opens=q.open||[], highs=q.high||[], lows=q.low||[], closes=q.close||[], volumes=q.volume||[];
-      const out=[];
-      timestamps.forEach((ts,idx)=>{
-        const o=Number(opens[idx]), h=Number(highs[idx]), l=Number(lows[idx]), c=Number(closes[idx]), v=Number(volumes[idx]);
-        if([o,h,l,c].every(Number.isFinite)) out.push({ts, open:o, high:h, low:l, close:c, volume:Number.isFinite(v)?v:0});
-      });
-      if(out.length>=80) return {symbol:r?.meta?.symbol || raw, candles:out};
-      throw new Error('Yahoo 歷史資料不足');
-    }catch(err){
-      throw new Error(err?.message || 'Yahoo 歷史資料不足');
-    }
-  }
-  function analyzeHistorySignal(candles){
-    if(!Array.isArray(candles) || candles.length<60) return {qualifies:false, signalType:'待觀察'};
-    const closes=candles.map(c=>c.close);
-    const volumes=candles.map(c=>c.volume||0);
-    const ema12=emaSeries(closes,12);
-    const ema26=emaSeries(closes,26);
-    const macdLine=closes.map((_,i)=>Number.isFinite(ema12[i]) && Number.isFinite(ema26[i]) ? ema12[i]-ema26[i] : null);
-    const signal=emaSeries(macdLine.map(v=>v==null?0:v),9);
-    const hist=macdLine.map((v,i)=>Number.isFinite(v) && Number.isFinite(signal[i]) ? v-signal[i] : null).filter(v=>v!=null);
-    const last=candles[candles.length-1];
-    const prev20=candles.slice(-21,-1);
-    const win20=candles.slice(-20);
-    const high20=win20.length?Math.max(...win20.map(c=>c.high)):null;
-    const prev20High=prev20.length?Math.max(...prev20.map(c=>c.high)):high20;
-    const low20=win20.length?Math.min(...win20.map(c=>c.low)):null;
-    const ma20=avg(closes.slice(-20));
-    const ma20Prev=avg(closes.slice(-21,-1));
-    const ma20Slope=(ma20!=null && ma20Prev!=null && ma20Prev!==0)?(ma20-ma20Prev)/ma20Prev:null;
-    const avgVol20=avg(volumes.slice(-20));
-    const volRatio=(avgVol20 && last.volume!=null)?last.volume/avgVol20:null;
-    const nearHigh20=(high20 && last.close)?last.close/high20:null;
-    const riseFromLow=(low20 && last.close)?(last.close-low20)/low20:null;
-    const histArr=hist.slice(-3);
-    const histPrev=hist.length>=2?hist[hist.length-2]:null;
-    const histNow=hist.length?hist[hist.length-1]:null;
-    const macdTurnUp=histPrev!=null && histNow!=null && histPrev<=0 && histNow>0 && histArr.every(v=>v>-0.02);
-    const positionOk=nearHigh20!=null && nearHigh20>=0.45 && nearHigh20<=0.68;
-    const maOk=ma20Slope!=null && ma20Slope>0.015 && last.close>ma20;
-    const volOk=volRatio!=null && volRatio>=0.9 && volRatio<=1.8;
-    const fakeBreakout=prev20High!=null && last.high>prev20High && last.close<prev20High && volRatio>1.5;
-    const pullbackNearMA20=ma20!=null && Math.abs((last.close-ma20)/ma20)<=0.03;
-    const hardReject= (nearHigh20!=null && nearHigh20>0.75) || (riseFromLow!=null && riseFromLow>0.30) || (volRatio!=null && volRatio>2.8) || (ma20!=null && last.close<ma20);
-    const qualifies=!!(maOk && positionOk && volOk && macdTurnUp && !fakeBreakout && !hardReject);
-    let starterScore=(positionOk?30:0)+(maOk?25:0)+(macdTurnUp?25:0)+(volOk?10:0)+((pullbackNearMA20&&last.close>ma20)?10:0);
-    if(nearHigh20!=null && nearHigh20>0.65) starterScore-=8;
-    if(riseFromLow!=null && riseFromLow>0.22) starterScore-=10;
-    const signalType=classifySignalType({macdTurnUp,volRatio,nearHigh20,price:last.close,ma20,pullbackNearMA20,qualifies});
-    return {qualifies,signalType,starterScore,ma20,ma20Slope,volRatio,nearHigh20,riseFromLow,pullbackNearMA20,macdTurnUp,fakeBreakout,lastClose:last.close};
-  }
-  function simulateTrade(candles, entryIdx, config, signalMeta){
-    const entryBar=candles[entryIdx];
-    if(!entryBar || !Number.isFinite(entryBar.open)) return null;
-    const entry=entryBar.open;
-    const stop=entry*(1+config.stopLoss/100);
-    const take=entry*(1+config.takeProfit/100);
-    const lastHold=Math.min(candles.length-1, entryIdx + config.maxHold - 1);
-    for(let i=entryIdx;i<=lastHold;i++){
-      const bar=candles[i];
-      if(Number.isFinite(bar.low) && bar.low<=stop){
-        return finalizeTrade(entry, stop, entryBar.ts, bar.ts, config, signalMeta, '停損');
-      }
-      if(Number.isFinite(bar.high) && bar.high>=take){
-        return finalizeTrade(entry, take, entryBar.ts, bar.ts, config, signalMeta, '停利');
-      }
-    }
-    const exitBar=candles[lastHold];
-    return finalizeTrade(entry, exitBar.close, entryBar.ts, exitBar.ts, config, signalMeta, '時間到');
-  }
-  function finalizeTrade(entry, exit, entryTs, exitTs, config, signalMeta, reason){
-    const returnPct=((exit-entry)/entry)*100;
-    return {
-      mode:config.key,
-      entry, exit, entryDate:formatDate(entryTs), exitDate:formatDate(exitTs),
-      holdDays:Math.max(1, Math.round((exitTs-entryTs)/86400)+1),
-      returnPct, resultLabel:reason,
-      signalType:signalMeta.signalType||'待觀察'
-    };
-  }
-  function runBacktestEngine(candles){
-    const modeA={key:'A', stopLoss:-5, takeProfit:8, maxHold:3};
-    const modeB={key:'B', stopLoss:-7, takeProfit:15, maxHold:7};
-    const tradesA=[], tradesB=[];
-    for(let i=60;i<candles.length-1;i++){
-      const past=candles.slice(0,i+1);
-      const signalMeta=analyzeHistorySignal(past);
-      if(!signalMeta.qualifies) continue;
-      const tA=simulateTrade(candles, i+1, modeA, signalMeta);
-      const tB=simulateTrade(candles, i+1, modeB, signalMeta);
-      if(tA) tradesA.push(tA);
-      if(tB) tradesB.push(tB);
-    }
-    return {
-      modeA:summarizeTrades(tradesA),
-      modeB:summarizeTrades(tradesB),
-      raw:{modeA:tradesA,modeB:tradesB}
-    };
-  }
-  function renderBacktestBody(result){
-    return `<div class="bt-grid">
-      ${renderBacktestStatBlock('模式 A｜短爆', '停損 -5% / 停利 +8% / 最多 3 天', result.modeA)}
-      ${renderBacktestStatBlock('模式 B｜波段', '停損 -7% / 停利 +15% / 最多 7 天', result.modeB)}
-    </div>`;
-  }
-  async function openBacktestModal(code){
-    const modal=$('backtestModal');
-    const body=$('btBody');
-    const title=$('btTitle');
-    const sub=$('btSub');
-    const tagRow=$('btTagRow');
-    const btn=$('btOpenDetailBtn');
-    if(!modal || !body) return;
-    const d=AppState.stocks[code]||{};
-    const score=computeAjieScore(code);
-    const curSignal=getCurrentSignalProfile(code);
-    const risk=getRiskLabel(score);
-    AppState.ui.lastBacktestCode=code;
-    title.textContent=`${d.name||EPS[code]?.n||code}（${code}）回測驗證`;
-    sub.textContent='防未來函數：訊號日只看當下資料，固定隔日開盤進場。';
-    tagRow.innerHTML=`<span class="signal-tag">${curSignal.signalType}</span><span class="search-pill ${risk.cls}">${risk.text}</span><span class="search-pill risk-mid">阿吉分數 ${score.total}/100</span>`;
-    body.innerHTML='<div class="bt-loader">正在讀取 Yahoo 歷史資料…</div>';
-    btn.onclick=()=>{ closeBacktestModal(); showDetail(code); };
-    modal.classList.add('show');
-    document.body.classList.add('body-lock');
-    try{
-      const hist=await fetchYahooHistory(code);
-      sub.textContent=`資料來源：${hist.symbol} Yahoo Finance · 共 ${hist.candles.length} 根日 K`; 
-      const result=runBacktestEngine(hist.candles);
-      body.innerHTML=renderBacktestBody(result);
-    }catch(err){
-      body.innerHTML=`<div class="bt-empty">回測失敗：${err.message||err}</div>`;
-    }
-  }
-  function buildSearchCard(code){
-    const d=AppState.stocks[code]||{};
-    const score=computeAjieScore(code);
-    const signal=getCurrentSignalProfile(code);
-    const risk=getRiskLabel(score);
-    const price=safeNumber(d.price);
-    return `<div class="search-card">
-      <div class="search-card-top">
-        <div>
-          <div class="search-card-title">${d.name||EPS[code]?.n||code}（${code}）</div>
-          <div class="search-card-sub">${getStockMeta(code).sector||'其他'} · ${d.source||'--'}</div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="search-pill ${risk.cls}">${risk.text}</span>
-        </div>
-      </div>
-      <div class="search-card-grid">
-        <div class="mini-metric"><div class="lab">阿吉分數</div><div class="val mono">${score.total}/100</div></div>
-        <div class="mini-metric"><div class="lab">前段判定</div><div class="val">${score.badge==='sb-go'?'有':'觀察中'}</div></div>
-        <div class="mini-metric"><div class="lab">signalType</div><div class="val">${signal.signalType}</div></div>
-        <div class="mini-metric"><div class="lab">最新價</div><div class="val mono">${price!=null?formatNum(price,2):'--'}</div></div>
-      </div>
-      <div class="decision-summary" style="margin-top:10px"><div class="ttl">一句話決策</div><div class="txt">${signal.summary}</div></div>
-      <div class="detail-actions">
-        <button class="btn btn-blue btn-sm" onclick="showDetail('${code}')">股票快判</button>
-        <button class="btn btn-gold btn-sm" onclick="openBacktestModal('${code}')">直接回測</button>
-      </div>
-    </div>`;
-  }
-  function findLocalSearchCode(query){
-    const raw=String(query||'').trim();
-    if(!raw) return '';
-    const key=raw.toLowerCase();
-    const codes=currentCodes();
-    const exactCode=codes.find(code=>String(code)===raw);
-    if(exactCode) return exactCode;
-    const exactName=codes.find(code=>String(AppState.stocks[code]?.name || EPS[code]?.n || '').toLowerCase()===key);
-    if(exactName) return exactName;
-    const fuzzy=codes.find(code=>{
-      const name=String(AppState.stocks[code]?.name || EPS[code]?.n || '').toLowerCase();
-      return String(code).includes(raw) || name.includes(key);
-    });
-    return fuzzy || '';
-  }
-  function normalizeSearchStock(item, code, market='TW'){
-    if(!item) return null;
-    const finalCode=String(code||item.code||item.symbol||'').trim().toUpperCase();
-    if(!finalCode) return null;
-    const prev=safeNumber(item.prev);
-    const price=safeNumber(item.price);
-    const chg=safeNumber(item.chg);
-    const chgPct=safeNumber(item.chgPct);
-    const merged={
-      ...(AppState.stocks[finalCode]||{}),
-      code:finalCode,
-      name:item.name || AppState.stocks[finalCode]?.name || EPS[finalCode]?.n || finalCode,
-      price,
-      prev,
-      open:safeNumber(item.open),
-      high:safeNumber(item.high),
-      low:safeNumber(item.low),
-      volume:safeNumber(item.volume),
-      chg:chg!=null ? chg : (price!=null && prev!=null ? +(price-prev).toFixed(2) : null),
-      chgPct:chgPct!=null ? chgPct : (price!=null && prev ? +(((price-prev)/prev)*100).toFixed(2) : null),
-      source:item.source || (market==='US'?'us-yahoo':'worker-search'),
-      market,
-      isUS:market==='US',
-      error:item.error || null,
-      loading:false,
-    };
-    AppState.stocks[finalCode]=merged;
-    return finalCode;
-  }
-  async function fetchSearchStock(query){
-    const raw=String(query||'').trim();
-    if(!raw) throw new Error('請輸入股號');
-    const localCode=findLocalSearchCode(raw);
-    if(localCode) return localCode;
-
-    const upper=raw.toUpperCase();
-    if(/^\d{4,6}$/.test(upper)){
-      const rt=await apiGetJson(`/realtime?codes=${encodeURIComponent(upper)}`,{timeout:12000,retries:1});
-      const item=rt?.data?.[0];
-      const hasPrice=item && (safeNumber(item.price)!=null || safeNumber(item.prev)!=null);
-      if(!item || item.error==='unavailable' || !hasPrice){
-        throw new Error('查無此股票');
-      }
-      const code=normalizeSearchStock(item, upper, 'TW');
-      try{
-        await loadTechData([code]);
-        computeAjieScore(code,true);
-      }catch(_){}
-      return code;
-    }
-
-    if(/^[A-Z^][A-Z0-9.\-^]{0,9}$/.test(upper)){
-      const us=await apiGetJson(`/us?symbols=${encodeURIComponent(upper)}`,{timeout:12000,retries:1});
-      const item=us?.data?.[0];
-      const hasPrice=item && (safeNumber(item.price)!=null || safeNumber(item.prev)!=null);
-      if(!item || item.error || !hasPrice){
-        throw new Error('查無此股票');
-      }
-      const code=normalizeSearchStock(item, upper, 'US');
-      computeAjieScore(code,true);
-      return code;
-    }
-
-    throw new Error('查無此股票');
-  }
-  async function runStockSearch(isTyping=false, forceCode=''){
-    const wrap=$('searchResults');
-    const input=$('stockSearchInp');
-    if(!wrap || !input) return;
-    const q=String(forceCode || input.value || '').trim();
-    AppState.ui.searchQuery=q;
-    if(!q){
-      wrap.classList.remove('show');
-      wrap.innerHTML='';
-      return;
-    }
-    wrap.classList.add('show');
-    wrap.innerHTML=`<div class="search-card"><div class="search-card-title">查詢 ${q}</div><div class="search-card-sub">正在透過 Worker 抓即時資料…</div></div>`;
-    try{
-      const code=await fetchSearchStock(q);
-      wrap.innerHTML=buildSearchCard(code);
-      if(!isTyping) wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
-    }catch(err){
-      wrap.innerHTML=`<div class="search-card"><div class="search-card-title">查無此股票</div><div class="search-card-sub">${err?.message || q}</div></div>`;
-    }
-  }
-
   window.addEventListener('resize',()=>{ if(!isMobileView()) { if(AppState.ui.activeCode) $('dWrap').style.display='block'; } else { $('dWrap').style.display='none'; } });
-  window.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeDetailModal(); closeBacktestModal(); } });
+  window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
   </script>
   
   </body>
