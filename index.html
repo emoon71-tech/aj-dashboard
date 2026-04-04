@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.5">
+  <meta name="app-version" content="v4.3.6">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -376,7 +376,6 @@
         </div>
         <button class="btn btn-blue btn-sm" id="replayBtn" onclick="startReplay()">歷史回放</button>
         <button class="btn btn-green btn-sm" id="liveBtn" onclick="backToLive()">回即時</button>
-        <button class="btn btn-gold btn-sm" id="saveReplayBtn" onclick="exportReplayToV32()">存前5到V3.2</button>
       </div>
       <span id="ts">--</span>
       <span class="mkt-badge mkt-close" id="mktBadge"><span class="dot" id="mktDot" style="background:#5a5040"></span><span id="mktTxt">收盤</span></span>
@@ -1356,6 +1355,82 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       hardBias:0,
       mode:'replay'
     };
+    $('tw-price').textContent='--';
+    $('tw-price').className='card-val neu';
+    $('tw-chg-wrap').innerHTML=`<div class="card-chg neu" style="margin-top:5px">回放載入中...</div>`;
+    $('twIdx2').textContent='--';
+    $('twIdx2').className='neu';
+    $('dji-val').textContent='--';
+    $('dji-val').style.color='var(--text2)';
+    $('dji-chg').textContent='--';
+    $('dji-chg').style.color='var(--text3)';
+    $('spx-val').textContent='--';
+    $('spx-val').style.color='var(--text2)';
+    $('spx-chg').textContent='--';
+    $('spx-chg').style.color='var(--text3)';
+    $('vix-val').textContent='--';
+    $('vix-chg').textContent='回放載入中...';
+    $('vix-chg').style.color='var(--text3)';
+    renderMarketPulse();
+  }
+  function applyReplayTwIndexCard(item){
+    if(!item) return;
+    const up=(Number(item.chg)||0)>=0;
+    const col=up?'up':'dn';
+    const arrow=up?'▲':'▼';
+    $('tw-price').textContent=Number(item.price).toLocaleString('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:2});
+    $('tw-price').className='card-val '+col;
+    $('tw-chg-wrap').innerHTML=`<div class="card-chg ${col}" style="margin-top:5px">${arrow} ${Math.abs(Number(item.chg)||0).toFixed(2)} (${Math.abs(Number(item.chgPct)||0).toFixed(2)}%)</div>`;
+    $('twIdx2').textContent=Number(item.price).toLocaleString('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:2});
+    $('twIdx2').className=col;
+    renderMatrix(Number(item.price));
+  }
+  function applyReplayVixCard(item){
+    if(!item) return;
+    const up=(Number(item.chg)||0)>=0;
+    const col=up?'var(--red)':'var(--green)';
+    const arrow=up?'▲':'▼';
+    $('vix-val').textContent=Number(item.price).toFixed(2);
+    $('vix-chg').textContent=`${arrow} ${Math.abs(Number(item.chg)||0).toFixed(2)} (${Math.abs(Number(item.chgPct)||0).toFixed(2)}%)`;
+    $('vix-chg').style.color=col;
+  }
+  async function fetchReplayMarket(dateStr){
+    const {period1,period2}=getReplayRange(dateStr);
+    const pickLastBar=(rows)=>{
+      if(!Array.isArray(rows) || !rows.length) return null;
+      const last=rows[rows.length-1];
+      const prev=rows.length>=2 ? rows[rows.length-2] : last;
+      const price=safeNumber(last?.close);
+      const prevClose=safeNumber(prev?.close);
+      if(price==null) return null;
+      const chg=prevClose!=null ? +(price-prevClose).toFixed(2) : 0;
+      const chgPct=prevClose ? +((chg/prevClose)*100).toFixed(2) : 0;
+      return {price,prev:prevClose,chg,chgPct,updatedAt:Date.now(),source:`回放 ${dateStr}`};
+    };
+    const jobs=[
+      {symbol:'^TWII', type:'tw'},
+      {symbol:'^VIX', type:'vix'}
+    ];
+    const results=await Promise.allSettled(jobs.map(async job=>{
+      const raw=await apiGetJson(`/yahoo-proxy?symbol=${encodeURIComponent(job.symbol)}&period1=${period1}&period2=${period2}&interval=1d`,{timeout:15000,retries:1});
+      const rows=normalizeYahooRows(raw);
+      const item=pickLastBar(rows);
+      if(!item) throw new Error(`${job.symbol} 無歷史資料`);
+      return {job,item};
+    }));
+
+    AppState.market.us={};
+    for(const r of results){
+      if(r.status!=='fulfilled') continue;
+      const {job,item}=r.value;
+      if(job.type==='tw'){
+        AppState.market.twIndex=item;
+        applyReplayTwIndexCard(item);
+      }else if(job.type==='vix'){
+        AppState.market.us['^VIX']=item;
+        applyReplayVixCard(item);
+      }
+    }
     renderMarketPulse();
   }
   async function runReplayForCode(code,dateStr){
@@ -1408,6 +1483,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     updateModeChip();
     toggleRefreshButtons(true);
     setReplayNeutralMarket(dateStr);
+    await fetchReplayMarket(dateStr);
     renderSkeleton(codes);
     setStat(`歷史回放 ${dateStr} 啟動中...`);
 
@@ -1651,6 +1727,26 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const flowText=AppState.market.flowText||'';
     const details=[];
     const tradingNow=isTradingTime();
+
+    if(AppState.ui.mode==='replay'){
+      if(tw && Number.isFinite(tw.chgPct)) details.push(`台股 ${tw.chgPct>0?'+':''}${formatNum(tw.chgPct)}%`);
+      if(vix && Number.isFinite(vix.price)) details.push(`VIX ${formatNum(vix.price)}`);
+      const weakTw = tw && Number.isFinite(tw.chgPct) && tw.chgPct<=-1;
+      const strongTw = tw && Number.isFinite(tw.chgPct) && tw.chgPct>=1;
+      const highVix = vix && Number.isFinite(vix.price) && vix.price>=25;
+      const lowVix = vix && Number.isFinite(vix.price) && vix.price<=18;
+      let bias='回放模式', risk='中', badge='pb-neutral', hardBias=0;
+      let summary=`回看 ${AppState.replay.date||''}，同步用當天台股與 VIX 判讀盤勢。`.trim();
+      if(weakTw || highVix){
+        bias='回放偏空'; risk='高'; badge='pb-bear'; hardBias=-1;
+        summary='這天盤面偏弱，個股失準先別急著怪模型。';
+      }else if(strongTw && lowVix){
+        bias='回放偏多'; risk='中低'; badge='pb-bull'; hardBias=1;
+        summary='這天盤面偏強，高分股理論上更容易跑出來。';
+      }
+      AppState.market.pulse={bias,risk,summary,details:[`回放日 ${AppState.replay.date||''}`,...details],badge,hardBias,mode:'replay'};
+      return;
+    }
 
     if(tradingNow && tw && Number.isFinite(tw.chgPct)) details.push(`台股 ${tw.chgPct>0?'+':''}${formatNum(tw.chgPct)}%`);
     if(spx && Number.isFinite(spx.chgPct)) details.push(`${tradingNow?'S&P':'美股S&P'} ${spx.chgPct>0?'+':''}${formatNum(spx.chgPct)}%`);
@@ -2460,58 +2556,9 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.5，已加入歷史回放模式，並可一鍵把前5名存到 V3.2 記錄表。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.0，已加入歷史回放模式，可用選定日期回看當日排名。</div>
       </div>
     `;
-  }
-
-  function exportReplayToV32(){
-    if(AppState.ui.mode!=='replay'){ alert('請先進入歷史回放模式'); return; }
-    const dateStr=getReplayDate();
-    if(!dateStr){ alert('請先選日期'); return; }
-    const codes=currentCodes();
-    if(!codes.length){ alert('目前沒有股票可匯出'); return; }
-    const sorted=sortCodes(codes).filter(code=>{
-      const d=AppState.stocks[code]||{};
-      return !d.loading && !d.error && Number.isFinite(Number(d.price));
-    });
-    if(sorted.length<5){ alert('回放資料還沒完整，至少要有前5名有效資料'); return; }
-
-    const top5=sorted.slice(0,5);
-    const compare=sorted.slice(5,7);
-    const sessionNote=(AppState.market?.pulse?.summary||'').replace(/^使用 .* 歷史K線回放\s*/,).trim() || `回放 ${dateStr}`;
-    const stocks=[...top5,...compare].map((code,idx)=>{
-      const d=AppState.stocks[code]||{};
-      return {
-        rank: idx+1,
-        isTop5: idx<5,
-        code,
-        name: d.name || EPS[code]?.n || getStockMeta(code).n || code,
-        score: computeAjieScore(code).total || 0,
-        pos:'',
-        vol:'',
-        r3d:'',
-        r3pct:null,
-        r5d:'',
-        r5pct:null,
-        note:''
-      };
-    });
-
-    const key='aj_v32';
-    let sessions=[];
-    try{ sessions=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ sessions=[]; }
-    const session={date:dateStr,sessionNote,stocks,savedAt:Date.now()};
-    const idx=sessions.findIndex(s=>s.date===dateStr);
-    if(idx>=0){
-      const ok=confirm(`${dateStr} 已有紀錄，要覆蓋成目前回放前5名嗎？`);
-      if(!ok) return;
-      sessions[idx]=session;
-    }else{
-      sessions.unshift(session);
-    }
-    localStorage.setItem(key, JSON.stringify(sessions));
-    alert(`已存到 V3.2 記錄表\n日期：${dateStr}\n前5名 ${top5.length} 檔 + 對照組 ${compare.length} 檔`);
   }
 
   function renderCards(codes){
