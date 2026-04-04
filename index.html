@@ -1970,6 +1970,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       let chip=0;
       const chgPct=safeNumber(d.chgPct);
       if(Number.isFinite(fear)){
+        // 極度恐慌（<25）：要搭配股票本身上漲才加分，否則只是跟著跌
         if(fear<=25){
           if(Number.isFinite(chgPct) && chgPct>=0){
             chip+=12; reasons.push('極度恐慌中逆勢守穩，反向訊號');
@@ -2017,6 +2018,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const total=Math.min(100,chip+techScore+rise);
       const decision=total>=75?'前段啟動':total>=55?'待觀察':'先別碰';
       const badge=total>=75?'sb-bull':total>=55?'sb-wait':'sb-bear';
+      // 換算成 /50 顯示（UI 固定用 /50）
       const chipDisplay=Math.round(chip*50/30);
       const techDisplay=Math.round(techScore*50/40);
       const scoreData={total,chip:chipDisplay,tech:techDisplay,rise,decision,badge,verdict:decision,reasons,risks,details:[],isUS:true};
@@ -2033,8 +2035,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     const tw=AppState.market.twIndex;
     const mBias=marketBiasScore();
-    const twChgPct=safeNumber(tw?.chgPct);
-    const marketMode = Number.isFinite(twChgPct) ? (twChgPct >= 1 ? 'STRONG' : twChgPct <= -1 ? 'WEAK' : 'NEUTRAL') : 'NEUTRAL';
 
     // 第1刀：大盤不加分，只小扣
     if(mBias<=-2){
@@ -2115,31 +2115,9 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       tech += isEtf ? 8 : 5;
     }
 
-    const techData = d.tech || {};
-    const histArray = Array.isArray(techData.histArray) ? techData.histArray.filter(v=>Number.isFinite(Number(v))).map(Number) : [];
-    const ma20 = safeNumber(techData.ma20);
-    const vol20 = Number.isFinite(techData.avgVol20) ? techData.avgVol20 : null;
-    const curVol = safeNumber(d.volume);
-    const high20 = safeNumber(techData.high20);
-    const low20  = safeNumber(techData.low20);
-
-    let volRatio = null;
-    let nearHigh20 = null;
-    let riseFromLow = null;
-    let maBias = null;
-
-    if (vol20 && vol20 > 0 && curVol != null) {
-      volRatio = curVol / vol20;
-    }
-    if (high20 > 0 && low20 > 0 && price > 0) {
-      nearHigh20 = price / high20;
-      riseFromLow = (price - low20) / low20;
-    }
-    if (Number.isFinite(ma20) && Number.isFinite(price) && ma20 > 0) {
-      maBias = (price - ma20) / ma20;
-    }
-
     // ★ 第3刀：MACD 進場訊號（histArray 主判斷）
+    const techData = d.tech || {};
+    const histArray = Array.isArray(techData.histArray) ? techData.histArray : [];
     let macdEntrySignal = false;
     if (histArray.length >= 10) {
       const neg = histArray.filter(h => h < 0).map(h => Math.abs(h));
@@ -2162,38 +2140,41 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       reasons.push('MACD 前段啟動');
     }
 
-    // === 位置升級：真低位 / 假低位 / 高位 ===
-    const isLowPosition = Number.isFinite(price) && Number.isFinite(ma20) && price < ma20;
-    const isHighPosition = Number.isFinite(price) && Number.isFinite(ma20) && price >= ma20;
-
-    let histImproving = false;
-    let histWeakening = false;
-    if (histArray.length >= 6) {
-      const prevAvg = histArray.slice(-6, -3).reduce((a,b)=>a+b,0) / 3;
-      const lastAvg = histArray.slice(-3).reduce((a,b)=>a+b,0) / 3;
-      histImproving = lastAvg > prevAvg;
-      histWeakening = lastAvg < prevAvg;
-    } else if (histArray.length >= 2) {
-      histImproving = histArray.at(-1) > histArray.at(-2);
-      histWeakening = histArray.at(-1) < histArray.at(-2);
-    }
-
-    const trueLow = isLowPosition && histImproving;
-    const fakeLow = isLowPosition && !histImproving;
-
-    if (trueLow) {
-      tech += 15;
-      reasons.push('真低位');
-    } else if (fakeLow) {
-      tech -= 10;
-      risks.push('假低位');
-    } else if (isHighPosition) {
-      tech += 5;
-      reasons.push('高位股');
+    // V2.7：量能穩健扣分版（不砍名單，只做排序修正）
+    const vol20 = Number.isFinite(techData.avgVol20) ? techData.avgVol20 : null;
+    const curVol = safeNumber(d.volume);
+    let volRatio = null;
+    if (vol20 && vol20 > 0 && curVol != null) {
+      volRatio = curVol / vol20;
+      if (volRatio < 0.8) {
+        tech -= 4;
+        risks.push('量能不足');
+      } else if (volRatio < 1.0) {
+        tech -= 2;
+        risks.push('量縮偏弱');
+      } else if (volRatio <= 1.8) {
+        tech += 4;
+        reasons.push('量能穩健放大');
+      } else if (volRatio <= 2.5) {
+        tech += 2;
+        reasons.push('量能放大');
+      } else {
+        tech -= 3;
+        risks.push('量能過熱');
+      }
     }
 
     // V3.5：位置 + 已漲幅（需要 high20 / low20）
-    if (nearHigh20 != null && riseFromLow != null) {
+    const high20 = safeNumber(techData.high20);
+    const low20  = safeNumber(techData.low20);
+    let nearHigh20 = null;
+    let riseFromLow = null;
+
+    if (high20 > 0 && low20 > 0 && price > 0) {
+      nearHigh20 = price / high20;
+      riseFromLow = (price - low20) / low20;
+
+      // ① 位置判斷（nearHigh20）
       if (nearHigh20 >= 0.95) {
         tech -= 6;
         risks.push('接近20日高點，追高風險');
@@ -2205,6 +2186,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         reasons.push('位置低檔安全區');
       }
 
+      // ② 已漲幅判斷（riseFromLow）
       if (riseFromLow > 0.30) {
         tech -= 5;
         risks.push('已漲超30%，主升段可能過了');
@@ -2217,8 +2199,13 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
-    // === MA20 趨勢補強（保留） ===
-    if (maBias != null) {
+    // === MA20 趨勢補強（V3.8.2）===
+    const ma20 = safeNumber(techData.ma20);
+    let maBias = null;
+
+    if (Number.isFinite(ma20) && Number.isFinite(price) && ma20 > 0) {
+      maBias = (price - ma20) / ma20;
+
       if (maBias > 0.05) {
         tech += 6;
         reasons.push(`強勢站上MA20 +${(maBias * 100).toFixed(1)}%`);
@@ -2234,6 +2221,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     }
 
+    // === 組合判斷（位置 + 趨勢）===
     if (nearHigh20 != null && maBias != null) {
       if (nearHigh20 > 0.8 && maBias < -0.03) {
         tech -= 3;
@@ -2242,40 +2230,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       if (nearHigh20 < 0.4 && maBias > 0.03) {
         tech += 3;
         reasons.push('低檔轉強');
-      }
-    }
-
-    // === 量能升級 ===
-    if (volRatio != null) {
-      if (volRatio < 0.8) {
-        tech -= 4;
-        risks.push('量能不足');
-      } else if (volRatio < 1.0) {
-        tech -= 2;
-        risks.push('量縮偏弱');
-      } else if (trueLow && volRatio > 1.8) {
-        tech += 15;
-        reasons.push('真低位爆量');
-      } else if (trueLow && volRatio > 1.2) {
-        tech += 10;
-        reasons.push('真低位堆量');
-      } else if (isHighPosition && volRatio > 1.8) {
-        tech -= 15;
-        risks.push('高位爆量，疑似出貨');
-      } else if (!isHighPosition && volRatio <= 1.8 && volRatio >= 1.0) {
-        tech += 4;
-        reasons.push('量能穩健放大');
-      }
-    }
-
-    // === 盤面濾網 ===
-    if (isHighPosition) {
-      if (marketMode === 'WEAK') {
-        tech -= 20;
-        risks.push('弱盤高位股降分');
-      } else if (marketMode === 'NEUTRAL') {
-        tech -= 10;
-        risks.push('中盤高位股降分');
       }
     }
 
@@ -2299,14 +2253,18 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     let chipSignal=0;
 
+    // ① 方向
     if(f3>0) chipSignal += 5;
     else if(f3<0) chipSignal -= 5;
 
+    // ② 持續性
     if(fDays>=3) chipSignal += 3;
     else if(fDays>=2) chipSignal += 1;
 
+    // ③ 共鳴
     if(f3>0 && t3>0) chipSignal += 3;
 
+    // ④ 轉折
     if(f5<0 && f3>0 && f3>Math.abs(f5)*0.3){
       chipSignal += 3;
     }else if(f3<0 && f5<0 && Math.abs(f3)<Math.abs(f5)*0.4){
@@ -2349,20 +2307,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     else if(histArray.length<10) techStatus='partial';
 
     const score = {
-      chip,
-      tech,
-      total,
-      decision,
-      badge,
-      note,
-      techReady: techStatus==='ok',
-      techStatus,
-      volRatio,
-      nearHigh20: nearHigh20 != null ? Number(nearHigh20.toFixed(3)) : null,
-      riseFromLow: riseFromLow != null ? Number(riseFromLow.toFixed(3)) : null,
-      reasons: [...new Set(reasons)].slice(0, 5),
-      risks: [...new Set(risks)].slice(0, 5),
-    };
+  chip,
+  tech,
+  total,
+  decision,
+  badge,
+  note,
+  techReady: techStatus==='ok',
+  techStatus,
+  volRatio,
+  nearHigh20: nearHigh20 != null ? Number(nearHigh20.toFixed(3)) : null,
+  riseFromLow: riseFromLow != null ? Number(riseFromLow.toFixed(3)) : null,
+  reasons: [...new Set(reasons)].slice(0, 5),
+  risks: [...new Set(risks)].slice(0, 5),
+};
     d.scoreData=score;
     d.scoreCacheKey=signature;
     AppState.stocks[code]=d;
