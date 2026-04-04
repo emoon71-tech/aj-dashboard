@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.4.0">
+  <meta name="app-version" content="v4.5.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -309,6 +309,11 @@
   .update-toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(15,18,24,.96);border:1px solid var(--gold);color:var(--text);padding:10px 12px;border-radius:12px;box-shadow:0 16px 42px rgba(0,0,0,.36);z-index:10001;display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:min(92vw,520px)}
   .update-toast .msg{font-size:12px;color:var(--text)}
   .update-toast .msg b{color:var(--gold)}
+  .manual-switch{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .manual-title{font-size:10px;color:var(--text3);margin-right:2px}
+  .decision-good{color:var(--green)}
+  .decision-warn{color:var(--gold)}
+  .decision-bad{color:var(--red)}
 
   @media (max-width: 980px){
     .idx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -455,7 +460,15 @@
         <div class="pulse-sub" id="pulseSub">會依台股、美股、VIX、手動輸入的期貨與情緒資料，自動判斷風險。</div>
       </div>
     </div>
-    <div class="kpi-mini" id="pulseKpis"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <div class="kpi-mini" id="pulseKpis"></div>
+      <div class="manual-switch" id="manualSwitch">
+        <span class="manual-title">人工覆核</span>
+        <button class="sort-chip on" id="manualNormalBtn" onclick="setManualOverride('NORMAL')">正常</button>
+        <button class="sort-chip" id="manualCautionBtn" onclick="setManualOverride('CAUTION')">保守</button>
+        <button class="sort-chip" id="manualStopBtn" onclick="setManualOverride('STOP')">禁做</button>
+      </div>
+    </div>
   </div>
 
   <div class="pulse" id="sectorPulse" style="margin-top:10px">
@@ -986,7 +999,11 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     replay:{date:'',loading:false,marketBackup:null},
     market:{
       twIndex:null, us:{}, flowText:'', fearScore:null,
-      pulse:{bias:'整理中', risk:'中', summary:'等待資料更新', details:[]}
+      pulse:{bias:'整理中', risk:'中', summary:'等待資料更新', details:[]},
+      trend:{context:'UNKNOWN',change5d:null},
+      health:{state:'UNKNOWN',ratio:null,count:0},
+      decision:{action:'NORMAL',label:'正常做',summary:'等待資料更新',className:'decision-good'},
+      manualOverride:'NORMAL'
     },
     cache:{}
   };
@@ -1008,6 +1025,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     setTime();
     ensureReplayDateDefault();
     updateModeChip();
+    updateManualButtons();
     setAutoRefresh();
     await refreshDashboard();
     checkVersion();
@@ -1015,6 +1033,26 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   };
   
   function $(id){return document.getElementById(id);}
+  function trendLabel(ctx){
+    return ({CRASH:'崩跌',DOWN:'下行',SIDEWAYS:'盤整',UP:'上行',UNKNOWN:'未知'})[ctx]||ctx||'未知';
+  }
+  function healthLabel(state){
+    return ({BAD:'很差',WEAK:'偏弱',NORMAL:'正常',UNKNOWN:'未知'})[state]||state||'未知';
+  }
+  function decisionClass(action){
+    return action==='NO_TRADE'?'decision-bad':(action==='CAUTION' || action==='LOW_ONLY')?'decision-warn':'decision-good';
+  }
+  function updateManualButtons(){
+    const mode=AppState.market.manualOverride||'NORMAL';
+    const map={NORMAL:'manualNormalBtn',CAUTION:'manualCautionBtn',STOP:'manualStopBtn'};
+    ['manualNormalBtn','manualCautionBtn','manualStopBtn'].forEach(id=>{ const el=$(id); if(!el) return; el.classList.remove('on'); });
+    const active=$(map[mode]); if(active) active.classList.add('on');
+  }
+  function setManualOverride(mode){
+    AppState.market.manualOverride=mode;
+    updateManualButtons();
+    renderMarketPulse();
+  }
   function applyVersionInfo(){
     const el=$('appVersion');
     if(el) el.textContent=APP_VERSION;
@@ -1338,6 +1376,86 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     }
     throw lastErr || new Error('歷史資料不足');
   }
+  async function fetchTrendContext(dateStr=''){
+    try{
+      let raw;
+      if(dateStr){
+        const endDate=new Date(`${dateStr}T23:59:59`);
+        const startDate=new Date(endDate);
+        startDate.setDate(startDate.getDate()-12);
+        const period1=Math.floor(startDate.getTime()/1000);
+        const period2=Math.floor(endDate.getTime()/1000);
+        raw=await apiGetJson(`/yahoo-proxy?symbol=${encodeURIComponent('^TWII')}&period1=${period1}&period2=${period2}&interval=1d`,{timeout:15000,retries:1});
+      }else{
+        raw=await apiGetJson(`/yahoo-proxy?symbol=${encodeURIComponent('^TWII')}`,{timeout:15000,retries:1});
+      }
+      const rows=normalizeYahooRows(raw);
+      const closes=rows.map(r=>safeNumber(r.close)).filter(v=>v!=null);
+      if(closes.length<6){
+        AppState.market.trend={context:'UNKNOWN',change5d:null};
+        return AppState.market.trend;
+      }
+      const today=closes[closes.length-1];
+      const past5=closes[closes.length-6];
+      const change5d=past5?((today-past5)/past5):null;
+      let context='SIDEWAYS';
+      if(change5d!=null){
+        if(change5d<=-0.05) context='CRASH';
+        else if(change5d<=-0.02) context='DOWN';
+        else if(change5d>=0.03) context='UP';
+      }else{
+        context='UNKNOWN';
+      }
+      AppState.market.trend={context,change5d};
+      return AppState.market.trend;
+    }catch(_){
+      AppState.market.trend={context:'UNKNOWN',change5d:null};
+      return AppState.market.trend;
+    }
+  }
+  function computeMarketHealth(codes){
+    const list=Array.isArray(codes)&&codes.length?codes:getCodesForTab(AppState.ui.currentTab);
+    let valid=0, below=0;
+    list.forEach(code=>{
+      const s=AppState.stocks[code]||{};
+      const ma20=safeNumber(s.tech?.ma20);
+      const price=safeNumber(s.price);
+      if(!Number.isFinite(ma20)||!Number.isFinite(price)||ma20<=0) return;
+      valid++;
+      if(price<ma20) below++;
+    });
+    if(valid===0){
+      AppState.market.health={state:'UNKNOWN',ratio:null,count:0};
+      return AppState.market.health;
+    }
+    const ratio=below/valid;
+    const state=ratio>0.7?'BAD':ratio>0.5?'WEAK':'NORMAL';
+    AppState.market.health={state,ratio,count:valid};
+    return AppState.market.health;
+  }
+  function computeDecisionLayer(codes){
+    const trend=AppState.market.trend||{context:'UNKNOWN',change5d:null};
+    const health=computeMarketHealth(codes);
+    const twChgPct=safeNumber(AppState.market.twIndex?.chgPct);
+    const marketMode=Number.isFinite(twChgPct)?(twChgPct>=1?'STRONG':twChgPct<=-1?'WEAK':'NEUTRAL'):'NEUTRAL';
+    const manual=AppState.market.manualOverride||'NORMAL';
+    let action='NORMAL', label='正常做', summary='盤面與環境允許，照系統排序觀察前排。';
+    if(manual==='STOP'){
+      action='NO_TRADE'; label='今日禁做'; summary='人工覆核：今天不做，先保命。';
+    }else if(manual==='CAUTION'){
+      action='CAUTION'; label='人工保守'; summary='人工覆核：今天保守，只看低位。';
+    }else if(trend.context==='CRASH'){
+      action='NO_TRADE'; label='崩跌禁做'; summary='近5日崩跌，今天先空手。';
+    }else if(health.state==='BAD'){
+      action='NO_TRADE'; label='環境太差'; summary='大多數股票都在 MA20 下，今天不硬做。';
+    }else if(trend.context==='DOWN' || marketMode==='WEAK'){
+      action='LOW_ONLY'; label='只做低位'; summary='趨勢偏弱，只看低位反彈，不碰高位。';
+    }else if(trend.context==='SIDEWAYS' || marketMode==='NEUTRAL' || health.state==='WEAK'){
+      action='CAUTION'; label='保守做'; summary='整理盤最會騙人，只做低位或中位堆量。';
+    }
+    AppState.market.decision={action,label,summary,className:decisionClass(action),marketMode,manual};
+    return AppState.market.decision;
+  }
   function setReplayNeutralMarket(dateStr){
     if(!AppState.replay.marketBackup){
       AppState.replay.marketBackup=JSON.parse(JSON.stringify(AppState.market));
@@ -1407,6 +1525,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const chgPct=prevClose ? +((chg/prevClose)*100).toFixed(2) : 0;
       return {price,prev:prevClose,chg,chgPct,updatedAt:Date.now(),source:`回放 ${dateStr}`};
     };
+    await fetchTrendContext(dateStr);
     const jobs=[
       {symbol:'^TWII', type:'tw'},
       {symbol:'^VIX', type:'vix'}
@@ -1512,6 +1631,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         if(i+batchSize<codes.length) await sleep(450);
       }
       renderCurrentView();
+      renderMarketPulse();
       saveCache();
       setStat(`歷史回放完成 ✓ ${dateStr}`,'ok');
     }catch(err){
@@ -1813,11 +1933,24 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   function renderMarketPulse(){
     computeMarketPulse();
     const p=AppState.market.pulse;
+    const trend=AppState.market.trend||{context:'UNKNOWN',change5d:null};
+    const decision=computeDecisionLayer();
+    const health=AppState.market.health||{state:'UNKNOWN',ratio:null,count:0};
     $('pulseBias').textContent=`${p.bias} · 風險${p.risk}`;
     $('pulseBias').className=`pulse-badge ${p.badge}`;
-    $('pulseText').textContent=p.summary;
-    $('pulseSub').textContent=p.details.length?`依據：${p.details.join('｜')}`:'等待市場資料';
-    $('pulseKpis').innerHTML=p.details.slice(0,5).map(t=>`<span class="kpi-chip">${t}</span>`).join('');
+    $('pulseText').textContent=`${p.summary}｜決策：${decision.label}`;
+    const trendText=trend.change5d==null ? '—' : `${trend.change5d>0?'+':''}${(trend.change5d*100).toFixed(1)}%`;
+    const healthText=health.ratio==null ? '—' : `${Math.round(health.ratio*100)}% 在 MA20 下`;
+    const baseDetails=p.details.length?`依據：${p.details.join('｜')}`:'等待市場資料';
+    $('pulseSub').textContent=`${baseDetails}｜5日趨勢：${trendLabel(trend.context)} ${trendText}｜市場健康度：${healthLabel(health.state)} ${healthText}｜人工：${({NORMAL:'正常',CAUTION:'保守',STOP:'禁做'})[AppState.market.manualOverride]||'正常'}`;
+    const chips=[
+      `<span class="kpi-chip">趨勢 ${trendLabel(trend.context)} ${trendText}</span>`,
+      `<span class="kpi-chip">健康 ${healthLabel(health.state)}</span>`,
+      `<span class="kpi-chip ${decision.className}">${decision.label}</span>`,
+      ...p.details.slice(0,3).map(t=>`<span class="kpi-chip">${t}</span>`)
+    ];
+    $('pulseKpis').innerHTML=chips.join('');
+    updateManualButtons();
   }
   
   async function fetchTwIdx(){
@@ -3101,7 +3234,7 @@ async function refreshAll(){
 
   try{
     setStat('系統啟動中.');
-    await Promise.allSettled([fetchTwIdx(), fetchUSMarkets()]);
+    await Promise.allSettled([fetchTwIdx(), fetchUSMarkets(), fetchTrendContext()]);
 
     const codes = getCodesForTab(AppState.ui.currentTab);
 
@@ -3116,8 +3249,10 @@ async function refreshAll(){
       });
 
       renderCurrentView();
+      renderMarketPulse();
     }else{
       renderCards([]);
+      renderMarketPulse();
     }
 
     saveCache();
