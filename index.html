@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.1.0">
+  <meta name="app-version" content="v4.3.3">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -279,6 +279,10 @@
   .chip-btn:hover{border-color:var(--gold);color:var(--gold)}
   
 
+
+  .replay-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .replay-date{min-width:150px}
+  .replay-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#0a1428;border:1px solid var(--blue);color:var(--blue);font-size:10px;font-weight:700}
   .version-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
   .ver-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#1a1508;border:1px solid var(--gold3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.04em}
   .update-toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(15,18,24,.96);border:1px solid var(--gold);color:var(--text);padding:10px 12px;border-radius:12px;box-shadow:0 16px 42px rgba(0,0,0,.36);z-index:10001;display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:min(92vw,520px)}
@@ -294,7 +298,7 @@
   }
   @media (max-width: 720px){
     body{padding:12px}
-    .topbar,.dh,.pool-top,.cfg-row,.pool-name-row,.pool-add-row{flex-direction:column;align-items:stretch}
+    .topbar,.dh,.pool-top,.cfg-row,.pool-name-row,.pool-add-row,.replay-inline{flex-direction:column;align-items:stretch}
     .topright{justify-content:space-between}
     .idx-grid{grid-template-columns:1fr}
     .egrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -318,15 +322,20 @@
         <div class="logo-sub">AJ Stock Dashboard · 價值投資策略</div>
       </div>
     </div>
-    <div class="topright"><div style="display:flex;align-items:center;gap:8px;">
-  <input
-    id="globalSearch"
-    placeholder="可寫 2330、AAPL 查詢"
-    style="background:#0f1218;border:1px solid #5b9cf6;border-radius:10px;padding:9px 14px;color:#e8e0d0;font-size:14px;width:300px;outline:none;box-shadow:0 0 0 1px rgba(91,156,246,.18) inset;"
-  >
-</div>
+    <div class="topright">
+      <div class="replay-inline">
+        <input
+          id="globalSearch"
+          placeholder="可寫 2330、AAPL 查詢"
+          style="background:#0f1218;border:1px solid #5b9cf6;border-radius:10px;padding:9px 14px;color:#e8e0d0;font-size:14px;width:300px;outline:none;box-shadow:0 0 0 1px rgba(91,156,246,.18) inset;"
+        >
+        <input class="inp replay-date" type="date" id="replayDate">
+        <button class="btn btn-blue btn-sm" id="replayBtn" onclick="startReplay()">歷史回放</button>
+        <button class="btn btn-green btn-sm" id="liveBtn" onclick="backToLive()">回即時</button>
+      </div>
       <span id="ts">--</span>
       <span class="mkt-badge mkt-close" id="mktBadge"><span class="dot" id="mktDot" style="background:#5a5040"></span><span id="mktTxt">收盤</span></span>
+      <span class="replay-chip" id="modeChip">即時模式</span>
       <div class="version-wrap">
         <span class="ver-badge" id="appVersion">--</span>
         <button class="btn btn-gold btn-sm" id="forceUpdateBtn" onclick="forceReload()">強制更新</button>
@@ -925,11 +934,12 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
     stocks:{},
+    replay:{date:'',loading:false,marketBackup:null},
     market:{
       twIndex:null, us:{}, flowText:'', fearScore:null,
       pulse:{bias:'整理中', risk:'中', summary:'等待資料更新', details:[]}
@@ -952,6 +962,8 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     await loadChipMap();
     await loadEpsMap();
     setTime();
+    ensureReplayDateDefault();
+    updateModeChip();
     setAutoRefresh();
     await refreshDashboard();
     checkVersion();
@@ -1036,8 +1048,255 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     $('tab-ai').classList.add('on');
     $('codeInp').addEventListener('keydown',e=>{if(e.key==='Enter') addCodes();});
     $('poolNameInp').addEventListener('keydown',e=>{if(e.key==='Enter') savePool();});
+    $('replayDate')?.addEventListener('change',e=>{AppState.replay.date=e.target.value; updateModeChip();});
   }
   
+  function ensureReplayDateDefault(){
+    const el=$('replayDate');
+    if(!el) return;
+    if(el.value) {
+      AppState.replay.date=el.value;
+      return;
+    }
+    const d=new Date();
+    d.setDate(d.getDate()-1);
+    const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,'0');
+    const day=String(d.getDate()).padStart(2,'0');
+    el.value=`${y}-${m}-${day}`;
+    AppState.replay.date=el.value;
+  }
+  function updateModeChip(){
+    const chip=$('modeChip');
+    if(!chip) return;
+    if(AppState.ui.mode==='replay'){
+      chip.textContent=`回放模式 ${AppState.replay.date||''}`.trim();
+      chip.style.borderColor='var(--gold)';
+      chip.style.color='var(--gold)';
+      chip.style.background='#1a1508';
+    }else{
+      chip.textContent='即時模式';
+      chip.style.borderColor='var(--blue)';
+      chip.style.color='var(--blue)';
+      chip.style.background='#0a1428';
+    }
+  }
+  function getReplayDate(){
+    const val=($('replayDate')?.value||'').trim();
+    AppState.replay.date=val;
+    return val;
+  }
+  function getReplayRange(dateStr){
+    const endDate=new Date(`${dateStr}T23:59:59`);
+    const startDate=new Date(endDate);
+    startDate.setMonth(startDate.getMonth()-3);
+    startDate.setHours(0,0,0,0);
+    return {
+      period1: Math.floor(startDate.getTime()/1000),
+      period2: Math.floor(endDate.getTime()/1000),
+    };
+  }
+  function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  function normalizeYahooRows(raw){
+    const payload=raw?.data?.chart ? raw.data : raw;
+    const result=payload?.chart?.result?.[0];
+    const quote=result?.indicators?.quote?.[0];
+    if(!result || !quote || !Array.isArray(quote.close)) return [];
+    const tsArr=Array.isArray(result.timestamp)?result.timestamp:[];
+    const out=[];
+    for(let i=0;i<quote.close.length;i++){
+      const close=safeNumber(quote.close?.[i]);
+      if(close==null) continue;
+      out.push({
+        ts: tsArr[i]||null,
+        open: safeNumber(quote.open?.[i]) ?? close,
+        high: safeNumber(quote.high?.[i]) ?? close,
+        low: safeNumber(quote.low?.[i]) ?? close,
+        close,
+        volume: safeNumber(quote.volume?.[i]) ?? 0
+      });
+    }
+    return out;
+  }
+  function getReplaySymbols(code){
+    const raw=String(code||'').trim().toUpperCase();
+    if(!raw) return [];
+    if(/^\d{4,6}$/.test(raw)) return [`${raw}.TW`, `${raw}.TWO`];
+    if(/\.(TW|TWO)$/i.test(raw)) return [raw];
+    return [raw];
+  }
+  function calcReplayTechFromRows(rows){
+    if(!Array.isArray(rows) || rows.length < 35) return {};
+    const closes=rows.map(r=>safeNumber(r.close)).filter(v=>v!=null);
+    if(closes.length < 35) return {};
+    const highs=rows.map(r=>safeNumber(r.high) ?? safeNumber(r.close) ?? 0);
+    const lows=rows.map(r=>safeNumber(r.low) ?? safeNumber(r.close) ?? 0);
+    const volumes=rows.map(r=>safeNumber(r.volume) ?? 0);
+    const sma=(arr,n)=>arr.length>=n ? +((arr.slice(-n).reduce((a,b)=>a+b,0))/n).toFixed(2) : null;
+    const ema=(arr,n)=>{
+      const k=2/(n+1);
+      let e=arr[0];
+      const out=[e];
+      for(let i=1;i<arr.length;i++){
+        e=arr[i]*k + e*(1-k);
+        out.push(e);
+      }
+      return out;
+    };
+    const ema12=ema(closes,12);
+    const ema26=ema(closes,26);
+    const macdLine=closes.map((_,i)=>ema12[i]-ema26[i]);
+    const signal=ema(macdLine,9);
+    const hist=macdLine.map((m,i)=>m-signal[i]);
+    const last=hist.length-1;
+    return {
+      ma20:sma(closes,20),
+      avgVol20:sma(volumes,20),
+      macd:+macdLine[last].toFixed(3),
+      macdPrev:+(macdLine[last-1] ?? macdLine[last]).toFixed(3),
+      hist:+hist[last].toFixed(3),
+      histPrev:+(hist[last-1] ?? hist[last]).toFixed(3),
+      histArray:hist.slice(-20).map(v=>+v.toFixed(3)),
+      high20:highs.length>=20 ? +Math.max(...highs.slice(-20)).toFixed(2) : null,
+      low20:lows.length>=20 ? +Math.min(...lows.slice(-20)).toFixed(2) : null,
+    };
+  }
+  async function fetchReplayHistory(code,dateStr){
+    const {period1,period2}=getReplayRange(dateStr);
+    const symbols=getReplaySymbols(code);
+    let lastErr=null;
+    for(const symbol of symbols){
+      try{
+        const raw=await apiGetJson(`/yahoo-proxy?symbol=${encodeURIComponent(symbol)}&period1=${period1}&period2=${period2}&interval=1d`,{timeout:15000,retries:1});
+        const rows=normalizeYahooRows(raw);
+        if(rows.length) return { rows, symbol, raw };
+        lastErr=new Error(`${symbol} 無有效K線`);
+      }catch(err){
+        lastErr=err;
+      }
+    }
+    throw lastErr || new Error('歷史資料不足');
+  }
+  function setReplayNeutralMarket(dateStr){
+    if(!AppState.replay.marketBackup){
+      AppState.replay.marketBackup=JSON.parse(JSON.stringify(AppState.market));
+    }
+    AppState.market.twIndex={price:null,prev:null,chg:0,chgPct:0,updatedAt:Date.now()};
+    AppState.market.us={};
+    AppState.market.flowText='';
+    AppState.market.fearScore=50;
+    AppState.market.pulse={
+      bias:'回放模式',
+      risk:'中',
+      summary:`使用 ${dateStr} 歷史K線回放`,
+      details:[`回放日 ${dateStr}`],
+      badge:'pb-neutral',
+      hardBias:0,
+      mode:'replay'
+    };
+    renderMarketPulse();
+  }
+  async function runReplayForCode(code,dateStr){
+    const replay=await fetchReplayHistory(code,dateStr);
+    const rows=replay?.rows || [];
+    const bar=rows[rows.length-1];
+    if(!bar) throw new Error('無歷史K線');
+    const prevBar=rows.length>=2 ? rows[rows.length-2] : bar;
+    const techItem=calcReplayTechFromRows(rows);
+    AppState.stocks[code]={
+      ...(AppState.stocks[code]||{}),
+      name: AppState.stocks[code]?.name || EPS[code]?.n || getStockMeta(code).n || code,
+      price: bar.close,
+      prev: prevBar.close ?? bar.close,
+      open: bar.open,
+      high: bar.high,
+      low: bar.low,
+      volume: bar.volume,
+      chg: prevBar?.close!=null ? +(bar.close-prevBar.close).toFixed(2) : 0,
+      chgPct: prevBar?.close ? +(((bar.close-prevBar.close)/prevBar.close)*100).toFixed(2) : 0,
+      source:`回放 ${dateStr}`,
+      updatedAt: Date.now(),
+      loading:false,
+      error:false,
+      tech:{
+        ma20: techItem.ma20 ?? null,
+        avgVol20: techItem.avgVol20 ?? null,
+        macd: techItem.macd ?? null,
+        macdPrev: techItem.macdPrev ?? null,
+        hist: techItem.hist ?? null,
+        histPrev: techItem.histPrev ?? null,
+        histArray: techItem.histArray || [],
+        high20: techItem.high20 ?? null,
+        low20: techItem.low20 ?? null
+      }
+    };
+    computeAjieScore(code,true);
+  }
+  async function startReplay(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
+    const dateStr=getReplayDate();
+    if(!dateStr){ alert('請先選日期'); return; }
+    const codes=getCodesForTab(AppState.ui.currentTab);
+    if(!codes.length){ alert('目前股池沒有股票'); return; }
+
+    AppState.ui.mode='replay';
+    AppState.replay.loading=true;
+    AppState.ui.isRefreshing=true;
+    AppState.ui.activeCode=null;
+    updateModeChip();
+    toggleRefreshButtons(true);
+    setReplayNeutralMarket(dateStr);
+    renderSkeleton(codes);
+    setStat(`歷史回放 ${dateStr} 啟動中...`);
+
+    try{
+      const batchSize=4;
+      for(let i=0;i<codes.length;i+=batchSize){
+        const batch=codes.slice(i,i+batchSize);
+        await Promise.all(batch.map(async code=>{
+          try{
+            await runReplayForCode(code,dateStr);
+          }catch(err){
+            AppState.stocks[code]={
+              ...(AppState.stocks[code]||{}),
+              name: EPS[code]?.n || getStockMeta(code).n || code,
+              loading:false,
+              error:true,
+              source:`回放 ${dateStr}`,
+              updatedAt: Date.now()
+            };
+          }
+        }));
+        renderCards(codes);
+        renderSectorHeat(codes);
+        renderEarlyStarter(codes);
+        setStat(`歷史回放中 ${Math.min(i+batchSize,codes.length)}/${codes.length}...`);
+        if(i+batchSize<codes.length) await sleep(450);
+      }
+      renderCurrentView();
+      saveCache();
+      setStat(`歷史回放完成 ✓ ${dateStr}`,'ok');
+    }catch(err){
+      console.error('startReplay error',err);
+      setStat(`歷史回放失敗：${err.message||err}`,'err');
+    }finally{
+      AppState.replay.loading=false;
+      AppState.ui.isRefreshing=false;
+      toggleRefreshButtons(false);
+      setAutoRefresh();
+    }
+  }
+  async function backToLive(){
+    AppState.ui.mode='live';
+    if(AppState.replay.marketBackup){
+      AppState.market=AppState.replay.marketBackup;
+      AppState.replay.marketBackup=null;
+    }
+    updateModeChip();
+    setAutoRefresh();
+    await refreshDashboard();
+  }
+
   function isTradingTime(){
     const n=new Date(),h=n.getHours(),m=n.getMinutes(),d=n.getDay();
     if(d===0||d===6) return false;
@@ -1099,9 +1358,10 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     }
     throw lastError;
   }
-  async function loadTechData(codes) {
+  async function loadTechData(codes,dateStr='') {
   try {
-    const res = await apiGetJson(`/tech?codes=${codes.join(',')}`);
+    const qs=`/tech?codes=${codes.join(',')}` + (dateStr?`&date=${encodeURIComponent(dateStr)}`:'');
+    const res = await apiGetJson(qs);
     if (!res?.items) return;
 
     res.items.forEach(item => {
@@ -1394,9 +1654,11 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     return {price:floor,gap};
   }
   function currentRefreshSec(){
+    if(AppState.ui.mode==='replay') return 0;
     return isTradingTime()?CONFIG.autoRefreshSec:CONFIG.closedRefreshSec;
   }
   function currentRefreshLabel(){
+    if(AppState.ui.mode==='replay') return '回放模式已暫停';
     return isTradingTime()?'盤中 30 秒':'收盤後 5 分鐘';
   }
   function parseFlowBias(txt){
@@ -2036,7 +2298,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.0.0，已補入前段啟動雷達、MA20 趨勢評分與位置/趨勢組合判斷，先用現有即時 / 收盤資料，不是完整 V10。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.0，已加入歷史回放模式，可用選定日期回看當日排名。</div>
       </div>
     `;
   }
@@ -2438,10 +2700,18 @@ async function fetchCodes(codes){
     if(el) el.classList.add(key in PRESETS?'on':'on-gold');
     AppState.ui.currentTab=key;
     const codes=getCodesForTab(key);
-    loadCodes(codes);
+    if(AppState.ui.mode==='replay'){
+      startReplay();
+    }else{
+      loadCodes(codes);
+    }
   }
   
 async function refreshAll(){
+  if(AppState.ui.mode==='replay'){
+    await startReplay();
+    return;
+  }
   if(AppState.ui.isRefreshing) return;
   AppState.ui.isRefreshing = true;
   toggleRefreshButtons(true);
@@ -2477,8 +2747,12 @@ async function refreshAll(){
   function setAutoRefresh(){
     clearInterval(window.__ajAutoTimer);
     const sec=currentRefreshSec();
-    AppState.ui.nextRefreshAt=Date.now()+sec*1000;
     $('refreshModeLabel').textContent=`· 自動刷新 ${currentRefreshLabel()}`;
+    if(AppState.ui.mode==='replay'){
+      $('nextR').textContent='手動回放';
+      return;
+    }
+    AppState.ui.nextRefreshAt=Date.now()+sec*1000;
     $('nextR').textContent=`下次更新 ${sec}s`;
     window.__ajAutoTimer=setInterval(()=>{
       const nextSec=currentRefreshSec();
@@ -2493,6 +2767,10 @@ async function refreshAll(){
   }
 
   async function refreshDashboard(){
+  if(AppState.ui.mode==='replay'){
+    await startReplay();
+    return;
+  }
   if(AppState.ui.isRefreshing) return;
   AppState.ui.isRefreshing = true;
   toggleRefreshButtons(true);
