@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.3.4">
+  <meta name="app-version" content="v4.3.5">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -376,6 +376,7 @@
         </div>
         <button class="btn btn-blue btn-sm" id="replayBtn" onclick="startReplay()">歷史回放</button>
         <button class="btn btn-green btn-sm" id="liveBtn" onclick="backToLive()">回即時</button>
+        <button class="btn btn-gold btn-sm" id="saveReplayBtn" onclick="exportReplayToV32()">存前5到V3.2</button>
       </div>
       <span id="ts">--</span>
       <span class="mkt-badge mkt-close" id="mktBadge"><span class="dot" id="mktDot" style="background:#5a5040"></span><span id="mktTxt">收盤</span></span>
@@ -2459,9 +2460,58 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           <div class="ic"><div class="il">最高</div><div class="iv ${d.high&&d.prev&&d.high>d.prev?'up':''}">${d.high||'--'}</div></div>
           <div class="ic"><div class="il">最低</div><div class="iv ${d.low&&d.prev&&d.low<d.prev?'dn':''}">${d.low||'--'}</div></div>
         </div>
-        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.0，已加入歷史回放模式，可用選定日期回看當日排名。</div>
+        <div class="hint" style="margin-top:8px">來源：${d.source||'--'}　更新：${d.updatedAt?new Date(d.updatedAt).toLocaleTimeString('zh-TW',{hour12:false}):'--'}　※ 這版為快判引擎 V4.3.5，已加入歷史回放模式，並可一鍵把前5名存到 V3.2 記錄表。</div>
       </div>
     `;
+  }
+
+  function exportReplayToV32(){
+    if(AppState.ui.mode!=='replay'){ alert('請先進入歷史回放模式'); return; }
+    const dateStr=getReplayDate();
+    if(!dateStr){ alert('請先選日期'); return; }
+    const codes=currentCodes();
+    if(!codes.length){ alert('目前沒有股票可匯出'); return; }
+    const sorted=sortCodes(codes).filter(code=>{
+      const d=AppState.stocks[code]||{};
+      return !d.loading && !d.error && Number.isFinite(Number(d.price));
+    });
+    if(sorted.length<5){ alert('回放資料還沒完整，至少要有前5名有效資料'); return; }
+
+    const top5=sorted.slice(0,5);
+    const compare=sorted.slice(5,7);
+    const sessionNote=(AppState.market?.pulse?.summary||'').replace(/^使用 .* 歷史K線回放\s*/,).trim() || `回放 ${dateStr}`;
+    const stocks=[...top5,...compare].map((code,idx)=>{
+      const d=AppState.stocks[code]||{};
+      return {
+        rank: idx+1,
+        isTop5: idx<5,
+        code,
+        name: d.name || EPS[code]?.n || getStockMeta(code).n || code,
+        score: computeAjieScore(code).total || 0,
+        pos:'',
+        vol:'',
+        r3d:'',
+        r3pct:null,
+        r5d:'',
+        r5pct:null,
+        note:''
+      };
+    });
+
+    const key='aj_v32';
+    let sessions=[];
+    try{ sessions=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ sessions=[]; }
+    const session={date:dateStr,sessionNote,stocks,savedAt:Date.now()};
+    const idx=sessions.findIndex(s=>s.date===dateStr);
+    if(idx>=0){
+      const ok=confirm(`${dateStr} 已有紀錄，要覆蓋成目前回放前5名嗎？`);
+      if(!ok) return;
+      sessions[idx]=session;
+    }else{
+      sessions.unshift(session);
+    }
+    localStorage.setItem(key, JSON.stringify(sessions));
+    alert(`已存到 V3.2 記錄表\n日期：${dateStr}\n前5名 ${top5.length} 檔 + 對照組 ${compare.length} 檔`);
   }
 
   function renderCards(codes){
