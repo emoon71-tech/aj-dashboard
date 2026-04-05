@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.0">
+  <meta name="app-version" content="v4.6.1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -238,6 +238,8 @@
 
   .sort-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
   .sort-chip.on{border-color:var(--gold);color:var(--gold);background:#1a1508}
+  .formula-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
+  .formula-chip.on{border-color:var(--blue);color:var(--blue);background:#0a1428}
   .rank-badge{position:absolute;top:8px;right:8px;font-size:10px;padding:2px 7px;border-radius:999px;background:#1a1508;border:1px solid var(--gold3);color:var(--gold)}
   
   .status-box{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:28px;padding:0 10px;border-radius:8px;border:1px solid;font-size:11px;font-weight:700;letter-spacing:.02em;margin-top:8px}
@@ -529,6 +531,8 @@
       <button class="sort-chip" id="sort-sector" onclick="setSortMode('sector',this)">族群優先</button>
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
+      <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
+      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -811,7 +815,7 @@ function calcSectorHeat(codes){
   (codes || []).forEach(code => {
     const meta = getStockMeta(code);
     const sector = meta.sector || '其他';
-    const score = computeAjieScore(code).total || 0;
+    const score = getActiveScore(code).total || 0;
     const shield = (meta.etf || []).filter(x => x && x !== 'ETF').length;
 
     if(!map[sector]) map[sector] = {
@@ -861,7 +865,7 @@ function calcSectorHeat(codes){
     return (codes || []).map(code=>{
       const d=AppState.stocks[code]||{};
       const tech=d.tech||{};
-      const score=computeAjieScore(code);
+      const score=getActiveScore(code);
       const price=safeNumber(d.price);
       const high=safeNumber(d.high);
       const close=price;
@@ -1012,10 +1016,11 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     return Number.isFinite(n)?n:null;
   }
   const APP_VERSION=(document.querySelector('meta[name="app-version"]')?.content||'v0.0.0').trim();
+  const HIST_THRESHOLD = 20;
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live'},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v1'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -1050,6 +1055,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     ensureReplayDateDefault();
     updateModeChip();
     updateManualButtons();
+    updateFormulaButtons();
     setAutoRefresh();
     await refreshDashboard();
     checkVersion();
@@ -1611,6 +1617,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       }
     };
     computeAjieScore(code,true);
+    computeAjieScoreV2(code,true);
   }
   async function startReplay(){
     if(AppState.ui.isRefreshing || AppState.replay.loading) return;
@@ -2549,15 +2556,123 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     AppState.stocks[code]=d;
     return score;
   }
+  function computeAjieScoreV2(code,force=false){
+    const d=AppState.stocks[code]||{};
+    const signature='v2:'+getScoreSignature(code);
+    if(!force && d.scoreDataV2 && d.scoreCacheKeyV2===signature) return d.scoreDataV2;
+
+    const base=computeAjieScore(code, force);
+    if(!/^\d+$/.test(code)){
+      d.scoreDataV2={...base, scoreV2: base.total, scoreDeltaV2: 0, v2Reasons:['美股沿用 V1']};
+      d.scoreCacheKeyV2=signature;
+      AppState.stocks[code]=d;
+      return d.scoreDataV2;
+    }
+
+    const techData=d.tech||{};
+    const clone={...base, reasons:[...(base.reasons||[])], risks:[...(base.risks||[])]};
+    const v2Reasons=[];
+    let v2Delta=0;
+
+    const ma20=safeNumber(techData.ma20);
+    const price=safeNumber(d.price);
+    const hist=safeNumber(techData.hist);
+    const histPrev=safeNumber(techData.histPrev);
+    const avgVol20=safeNumber(techData.avgVol20);
+    const volume=safeNumber(d.volume);
+
+    const isAboveMA20=Number.isFinite(ma20) && Number.isFinite(price) && ma20>0 ? price > ma20 : null;
+    const prevMa20=safeNumber(techData.ma20Prev);
+    const histImproving=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist > histPrev : null;
+    let ma20SlopeUp=Number.isFinite(ma20) && Number.isFinite(prevMa20) ? ma20 > prevMa20 : null;
+    if(ma20SlopeUp===null && Number.isFinite(ma20) && Number.isFinite(price)){
+      const maBias=(price-ma20)/Math.max(ma20,0.01);
+      if(maBias >= 0.01 && histImproving===true) ma20SlopeUp=true;
+      else if(maBias <= -0.01 && histImproving===false) ma20SlopeUp=false;
+    }
+    const volRatio=(Number.isFinite(avgVol20) && avgVol20>0 && Number.isFinite(volume)) ? volume/avgVol20 : null;
+
+    const missing=[];
+    if(ma20SlopeUp===null) missing.push('MA20方向');
+    if(isAboveMA20===null) missing.push('站上MA20');
+    if(histImproving===null) missing.push('MACD改善');
+    if(!Number.isFinite(hist)) missing.push('histLast');
+    if(volRatio===null) missing.push('量能');
+    if(missing.length){
+      v2Reasons.push(`技術資料不足：${missing.join(' / ')}`);
+    }
+
+    if(ma20SlopeUp===true && isAboveMA20===true){
+      v2Delta += 10;
+      v2Reasons.push('MA20向上+站上 +10');
+    }else if(ma20SlopeUp===false && isAboveMA20===false){
+      v2Delta -= 15;
+      v2Reasons.push('MA20向下且未站上 -15');
+    }else if(ma20SlopeUp===false && isAboveMA20===true){
+      v2Delta -= 5;
+      v2Reasons.push('站上MA20但均線未翻 -5');
+    }
+
+    if(histImproving===true){
+      v2Delta += 5;
+      v2Reasons.push('MACD改善 +5');
+    }
+    if(Number.isFinite(hist) && hist > HIST_THRESHOLD){
+      v2Delta -= 10;
+      v2Reasons.push(`MACD頂部>${HIST_THRESHOLD} -10`);
+    }
+    if(Number.isFinite(volRatio)){
+      if(volRatio >= 1.2 && volRatio <= 1.8){
+        v2Delta += 5;
+        v2Reasons.push('健康量能 1.2~1.8x +5');
+      }else if(volRatio > 2.5){
+        v2Delta -= 5;
+        v2Reasons.push('量能過熱 >2.5x -5');
+      }
+    }
+
+    const total=clamp(Math.round(base.total + v2Delta),0,100);
+    let decision=base.decision, badge=base.badge, note=base.note;
+    if(total>=78 && clone.tech>=35){
+      decision='可進場'; badge='sb-go'; note='V2 偏好早期結構，這檔更接近發動。';
+    }else if(total<=54){
+      decision='先別碰'; badge='sb-no'; note='V2 判定結構不夠乾淨，先避開。';
+    }else if(total>=60){
+      decision='觀察'; badge='sb-wait'; note='V2 判定有早期訊號，但還要等確認。';
+    }
+
+    const extraBadges=[];
+    if(v2Delta>=10) extraBadges.push('V2優選');
+    if(v2Reasons.some(t=>t.includes('健康量能')) && v2Reasons.some(t=>t.includes('MA20向上+站上'))) extraBadges.push('V2早期訊號');
+    if(v2Reasons.some(t=>t.includes('MACD頂部')) || v2Reasons.some(t=>t.includes('量能過熱'))) extraBadges.push('V2過熱');
+
+    const scoreV2={
+      ...clone,
+      total,
+      decision,
+      badge,
+      note,
+      scoreV2: total,
+      scoreDeltaV2: total - base.total,
+      v2Delta,
+      v2Reasons,
+      v2Badges: extraBadges,
+      formulaMode:'v2'
+    };
+    d.scoreDataV2=scoreV2;
+    d.scoreCacheKeyV2=signature;
+    AppState.stocks[code]=d;
+    return scoreV2;
+  }
   function hydrateScores(codes){
-    (codes||[]).forEach(code=>computeAjieScore(code,true));
+    (codes||[]).forEach(code=>{ computeAjieScore(code,true); computeAjieScoreV2(code,true); });
   }
 
   function sortCodes(codes){
     const next=[...codes];
     if(AppState.ui.sortMode==='score'){
       next.sort((a,b)=>{
-        const sa=computeAjieScore(a).total, sb=computeAjieScore(b).total;
+        const sa=getActiveScore(a).total, sb=getActiveScore(b).total;
         if(sb!==sa) return sb-sa;
         return String(a).localeCompare(String(b),'zh-Hant');
       });
@@ -2570,7 +2685,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         const ea=(ma.etf||[]).filter(x=>x && x!=='ETF').length;
         const eb=(mb.etf||[]).filter(x=>x && x!=='ETF').length;
         if(eb!==ea) return eb-ea;
-        const sa=computeAjieScore(a).total, sb=computeAjieScore(b).total;
+        const sa=getActiveScore(a).total, sb=getActiveScore(b).total;
         if(sb!==sa) return sb-sa;
         return String(a).localeCompare(String(b),'zh-Hant');
       });
@@ -2578,7 +2693,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       next.sort((a,b)=>{
         const ca=getChipMeta(a).score, cb=getChipMeta(b).score;
         if(cb!==ca) return cb-ca;
-        const sa=computeAjieScore(a).total, sb=computeAjieScore(b).total;
+        const sa=getActiveScore(a).total, sb=getActiveScore(b).total;
         if(sb!==sa) return sb-sa;
         return String(a).localeCompare(String(b),'zh-Hant');
       });
@@ -2592,6 +2707,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     document.querySelectorAll('.sort-chip').forEach(n=>n.classList.remove('on'));
     if(el) el.classList.add('on');
     renderCurrentView();
+  }
+  function updateFormulaButtons(){
+    const mode=AppState.ui.formulaMode||'v1';
+    ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
+    const active=$(mode==='v2'?'formula-v2':'formula-v1');
+    if(active) active.classList.add('on');
+  }
+  function setFormulaMode(mode,el){
+    AppState.ui.formulaMode=mode==='v2'?'v2':'v1';
+    updateFormulaButtons();
+    renderCurrentView();
+  }
+  function getActiveScore(code, force=false){
+    return AppState.ui.formulaMode==='v2' ? computeAjieScoreV2(code, force) : computeAjieScore(code, force);
   }
   
   function getCodesForTab(tabKey){
@@ -2620,7 +2749,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   }
   
   function getStatusMeta(code){
-    const score=computeAjieScore(code);
+    const score=getActiveScore(code);
     const mBias=marketBiasScore();
     if(mBias<=-2){
       if(score.total>=70) return {label:'逆勢觀察', cls:'status-watch'};
@@ -2654,7 +2783,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
     const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
     const v=ep&&price?valLabel(price,ep):null;
-    const score=computeAjieScore(code);
+    const score=getActiveScore(code);
     const status=getStatusMeta(code);
     const inst=getInstitutionMeta(d);
     const stopRef=calcStopRef(code, price);
@@ -2704,7 +2833,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       <div class="decision-hero">
         <div class="decision-top">
           <div style="flex:1;min-width:220px">
-            <div class="decision-kicker">AJ Decision Panel</div>
+            <div class="decision-kicker">AJ Decision Panel · ${AppState.ui.formulaMode==='v2'?'V2 實驗公式':'V1 原始公式'}</div>
             <div class="decision-title">${score.decision}</div>
             <div class="decision-sub">現況｜${status.label}　${inst?`・ ${inst.label}`:''}</div>
           </div>
@@ -2717,11 +2846,12 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div class="decision-strip">
           <span class="decision-chip">籌碼 / 盤勢 ${score.chip}/50</span>
           <span class="decision-chip">技術 / 結構 ${score.tech}/50</span>
+          ${AppState.ui.formulaMode==='v2' ? `<span class="decision-chip">V2 分差 ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}</span>` : ''}
           ${score.isUS ? '<span class="decision-chip">🇺🇸 美股評分模式</span>' : `<span class="decision-chip">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張</span><span class="decision-chip">投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</span>`}
         </div>
         <div class="decision-summary">
           <div class="ttl">一句話結論</div>
-          <div class="txt">${score.isUS ? (score.reasons.slice(0,2).join('・') || '美股技術評估中') : heroSummary}</div>
+          <div class="txt">${score.isUS ? (score.reasons.slice(0,2).join('・') || '美股技術評估中') : heroSummary}</div>${AppState.ui.formulaMode==='v2' && score.v2Reasons?.length ? `<div class="hint" style="margin-top:6px;color:var(--gold)">${score.v2Reasons.slice(0,3).join('・')}</div>` : ''}
           <div class="hint" style="margin-top:6px">${actionText}</div>
         </div>
       </div>
@@ -2792,7 +2922,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
       const v=ep&&price?valLabel(price,ep):null;
       const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
-      const score=computeAjieScore(code);
+      const score=getActiveScore(code);
       const status=getStatusMeta(code);
       const inst=getInstitutionMeta(d);
       const stopRef=calcStopRef(code, price);
@@ -2806,7 +2936,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const chipMeta=getChipMeta(code);
       const chipBadgeClass=getChipBadgeClass(code);
       el.innerHTML=`
-        <div class="rank-badge">#${idx+1} ${score.total}</div>
+        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2':'V1'}</div>
         <div class="sn">${d.name||ep?.n||code}</div>
         <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
         <div class="badge-row">
@@ -2823,8 +2953,9 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
         <div class="score-row">
           <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="score-mini">阿吉分數 ${score.total}/100</span>
+          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
         </div>
+        ${AppState.ui.formulaMode==='v2' ? `<div class="badge-row">${(score.v2Badges||[]).map(tag=>`<span class="sbg ${tag==='V2過熱'?'bg-red':'bg-blue'}">${tag}</span>`).join('')}${(score.v2Reasons||[]).slice(0,2).map(tag=>`<span class="sbg bg-amber">${tag}</span>`).join('')}</div>` : ''}
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
         ${shieldLabel && etfTitle?`<div class="sep">${etfTitle}</div>`:''}
         <div class="sep">外資3日 ${chipMeta.foreign3d>0?'+':''}${chipMeta.foreign3d} 張｜投信3日 ${chipMeta.trust3d>0?'+':''}${chipMeta.trust3d} 張</div>
@@ -2855,7 +2986,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     AppState.stocks={};
     AppState.ui.activeCode=null;
     $('dWrap').style.display='none';
-    codes.forEach(c=>{AppState.stocks[c]={loading:true,scoreData:null,scoreCacheKey:null};});
+    codes.forEach(c=>{AppState.stocks[c]={loading:true,scoreData:null,scoreCacheKey:null,scoreDataV2:null,scoreCacheKeyV2:null};});
     renderCards(codes);
     renderSectorHeat(codes);
   }
@@ -3212,6 +3343,7 @@ async function refreshAll(){
       codes.forEach(c => {
         if(AppState.stocks[c]){
           computeAjieScore(c, true);
+          if(window.computeAjieScoreV2) computeAjieScoreV2(c, true);
         }
       });
     }
@@ -3269,6 +3401,7 @@ async function refreshAll(){
       codes.forEach(c => {
         if(AppState.stocks[c]){
           computeAjieScore(c, true);
+          if(window.computeAjieScoreV2) computeAjieScoreV2(c, true);
         }
       });
 
@@ -3437,7 +3570,7 @@ async function refreshAll(){
         }
       };
 
-      if(window.computeAjieScore) computeAjieScore(code, true);
+      if(window.computeAjieScore){ computeAjieScore(code, true); if(window.computeAjieScoreV2) computeAjieScoreV2(code, true); }
       if(window.renderCards) renderCards([code]);
       if(window.renderSectorHeat) renderSectorHeat([code]);
       if(window.showDetail) showDetail(code);
@@ -3478,7 +3611,7 @@ async function refreshAll(){
 <div class="perf-panel" id="perfPanel">
   <div class="perf-top">
     <div>
-      <div class="perf-title">績效面板 v4.6</div>
+      <div class="perf-title">績效面板 v4.6.1</div>
       <div class="perf-sub">3日驗方向 / 5日驗品質 / 自動統計短線陷阱率</div>
     </div>
     <div class="perf-actions">
@@ -3626,7 +3759,7 @@ function ajieExportPerf(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'ajie-performance-v46.json';
+  a.download = 'ajie-performance-v461.json';
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 500);
 }
