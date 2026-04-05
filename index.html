@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.6">
+  <meta name="app-version" content="v4.6.8">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -991,6 +991,34 @@ function calcSectorHeat(codes){
     .slice(0,5);
   }
 
+
+  function deriveHistSeries(tech){
+    const arr=Array.isArray(tech?.histArray)?tech.histArray.map(safeNumber).filter(Number.isFinite):[];
+    const hist=safeNumber(tech?.hist);
+    let histLast=safeNumber(tech?.histLast);
+    let histLast2=safeNumber(tech?.histLast2);
+
+    if(!Number.isFinite(histLast) && arr.length>=2) histLast=arr[arr.length-2];
+    if(!Number.isFinite(histLast2) && arr.length>=3) histLast2=arr[arr.length-3];
+
+    return {
+      hist: Number.isFinite(hist) ? hist : (arr.length ? arr[arr.length-1] : null),
+      histLast: Number.isFinite(histLast) ? histLast : null,
+      histLast2: Number.isFinite(histLast2) ? histLast2 : null,
+    };
+  }
+
+  function deriveRiseFromLow(score, tech, stock){
+    const fromScore=safeNumber(score?.riseFromLow);
+    if(Number.isFinite(fromScore)) return fromScore;
+    const fromTech=safeNumber(tech?.riseFromLow);
+    if(Number.isFinite(fromTech)) return fromTech;
+    const low20=safeNumber(tech?.low20);
+    const price=safeNumber(stock?.price);
+    if(Number.isFinite(price) && Number.isFinite(low20) && low20>0) return (price-low20)/low20;
+    return null;
+  }
+
   function calculateV23(data){
     const rise=safeNumber(data?.riseFromLow);
     const vol=safeNumber(data?.volRatio);
@@ -1023,13 +1051,11 @@ function calcSectorHeat(codes){
       const tech=d.tech||{};
       const score=getActiveScore(code);
       const price=safeNumber(d.price);
-      const hist=safeNumber(tech.hist);
-      const histLast=safeNumber(tech.histLast);
-      const histLast2=safeNumber(tech.histLast2);
+      const { hist, histLast, histLast2 }=deriveHistSeries(tech);
       const avgVol20=safeNumber(tech.avgVol20);
       const volume=safeNumber(d.volume);
       const volRatio=Number.isFinite(score.volRatio)?score.volRatio:(avgVol20>0 && volume>0 ? volume/avgVol20 : null);
-      const riseFromLow=Number.isFinite(score.riseFromLow)?score.riseFromLow:safeNumber(tech.riseFromLow);
+      const riseFromLow=deriveRiseFromLow(score, tech, d);
 
       const v23=calculateV23({ riseFromLow, volRatio, hist, histLast, histLast2 });
       if(!v23) return null;
