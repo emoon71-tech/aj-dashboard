@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.5">
+  <meta name="app-version" content="v4.6.6">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -235,6 +235,23 @@
   .st-blue{background:#0a1428;border-color:var(--blue);color:var(--blue)}
   .starter-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
   .starter-empty b{color:var(--gold)}
+  .v23-section{background:linear-gradient(135deg,rgba(255,107,107,.10),rgba(255,107,107,.05));border:1px solid rgba(255,107,107,.45);border-radius:14px;padding:14px 16px;margin:0 0 14px}
+  .v23-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .v23-title{font-size:16px;font-weight:800;color:#ff9b9b}
+  .v23-sub{font-size:11px;color:var(--text3);margin-top:4px}
+  .v23-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);color:#ff9b9b;font-size:10px;font-weight:700}
+  .v23-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .v23-card{background:var(--bg);border:1px solid rgba(255,107,107,.2);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
+  .v23-card:hover{border-color:rgba(255,107,107,.45);transform:translateY(-1px)}
+  .v23-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .v23-kicker .name{font-size:13px;font-weight:800;color:var(--text)}
+  .v23-kicker .code{font-size:10px;color:var(--text3)}
+  .v23-score{font-size:11px;color:#ff9b9b;font-weight:700}
+  .v23-line{font-size:12px;color:var(--text);font-weight:700;line-height:1.5}
+  .v23-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .v23-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
+  .v23-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
+  .v23-empty b{color:#ff9b9b}
 
   .sort-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
   .sort-chip.on{border-color:var(--gold);color:var(--gold);background:#1a1508}
@@ -506,6 +523,28 @@
       </div>
     </div>
     <div class="kpi-mini" id="sectorList"></div>
+  </div>
+
+  <div class="starter-panel">
+    <div class="starter-top">
+      <div>
+        <div class="starter-title">🟡 前段啟動榜</div>
+        <div class="starter-sub">抓低位結構轉強、MA20 站穩、量能健康的前段啟動股。</div>
+      </div>
+      <div class="starter-badge" id="starterBadge">掃描中</div>
+    </div>
+    <div class="starter-grid" id="starterGrid"></div>
+  </div>
+
+  <div class="v23-section">
+    <div class="v23-top">
+      <div>
+        <div class="v23-title">🔴 V2.3 強勢主升榜</div>
+        <div class="v23-sub">抓高位續攻、量能放大、MACD 動能連續轉強的主升段股票。</div>
+      </div>
+      <div class="v23-badge" id="v23Badge">掃描中</div>
+    </div>
+    <div class="v23-grid" id="v23List"></div>
   </div>
   
   <!-- 估值矩陣 -->
@@ -952,6 +991,120 @@ function calcSectorHeat(codes){
     .slice(0,5);
   }
 
+  function calculateV23(data){
+    const rise=safeNumber(data?.riseFromLow);
+    const vol=safeNumber(data?.volRatio);
+    const h=safeNumber(data?.hist);
+    const h1=safeNumber(data?.histLast);
+    const h2=safeNumber(data?.histLast2);
+
+    const isMomentum=Number.isFinite(h) && Number.isFinite(h1) && Number.isFinite(h2) && h>h1 && h1>h2 && h>V23_MIN_HIST;
+    const isHighPosition=Number.isFinite(rise) && rise>V23_HIGH_POSITION;
+    const isStrongVolume=Number.isFinite(vol) && vol>V23_STRONG_VOLUME;
+
+    if(!(isMomentum && isHighPosition && isStrongVolume)) return null;
+
+    let score=20;
+    if(h>V23_BONUS_HIST) score+=10;
+    if(vol>=V23_STRONG_VOLUME && vol<=3.0) score+=5;
+
+    let isHot=false;
+    if(rise>V23_HOT_POSITION && vol>V23_HOT_VOLUME && h>V23_HOT_HIST){
+      isHot=true;
+      score-=10;
+    }
+
+    return { score, isHot };
+  }
+
+  function getV23Candidates(codes){
+    return (codes||[]).map(code=>{
+      const d=AppState.stocks[code]||{};
+      const tech=d.tech||{};
+      const score=getActiveScore(code);
+      const price=safeNumber(d.price);
+      const hist=safeNumber(tech.hist);
+      const histLast=safeNumber(tech.histLast);
+      const histLast2=safeNumber(tech.histLast2);
+      const avgVol20=safeNumber(tech.avgVol20);
+      const volume=safeNumber(d.volume);
+      const volRatio=Number.isFinite(score.volRatio)?score.volRatio:(avgVol20>0 && volume>0 ? volume/avgVol20 : null);
+      const riseFromLow=Number.isFinite(score.riseFromLow)?score.riseFromLow:safeNumber(tech.riseFromLow);
+
+      const v23=calculateV23({ riseFromLow, volRatio, hist, histLast, histLast2 });
+      if(!v23) return null;
+
+      const ma20=safeNumber(tech.ma20);
+      const maBias=(Number.isFinite(ma20) && Number.isFinite(price) && ma20>0)?((price-ma20)/ma20):null;
+      const line=`高位續攻 · MACD 三連增強 · ${Number.isFinite(volRatio)?`量比 ${volRatio.toFixed(1)}倍`:'量能待補'}`;
+
+      d.v23Score=v23.score;
+      d.v23Hot=v23.isHot;
+
+      return {
+        code,
+        name:d.name||EPS[code]?.n||code,
+        price,
+        score:getActiveScore(code),
+        v23Score:v23.score,
+        v23Hot:v23.isHot,
+        riseFromLow,
+        volRatio,
+        hist,
+        histLast,
+        histLast2,
+        maBias,
+        line,
+      };
+    }).filter(Boolean)
+      .sort((a,b)=>{
+        if(Number(b.v23Hot)!==Number(a.v23Hot)) return Number(a.v23Hot)-Number(b.v23Hot);
+        if((b.v23Score||0)!==(a.v23Score||0)) return (b.v23Score||0)-(a.v23Score||0);
+        if((b.hist||-999)!==(a.hist||-999)) return (b.hist||-999)-(a.hist||-999);
+        if((b.volRatio||-999)!==(a.volRatio||-999)) return (b.volRatio||-999)-(a.volRatio||-999);
+        return String(a.code).localeCompare(String(b.code),'zh-Hant');
+      })
+      .slice(0,5);
+  }
+
+  function renderV23(codes){
+    const wrap=$('v23List');
+    const badge=$('v23Badge');
+    if(!wrap || !badge) return;
+
+    const list=getV23Candidates(codes);
+    if(!list.length){
+      badge.textContent='暫無訊號';
+      wrap.innerHTML=`<div class="v23-empty"><b>今天還沒看到漂亮的高位主升訊號。</b> 先等高位、量能、MACD 三件事一起噴。</div>`;
+      return;
+    }
+
+    badge.textContent=`抓到 ${list.length} 檔`;
+    wrap.innerHTML=list.map((item,idx)=>{
+      const posText=item.riseFromLow!=null ? `低點上來 ${(item.riseFromLow*100).toFixed(1)}%` : '位階待補';
+      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
+      const histText=item.hist!=null ? `hist ${item.hist.toFixed(3)}` : '動能待補';
+      const hotTag=item.v23Hot ? '<span class="v23-tag" style="background:#2a1208;border-color:#ff6b6b;color:#ff9b9b">🔥 極熱區</span>' : '<span class="v23-tag" style="background:#1a1508;border-color:#fb923c;color:#fb923c">主升攻擊</span>';
+      return `
+        <div class="v23-card" onclick="showDetail('${item.code}')">
+          <div class="v23-kicker">
+            <div>
+              <div class="name">#${idx+1} ${item.name}</div>
+              <div class="code">${item.code}</div>
+            </div>
+            <div class="v23-score">主升分 ${item.v23Score}</div>
+          </div>
+          <div class="v23-line">${item.line}</div>
+          <div class="v23-tags">
+            <span class="v23-tag" style="background:#1a1508;border-color:#ff9b9b;color:#ff9b9b">${posText}</span>
+            <span class="v23-tag" style="background:#0a1428;border-color:var(--blue);color:var(--blue)">${volText}</span>
+            <span class="v23-tag" style="background:#0a2015;border-color:var(--green);color:var(--green)">${histText}</span>
+            ${hotTag}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
   function renderEarlyStarter(codes){
     const wrap=$('starterGrid');
     const badge=$('starterBadge');
@@ -1023,6 +1176,13 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   const V22_VOLUME_HEALTHY_MAX = 1.8;
   const V22_VOLUME_OVERHEAT = 2.5;
   const V22_VOLUME_WEAK = 0.8;
+  const V23_MIN_HIST = 0.03;
+  const V23_HIGH_POSITION = 0.18;
+  const V23_STRONG_VOLUME = 2.3;
+  const V23_BONUS_HIST = 0.1;
+  const V23_HOT_POSITION = 0.25;
+  const V23_HOT_VOLUME = 3.5;
+  const V23_HOT_HIST = 0.6;
   let updateToastShown=false;
   
   const AppState={
@@ -1789,10 +1949,13 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         macdPrev: item.macdPrev ?? null,
         hist: item.hist ?? null,
         histPrev: item.histPrev ?? null,
+        histLast: item.histLast ?? item.histPrev ?? null,
+        histLast2: item.histLast2 ?? null,
         histArray: item.histArray || [],
         histImproving: item.histImproving ?? null,
         high20: item.high20 ?? null,
-        low20: item.low20 ?? null
+        low20: item.low20 ?? null,
+        riseFromLow: item.riseFromLow ?? null
       };
     });
 
@@ -3326,6 +3489,7 @@ async function fetchCodes(codes){
     renderCards(codes);
     renderSectorHeat(codes);
     renderEarlyStarter(codes);
+    renderV23(codes);
   }
   function renderCurrentView(){
     const codes=currentCodes();
@@ -3333,6 +3497,7 @@ async function fetchCodes(codes){
     renderCards(codes);
     renderSectorHeat(codes);
     renderEarlyStarter(codes);
+    renderV23(codes);
     if(AppState.ui.activeCode && codes.includes(AppState.ui.activeCode)){
       showDetail(AppState.ui.activeCode);
     }else if(!isMobileView()){
