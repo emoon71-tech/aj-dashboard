@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板 v4.6.9</title>
-  <meta name="app-version" content="v4.6.8">
+  <title>阿吉股票儀表板</title>
+  <meta name="app-version" content="v4.6.4">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -215,25 +215,6 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-
-  .v21-section{background:linear-gradient(135deg,rgba(61,220,132,.10),rgba(61,220,132,.05));border:1px solid rgba(61,220,132,.35);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
-  .v21-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-  .v21-title{font-size:16px;font-weight:800;color:var(--green)}
-  .v21-sub{font-size:11px;color:var(--text3);margin-top:4px}
-  .v21-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(61,220,132,.10);border:1px solid rgba(61,220,132,.35);color:var(--green);font-size:10px;font-weight:700}
-  .v21-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-  .v21-card{background:var(--bg);border:1px solid rgba(61,220,132,.25);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
-  .v21-card:hover{border-color:rgba(61,220,132,.45);transform:translateY(-1px)}
-  .v21-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
-  .v21-kicker .name{font-size:13px;font-weight:800;color:var(--text)}
-  .v21-kicker .code{font-size:10px;color:var(--text3)}
-  .v21-score{font-size:11px;color:var(--green);font-weight:700}
-  .v21-line{font-size:12px;color:var(--text);font-weight:700;line-height:1.5}
-  .v21-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-  .v21-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
-  .v21-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
-  .v21-empty b{color:var(--green)}
-
   .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
   .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .starter-title{font-size:16px;font-weight:800;color:var(--text)}
@@ -254,23 +235,6 @@
   .st-blue{background:#0a1428;border-color:var(--blue);color:var(--blue)}
   .starter-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
   .starter-empty b{color:var(--gold)}
-  .v23-section{background:linear-gradient(135deg,rgba(255,107,107,.10),rgba(255,107,107,.05));border:1px solid rgba(255,107,107,.45);border-radius:14px;padding:14px 16px;margin:0 0 14px}
-  .v23-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-  .v23-title{font-size:16px;font-weight:800;color:#ff9b9b}
-  .v23-sub{font-size:11px;color:var(--text3);margin-top:4px}
-  .v23-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);color:#ff9b9b;font-size:10px;font-weight:700}
-  .v23-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-  .v23-card{background:var(--bg);border:1px solid rgba(255,107,107,.2);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
-  .v23-card:hover{border-color:rgba(255,107,107,.45);transform:translateY(-1px)}
-  .v23-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
-  .v23-kicker .name{font-size:13px;font-weight:800;color:var(--text)}
-  .v23-kicker .code{font-size:10px;color:var(--text3)}
-  .v23-score{font-size:11px;color:#ff9b9b;font-weight:700}
-  .v23-line{font-size:12px;color:var(--text);font-weight:700;line-height:1.5}
-  .v23-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-  .v23-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
-  .v23-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
-  .v23-empty b{color:#ff9b9b}
 
   .sort-chip{font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer}
   .sort-chip.on{border-color:var(--gold);color:var(--gold);background:#1a1508}
@@ -543,39 +507,6 @@
     </div>
     <div class="kpi-mini" id="sectorList"></div>
   </div>
-
-  <div class="v21-section">
-    <div class="v21-top">
-      <div>
-        <div class="v21-title">🟢 V2.1 早期訊號榜</div>
-        <div class="v21-sub">保留 V2.1 的早期訊號與優選邏輯，抓低位剛轉強、量能健康、準備接棒的股票。</div>
-      </div>
-      <div class="v21-badge" id="v21Badge">掃描中</div>
-    </div>
-    <div class="v21-grid" id="v21Grid"></div>
-  </div>
-
-  <div class="starter-panel">
-    <div class="starter-top">
-      <div>
-        <div class="starter-title">🟡 V2.2 前段啟動榜</div>
-        <div class="starter-sub">抓低位結構轉強、MA20 站穩、量能健康的前段啟動股。</div>
-      </div>
-      <div class="starter-badge" id="starterBadge">掃描中</div>
-    </div>
-    <div class="starter-grid" id="starterGrid"></div>
-  </div>
-
-  <div class="v23-section">
-    <div class="v23-top">
-      <div>
-        <div class="v23-title">🔴 V2.3 強勢主升榜</div>
-        <div class="v23-sub">抓高位續攻、量能放大、MACD 動能連續轉強的主升段股票。</div>
-      </div>
-      <div class="v23-badge" id="v23Badge">掃描中</div>
-    </div>
-    <div class="v23-grid" id="v23List"></div>
-  </div>
   
   <!-- 估值矩陣 -->
   <div class="sec">台股加權指數估值矩陣</div>
@@ -601,7 +532,7 @@
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
       <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.2</button>
+      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1021,310 +952,6 @@ function calcSectorHeat(codes){
     .slice(0,5);
   }
 
-
-  function deriveHistSeries(tech){
-    const arr=Array.isArray(tech?.histArray)?tech.histArray.map(safeNumber).filter(Number.isFinite):[];
-    const hist=safeNumber(tech?.hist);
-    let histLast=safeNumber(tech?.histLast);
-    let histLast2=safeNumber(tech?.histLast2);
-
-    if(!Number.isFinite(histLast) && arr.length>=2) histLast=arr[arr.length-2];
-    if(!Number.isFinite(histLast2) && arr.length>=3) histLast2=arr[arr.length-3];
-
-    return {
-      hist: Number.isFinite(hist) ? hist : (arr.length ? arr[arr.length-1] : null),
-      histLast: Number.isFinite(histLast) ? histLast : null,
-      histLast2: Number.isFinite(histLast2) ? histLast2 : null,
-    };
-  }
-
-  function deriveRiseFromLow(score, tech, stock){
-    const fromScore=safeNumber(score?.riseFromLow);
-    if(Number.isFinite(fromScore)) return fromScore;
-    const fromTech=safeNumber(tech?.riseFromLow);
-    if(Number.isFinite(fromTech)) return fromTech;
-    const low20=safeNumber(tech?.low20);
-    const price=safeNumber(stock?.price);
-    if(Number.isFinite(price) && Number.isFinite(low20) && low20>0) return (price-low20)/low20;
-    return null;
-  }
-
-
-  function calculateV21(data){
-    const ma20SlopeUp = data?.ma20SlopeUp === true;
-    const isAboveMA20 = data?.isAboveMA20 === true;
-    const histImproving = data?.histImproving === true;
-    const hist = safeNumber(data?.hist);
-    const volRatio = safeNumber(data?.volRatio);
-    const riseFromLow = safeNumber(data?.riseFromLow);
-
-    let delta = 0;
-    const reasons = [];
-    const badges = [];
-
-    if(ma20SlopeUp && isAboveMA20){
-      delta += 8;
-      reasons.push('MA20向上+站上');
-    }else if(!ma20SlopeUp && !isAboveMA20 && (data?.ma20SlopeUp===false || data?.isAboveMA20===false)){
-      delta -= 12;
-    }else if(data?.ma20SlopeUp===false && isAboveMA20){
-      delta -= 3;
-    }
-
-    if(histImproving){
-      delta += 6;
-      reasons.push('MACD改善');
-    }
-    if(Number.isFinite(hist) && hist > HIST_THRESHOLD){
-      delta -= 10;
-      reasons.push('MACD過熱');
-    }
-
-    if(Number.isFinite(volRatio)){
-      if(volRatio >= 1.2 && volRatio <= 1.8){
-        delta += 5;
-        reasons.push('健康量能');
-      }else if(volRatio >= 0.8 && volRatio < 1.2){
-        delta += 2;
-        reasons.push('溫和量能');
-      }else if(volRatio > V21_OVERHEAT_VOL){
-        delta -= 5;
-        reasons.push('量能過熱');
-      }
-    }
-
-    const earlyStart = ma20SlopeUp && histImproving && Number.isFinite(hist) && hist < HIST_THRESHOLD;
-    if(earlyStart){
-      delta += 4;
-      reasons.push('早期啟動');
-    }
-
-    const positionOk = Number.isFinite(riseFromLow) && riseFromLow < V21_POSITION_MAX;
-    const volumeOk = Number.isFinite(volRatio) && volRatio >= V21_VOL_MIN && volRatio <= V21_VOL_MAX;
-    const warmVolumeOk = Number.isFinite(volRatio) && volRatio >= V21_WARM_VOL_MIN && volRatio <= 2.2;
-    const structureOk = (ma20SlopeUp && isAboveMA20) || (histImproving && isAboveMA20);
-
-    const qualifies = positionOk && histImproving && warmVolumeOk && structureOk;
-    if(delta >= 10) badges.push('V2.1優選');
-    if(earlyStart || (volumeOk && ma20SlopeUp && isAboveMA20)) badges.push('V2.1早期訊號');
-    if((Number.isFinite(hist) && hist > HIST_THRESHOLD) || (Number.isFinite(volRatio) && volRatio > V21_OVERHEAT_VOL)) badges.push('V2.1過熱');
-
-    return { qualifies, delta, reasons, badges, earlyStart, positionOk, volumeOk, warmVolumeOk, structureOk };
-  }
-
-  function getV21Candidates(codes){
-    const v22Codes = new Set(getEarlyStarterCandidates(codes).map(item=>item.code));
-    const v23Codes = new Set(getV23Candidates(codes).map(item=>item.code));
-
-    return (codes||[]).map(code=>{
-      const d=AppState.stocks[code]||{};
-      if(!d || d.loading || d.error || !/^\d+$/.test(code)) return null;
-
-      const tech=d.tech||{};
-      const score=computeAjieScore(code, true);
-      const price=safeNumber(d.price);
-      const ma20=safeNumber(tech.ma20);
-      const maBias=(Number.isFinite(ma20) && Number.isFinite(price) && ma20>0)?((price-ma20)/ma20):null;
-      const riseFromLow=deriveRiseFromLow(score, tech, d);
-      const histPack=deriveHistSeries(tech);
-      const volRatio=Number.isFinite(score.volRatio) ? score.volRatio : safeNumber(tech.volRatio);
-      const v21=calculateV21({
-        ma20SlopeUp: tech.ma20SlopeUp,
-        isAboveMA20: tech.isAboveMA20,
-        histImproving: tech.histImproving,
-        hist: histPack.hist,
-        volRatio,
-        riseFromLow,
-      });
-
-      if(!v21.qualifies) return null;
-      if(v22Codes.has(code) || v23Codes.has(code)) return null;
-
-      const line = `${v21.earlyStart?'MACD 早期轉強':'結構先轉強'} · ${Number.isFinite(riseFromLow)?`低點上來 ${(riseFromLow*100).toFixed(1)}%`:'位階待補'} · ${Number.isFinite(volRatio)?`量比 ${volRatio.toFixed(1)}倍`:'量能待補'}`;
-      const panelScore = Math.max(1, Math.min(99, Math.round((score.total||0) + v21.delta)));
-
-      return {
-        code,
-        name:d.name||EPS[code]?.n||code,
-        price,
-        panelScore,
-        v21Delta:v21.delta,
-        line,
-        badges:v21.badges,
-        reasons:v21.reasons,
-        riseFromLow,
-        volRatio,
-        hist:histPack.hist,
-        maBias,
-        earlyStart:v21.earlyStart,
-      };
-    }).filter(Boolean)
-      .sort((a,b)=>{
-        if((b.earlyStart?1:0)!==(a.earlyStart?1:0)) return (b.earlyStart?1:0)-(a.earlyStart?1:0);
-        if((b.panelScore||0)!==(a.panelScore||0)) return (b.panelScore||0)-(a.panelScore||0);
-        if((a.riseFromLow??999)!==(b.riseFromLow??999)) return (a.riseFromLow??999)-(b.riseFromLow??999);
-        if((b.volRatio||-999)!==(a.volRatio||-999)) return (b.volRatio||-999)-(a.volRatio||-999);
-        return String(a.code).localeCompare(String(b.code),'zh-Hant');
-      }).slice(0,8);
-  }
-
-  function renderV21(codes){
-    const wrap=$('v21Grid');
-    const badge=$('v21Badge');
-    if(!wrap || !badge) return;
-
-    const list=getV21Candidates(codes);
-    if(!list.length){
-      badge.textContent='暫無訊號';
-      wrap.innerHTML=`<div class="v21-empty"><b>今天還沒看到漂亮的 V2.1 早期訊號。</b> 先等低位、MACD 改善、量能回溫三件事一起對上。</div>`;
-      return;
-    }
-
-    badge.textContent=`抓到 ${list.length} 檔`;
-    wrap.innerHTML=list.map((item,idx)=>{
-      const posText=item.riseFromLow!=null ? `低點上來 ${(item.riseFromLow*100).toFixed(1)}%` : '位階待補';
-      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
-      const maText=item.maBias!=null ? `高於MA20 +${Math.round(item.maBias*100)}%` : 'MA20待補';
-      const badgeHtml=(item.badges||[]).slice(0,2).map(tag=>{
-        const cls = tag.includes('優選')
-          ? 'background:#0a2015;border-color:var(--green);color:var(--green)'
-          : tag.includes('過熱')
-            ? 'background:#2a1208;border-color:#ff6b6b;color:#ff9b9b'
-            : 'background:#0a1428;border-color:var(--blue);color:var(--blue)';
-        return `<span class="v21-tag" style="${cls}">${tag}</span>`;
-      }).join('');
-      return `
-        <div class="v21-card" onclick="showDetail('${item.code}')">
-          <div class="v21-kicker">
-            <div>
-              <div class="name">#${idx+1} ${item.name}</div>
-              <div class="code">${item.code}</div>
-            </div>
-            <div class="v21-score">早期分 ${item.panelScore}</div>
-          </div>
-          <div class="v21-line">${item.line}</div>
-          <div class="v21-tags">
-            <span class="v21-tag" style="background:#0a2015;border-color:var(--green);color:var(--green)">${maText}</span>
-            <span class="v21-tag" style="background:#1a1508;border-color:var(--gold);color:var(--gold)">${posText}</span>
-            <span class="v21-tag" style="background:#0a1428;border-color:var(--blue);color:var(--blue)">${volText}</span>
-            ${badgeHtml}
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  function calculateV23(data){
-    const rise=safeNumber(data?.riseFromLow);
-    const vol=safeNumber(data?.volRatio);
-    const h=safeNumber(data?.hist);
-    const h1=safeNumber(data?.histLast);
-    const h2=safeNumber(data?.histLast2);
-
-    const isMomentum=Number.isFinite(h) && Number.isFinite(h1) && Number.isFinite(h2) && h>h1 && h1>h2 && h>V23_MIN_HIST;
-    const isHighPosition=Number.isFinite(rise) && rise>V23_HIGH_POSITION;
-    const isStrongVolume=Number.isFinite(vol) && vol>V23_STRONG_VOLUME;
-
-    if(!(isMomentum && isHighPosition && isStrongVolume)) return null;
-
-    let score=20;
-    if(h>V23_BONUS_HIST) score+=10;
-    if(vol>=V23_STRONG_VOLUME && vol<=3.0) score+=5;
-
-    let isHot=false;
-    if(rise>V23_HOT_POSITION && vol>V23_HOT_VOLUME && h>V23_HOT_HIST){
-      isHot=true;
-      score-=10;
-    }
-
-    return { score, isHot };
-  }
-
-  function getV23Candidates(codes){
-    return (codes||[]).map(code=>{
-      const d=AppState.stocks[code]||{};
-      const tech=d.tech||{};
-      const score=getActiveScore(code);
-      const price=safeNumber(d.price);
-      const { hist, histLast, histLast2 }=deriveHistSeries(tech);
-      const avgVol20=safeNumber(tech.avgVol20);
-      const volume=safeNumber(d.volume);
-      const volRatio=Number.isFinite(score.volRatio)?score.volRatio:(avgVol20>0 && volume>0 ? volume/avgVol20 : null);
-      const riseFromLow=deriveRiseFromLow(score, tech, d);
-
-      const v23=calculateV23({ riseFromLow, volRatio, hist, histLast, histLast2 });
-      if(!v23) return null;
-
-      const ma20=safeNumber(tech.ma20);
-      const maBias=(Number.isFinite(ma20) && Number.isFinite(price) && ma20>0)?((price-ma20)/ma20):null;
-      const line=`高位續攻 · MACD 三連增強 · ${Number.isFinite(volRatio)?`量比 ${volRatio.toFixed(1)}倍`:'量能待補'}`;
-
-      d.v23Score=v23.score;
-      d.v23Hot=v23.isHot;
-
-      return {
-        code,
-        name:d.name||EPS[code]?.n||code,
-        price,
-        score:getActiveScore(code),
-        v23Score:v23.score,
-        v23Hot:v23.isHot,
-        riseFromLow,
-        volRatio,
-        hist,
-        histLast,
-        histLast2,
-        maBias,
-        line,
-      };
-    }).filter(Boolean)
-      .sort((a,b)=>{
-        if(Number(b.v23Hot)!==Number(a.v23Hot)) return Number(a.v23Hot)-Number(b.v23Hot);
-        if((b.v23Score||0)!==(a.v23Score||0)) return (b.v23Score||0)-(a.v23Score||0);
-        if((b.hist||-999)!==(a.hist||-999)) return (b.hist||-999)-(a.hist||-999);
-        if((b.volRatio||-999)!==(a.volRatio||-999)) return (b.volRatio||-999)-(a.volRatio||-999);
-        return String(a.code).localeCompare(String(b.code),'zh-Hant');
-      })
-      .slice(0,5);
-  }
-
-  function renderV23(codes){
-    const wrap=$('v23List');
-    const badge=$('v23Badge');
-    if(!wrap || !badge) return;
-
-    const list=getV23Candidates(codes);
-    if(!list.length){
-      badge.textContent='暫無訊號';
-      wrap.innerHTML=`<div class="v23-empty"><b>今天還沒看到漂亮的高位主升訊號。</b> 先等高位、量能、MACD 三件事一起噴。</div>`;
-      return;
-    }
-
-    badge.textContent=`抓到 ${list.length} 檔`;
-    wrap.innerHTML=list.map((item,idx)=>{
-      const posText=item.riseFromLow!=null ? `低點上來 ${(item.riseFromLow*100).toFixed(1)}%` : '位階待補';
-      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
-      const histText=item.hist!=null ? `hist ${item.hist.toFixed(3)}` : '動能待補';
-      const hotTag=item.v23Hot ? '<span class="v23-tag" style="background:#2a1208;border-color:#ff6b6b;color:#ff9b9b">🔥 極熱區</span>' : '<span class="v23-tag" style="background:#1a1508;border-color:#fb923c;color:#fb923c">主升攻擊</span>';
-      return `
-        <div class="v23-card" onclick="showDetail('${item.code}')">
-          <div class="v23-kicker">
-            <div>
-              <div class="name">#${idx+1} ${item.name}</div>
-              <div class="code">${item.code}</div>
-            </div>
-            <div class="v23-score">主升分 ${item.v23Score}</div>
-          </div>
-          <div class="v23-line">${item.line}</div>
-          <div class="v23-tags">
-            <span class="v23-tag" style="background:#1a1508;border-color:#ff9b9b;color:#ff9b9b">${posText}</span>
-            <span class="v23-tag" style="background:#0a1428;border-color:var(--blue);color:var(--blue)">${volText}</span>
-            <span class="v23-tag" style="background:#0a2015;border-color:var(--green);color:var(--green)">${histText}</span>
-            ${hotTag}
-          </div>
-        </div>`;
-    }).join('');
-  }
-
   function renderEarlyStarter(codes){
     const wrap=$('starterGrid');
     const badge=$('starterBadge');
@@ -1390,25 +1017,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   }
   const APP_VERSION=(document.querySelector('meta[name="app-version"]')?.content||'v0.0.0').trim();
   const HIST_THRESHOLD = 20;
-  const V22_POSITION_LOW_MAX = 0.12;
-  const V22_POSITION_TRANSITION_MAX = 0.18;
-  const V22_VOLUME_HEALTHY_MIN = 1.1;
-  const V22_VOLUME_HEALTHY_MAX = 1.8;
-  const V22_VOLUME_OVERHEAT = 2.5;
-  const V22_VOLUME_WEAK = 0.8;
-  const V23_MIN_HIST = 0.03;
-  const V23_HIGH_POSITION = 0.18;
-  const V23_STRONG_VOLUME = 2.3;
-  const V23_BONUS_HIST = 0.1;
-  const V23_HOT_POSITION = 0.25;
-  const V23_HOT_VOLUME = 3.5;
-  const V23_HOT_HIST = 0.6;
-
-  const V21_POSITION_MAX = 0.15;
-  const V21_VOL_MIN = 1.0;
-  const V21_VOL_MAX = 2.0;
-  const V21_WARM_VOL_MIN = 0.8;
-  const V21_OVERHEAT_VOL = 2.5;
   let updateToastShown=false;
   
   const AppState={
@@ -2064,7 +1672,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         }));
         renderCards(codes);
         renderSectorHeat(codes);
-        renderV21(codes);
         renderEarlyStarter(codes);
         setStat(`歷史回放中 ${Math.min(i+batchSize,codes.length)}/${codes.length}...`);
         if(i+batchSize<codes.length) await sleep(450);
@@ -2156,61 +1763,33 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     throw lastError;
   }
   async function loadTechData(codes,dateStr='') {
-  const list = Array.isArray(codes) ? codes.filter(Boolean) : [];
-  if (!list.length) return;
-
-  const chunkSize = 5;
-  const delayMs = 600;
-
   try {
-    for (let i = 0; i < list.length; i += chunkSize) {
-      const chunk = list.slice(i, i + chunkSize);
-      const qs = `/tech?codes=${chunk.join(',')}` + (dateStr ? `&date=${encodeURIComponent(dateStr)}` : '');
-      const res = await apiGetJson(qs, { timeout: 20000, retries: 1 });
-      if (res?.items) {
-        res.items.forEach(item => {
-          const code = item.code;
-          if (!AppState.stocks[code]) return;
+    const qs=`/tech?codes=${codes.join(',')}` + (dateStr?`&date=${encodeURIComponent(dateStr)}`:'');
+    const res = await apiGetJson(qs);
+    if (!res?.items) return;
 
-          const histArray = Array.isArray(item.histArray) ? item.histArray : [];
-          const fallbackHistLast = histArray.length >= 2 ? histArray[histArray.length - 2] : null;
-          const fallbackHistLast2 = histArray.length >= 3 ? histArray[histArray.length - 3] : null;
-          const fallbackRiseFromLow =
-            item.riseFromLow ?? (
-              Number.isFinite(Number(item.lastClose)) &&
-              Number.isFinite(Number(item.low20)) &&
-              Number(item.low20) > 0
-            )
-              ? +(((Number(item.lastClose) - Number(item.low20)) / Number(item.low20))).toFixed(4)
-              : null;
+    res.items.forEach(item => {
+      const code = item.code;
+      if (!AppState.stocks[code]) return;
 
-          AppState.stocks[code].tech = {
-            ma20: item.ma20 ?? null,
-            ma20Prev: item.ma20Prev ?? null,
-            ma20SlopeUp: item.ma20SlopeUp ?? null,
-            isAboveMA20: item.isAboveMA20 ?? null,
-            avgVol20: item.avgVol20 ?? null,
-            volRatio: item.volRatio ?? null,
-            macd: item.macd ?? null,
-            macdPrev: item.macdPrev ?? null,
-            hist: item.hist ?? null,
-            histPrev: item.histPrev ?? null,
-            histLast: item.histLast ?? fallbackHistLast,
-            histLast2: item.histLast2 ?? fallbackHistLast2,
-            histArray,
-            histImproving: item.histImproving ?? null,
-            high20: item.high20 ?? null,
-            low20: item.low20 ?? null,
-            riseFromLow: fallbackRiseFromLow
-          };
-        });
-      }
+      AppState.stocks[code].tech = {
+        ma20: item.ma20 ?? null,
+        ma20Prev: item.ma20Prev ?? null,
+        ma20SlopeUp: item.ma20SlopeUp ?? null,
+        isAboveMA20: item.isAboveMA20 ?? null,
+        avgVol20: item.avgVol20 ?? null,
+        volRatio: item.volRatio ?? null,
+        macd: item.macd ?? null,
+        macdPrev: item.macdPrev ?? null,
+        hist: item.hist ?? null,
+        histPrev: item.histPrev ?? null,
+        histArray: item.histArray || [],
+        histImproving: item.histImproving ?? null,
+        high20: item.high20 ?? null,
+        low20: item.low20 ?? null
+      };
+    });
 
-      if (i + chunkSize < list.length) {
-        setStat(`技術資料載入中 ${Math.min(i + chunk.length, list.length)}/${list.length}`,'load');
-        await new Promise(r => setTimeout(r, delayMs));
-      }
-    }
   } catch (e) {
     console.error('loadTechData error', e);
   }
@@ -3004,7 +2583,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     const base=computeAjieScore(code, force);
     if(!/^\d+$/.test(code)){
-      d.scoreDataV2={...base, scoreV2: base.total, scoreDeltaV2: 0, v2Reasons:['美股沿用 V1'], formulaMode:'v2.2'};
+      d.scoreDataV2={...base, scoreV2: base.total, scoreDeltaV2: 0, v2Reasons:['美股沿用 V1']};
       d.scoreCacheKeyV2=signature;
       AppState.stocks[code]=d;
       return d.scoreDataV2;
@@ -3015,149 +2594,84 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const v2Reasons=[];
     let v2Delta=0;
 
+    const ma20=safeNumber(techData.ma20);
     const price=safeNumber(d.price);
     const hist=safeNumber(techData.hist);
     const histPrev=safeNumber(techData.histPrev);
     const avgVol20=safeNumber(techData.avgVol20);
     const volume=safeNumber(d.volume);
-    const low20=safeNumber(techData.low20);
-    const ma20=safeNumber(techData.ma20);
-    const prevMa20=safeNumber(techData.ma20Prev);
-    const histArray=Array.isArray(techData.histArray)
-      ? techData.histArray.filter(v=>Number.isFinite(Number(v))).map(Number)
-      : [];
 
-    const histImproving=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist > histPrev : null;
-    const histWeakening=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist < histPrev : null;
-    const ma20SlopeUp=Number.isFinite(ma20) && Number.isFinite(prevMa20) ? ma20 > prevMa20 : null;
     const isAboveMA20=Number.isFinite(ma20) && Number.isFinite(price) && ma20>0 ? price > ma20 : null;
+    const prevMa20=safeNumber(techData.ma20Prev);
+    const histImproving=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist > histPrev : null;
+    let ma20SlopeUp=Number.isFinite(ma20) && Number.isFinite(prevMa20) ? ma20 > prevMa20 : null;
+    if(ma20SlopeUp===null && Number.isFinite(ma20) && Number.isFinite(price)){
+      const maBias=(price-ma20)/Math.max(ma20,0.01);
+      if(maBias >= 0.01 && histImproving===true) ma20SlopeUp=true;
+      else if(maBias <= -0.01 && histImproving===false) ma20SlopeUp=false;
+    }
     const volRatio=(Number.isFinite(avgVol20) && avgVol20>0 && Number.isFinite(volume)) ? volume/avgVol20 : null;
-    const riseFromLow=(Number.isFinite(price) && Number.isFinite(low20) && low20>0) ? ((price-low20)/low20) : null;
 
     const missing=[];
-    if(!Number.isFinite(riseFromLow)) missing.push('位階');
-    if(!Number.isFinite(hist)) missing.push('hist');
+    if(ma20SlopeUp===null) missing.push('MA20方向');
+    if(isAboveMA20===null) missing.push('站上MA20');
     if(histImproving===null) missing.push('MACD改善');
+    if(!Number.isFinite(hist)) missing.push('histLast');
     if(volRatio===null) missing.push('量能');
-    if(missing.length) v2Reasons.push(`技術資料不足：${missing.join(' / ')}`);
-
-    let positionLayer='unknown';
-    if(Number.isFinite(riseFromLow)){
-      if(riseFromLow < V22_POSITION_LOW_MAX){
-        positionLayer='low';
-        v2Delta += 6;
-        v2Reasons.push(`低位啟動區 <${Math.round(V22_POSITION_LOW_MAX*100)}% +6`);
-      }else if(riseFromLow <= V22_POSITION_TRANSITION_MAX){
-        positionLayer='transition';
-        v2Reasons.push(`過渡區 ${Math.round(V22_POSITION_LOW_MAX*100)}~${Math.round(V22_POSITION_TRANSITION_MAX*100)}% +0`);
-      }else{
-        positionLayer='high';
-        v2Delta -= 6;
-        v2Reasons.push(`高位區 >${Math.round(V22_POSITION_TRANSITION_MAX*100)}% -6`);
-      }
+    if(missing.length){
+      v2Reasons.push(`技術資料不足：${missing.join(' / ')}`);
     }
 
-    let histTurnedPositive=false;
-    if(Number.isFinite(hist) && Number.isFinite(histPrev) && histPrev<=0 && hist>0){
-      histTurnedPositive=true;
-    }else if(histArray.length>=4){
-      const last4=histArray.slice(-4);
-      histTurnedPositive = last4[last4.length-1] > 0 && last4.slice(0,-1).some(v=>v<=0);
-    }
-    const positiveHist=histArray.filter(v=>v>0);
-    const recentPositiveMax=positiveHist.length ? Math.max(...positiveHist.slice(-8)) : null;
-    const histNearRecentHigh=Number.isFinite(hist) && Number.isFinite(recentPositiveMax) && recentPositiveMax>0
-      ? hist >= recentPositiveMax*0.78
-      : false;
-    const histEarlyMomentum=histTurnedPositive!==true && histImproving===true && Number.isFinite(hist) && hist<=HIST_THRESHOLD && histNearRecentHigh===false;
-
-    let momentumLayer='unknown';
-    if(histTurnedPositive){
-      momentumLayer='turning';
+    if(ma20SlopeUp===true && isAboveMA20===true){
       v2Delta += 8;
-      v2Reasons.push('hist 負轉正（最近1~3天） +8');
-    }else if(histEarlyMomentum){
-      momentumLayer='early';
-      v2Delta += 4;
-      v2Reasons.push('hist 改善且仍在早期 +4');
-    }else if(Number.isFinite(hist) && (hist > HIST_THRESHOLD || histNearRecentHigh)){
-      momentumLayer='high';
-      v2Delta -= 6;
-      v2Reasons.push(`hist 位於近期高位區 -6`);
-    }else if(histWeakening===true){
-      momentumLayer='weakening';
-      v2Delta -= 5;
-      v2Reasons.push('hist 轉弱 -5');
+      v2Reasons.push('MA20向上+站上 +8');
+    }else if(ma20SlopeUp===false && isAboveMA20===false){
+      v2Delta -= 12;
+      v2Reasons.push('MA20向下且未站上 -12');
+    }else if(ma20SlopeUp===false && isAboveMA20===true){
+      v2Delta -= 3;
+      v2Reasons.push('站上MA20但均線未翻 -3');
     }
 
-    let volumeLayer='unknown';
+    if(histImproving===true){
+      v2Delta += 6;
+      v2Reasons.push('MACD改善 +6');
+    }
+    if(Number.isFinite(hist) && hist > HIST_THRESHOLD){
+      v2Delta -= 10;
+      v2Reasons.push(`MACD頂部>${HIST_THRESHOLD} -10`);
+    }
     if(Number.isFinite(volRatio)){
-      if(volRatio >= V22_VOLUME_HEALTHY_MIN && volRatio <= V22_VOLUME_HEALTHY_MAX){
-        volumeLayer='healthy';
-        v2Delta += 4;
-        v2Reasons.push(`健康量 ${V22_VOLUME_HEALTHY_MIN.toFixed(1)}~${V22_VOLUME_HEALTHY_MAX.toFixed(1)}x +4`);
-      }else if(volRatio > V22_VOLUME_OVERHEAT){
-        volumeLayer='overheat';
-        v2Delta -= 6;
-        v2Reasons.push(`異常量 >${V22_VOLUME_OVERHEAT.toFixed(1)}x -6`);
-      }else if(volRatio < V22_VOLUME_WEAK){
-        volumeLayer='weak';
-        v2Delta -= 4;
-        v2Reasons.push(`無動能 <${V22_VOLUME_WEAK.toFixed(1)}x -4`);
-      }else{
-        volumeLayer='normal';
-        v2Reasons.push('量能普通 +0');
+      if(volRatio >= 1.2 && volRatio <= 1.8){
+        v2Delta += 5;
+        v2Reasons.push('健康量能 1.2~1.8x +5');
+      }else if(volRatio >= 0.8 && volRatio < 1.2){
+        v2Delta += 2;
+        v2Reasons.push('溫和量能 0.8~1.2x +2');
+      }else if(volRatio > 2.5){
+        v2Delta -= 5;
+        v2Reasons.push('量能過熱 >2.5x -5');
       }
     }
-
-    const isTrueFront = positionLayer==='low' && momentumLayer==='turning' && volumeLayer==='healthy';
-    const isTransition = positionLayer==='transition' && (momentumLayer==='early' || momentumLayer==='turning') && ['healthy','normal'].includes(volumeLayer);
-    const isFakeFront = positionLayer==='high' && momentumLayer==='high' && volumeLayer==='overheat';
-    const isStrongException = positionLayer==='high' && momentumLayer==='turning' && ['healthy','normal'].includes(volumeLayer);
-
-    if(isTrueFront){
-      v2Delta += 12;
-      v2Reasons.push('真前段聯合判斷 +12');
-    }else if(isTransition){
-      v2Delta += 1;
-      v2Reasons.push('過渡區保留 +1');
-    }else if(isFakeFront){
-      v2Delta -= 14;
-      v2Reasons.push('假前段聯合過濾 -14');
-    }else if(isStrongException){
+    if(ma20SlopeUp===true && histImproving===true && Number.isFinite(hist) && hist < HIST_THRESHOLD){
       v2Delta += 4;
-      v2Reasons.push('高位但剛翻正，視為強勢例外 +4');
-    }
-
-    if(ma20SlopeUp===true && isAboveMA20===true && momentumLayer!=='high'){
-      v2Delta += 3;
-      v2Reasons.push('MA20向上且站上 +3');
-    }else if(ma20SlopeUp===false && isAboveMA20===false){
-      v2Delta -= 6;
-      v2Reasons.push('MA20向下且未站上 -6');
-    }else if(ma20SlopeUp===false && isAboveMA20===true && positionLayer==='high' && !isStrongException){
-      v2Delta -= 2;
-      v2Reasons.push('高位站上但均線未翻 -2');
+      v2Reasons.push('早期啟動 +4');
     }
 
     const total=clamp(Math.round(base.total + v2Delta),0,100);
     let decision=base.decision, badge=base.badge, note=base.note;
-    if(isTrueFront && total>=76){
-      decision='可進場'; badge='sb-go'; note='V2.2 判定為真前段，結構、動能、量能有對齊。';
-    }else if(isFakeFront || total<=54){
-      decision='先別碰'; badge='sb-no'; note='V2.2 判定偏假前段或過熱，先不要當最後一棒。';
-    }else if(isStrongException && total>=70){
-      decision='觀察'; badge='sb-wait'; note='V2.2 保留高位剛翻正例外，偏強但不追。';
+    if(total>=78 && clone.tech>=35){
+      decision='可進場'; badge='sb-go'; note='V2.1 微調後更偏好早期結構，這檔更接近發動。';
+    }else if(total<=54){
+      decision='先別碰'; badge='sb-no'; note='V2.1 判定結構不夠乾淨，先避開。';
     }else if(total>=60){
-      decision='觀察'; badge='sb-wait'; note='V2.2 顯示有早期訊號，但還需要再確認。';
+      decision='觀察'; badge='sb-wait'; note='V2.1 判定有早期訊號，但還要等確認。';
     }
 
     const extraBadges=[];
-    if(isTrueFront) extraBadges.push('V2.2真前段');
-    if(isTransition) extraBadges.push('V2.2過渡');
-    if(isFakeFront) extraBadges.push('V2.2假前段');
-    if(isStrongException) extraBadges.push('V2.2強勢例外');
-    if(volumeLayer==='overheat') extraBadges.push('V2.2爆量過熱');
+    if(v2Delta>=10) extraBadges.push('V2.1優選');
+    if(v2Reasons.some(t=>t.includes('早期啟動')) || (v2Reasons.some(t=>t.includes('健康量能')) && v2Reasons.some(t=>t.includes('MA20向上+站上')))) extraBadges.push('V2.1早期訊號');
+    if(v2Reasons.some(t=>t.includes('MACD頂部')) || v2Reasons.some(t=>t.includes('量能過熱'))) extraBadges.push('V2.1過熱');
 
     const scoreV2={
       ...clone,
@@ -3170,19 +2684,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       v2Delta,
       v2Reasons,
       v2Badges: extraBadges,
-      formulaMode:'v2.2',
-      v22Meta:{
-        riseFromLow,
-        positionLayer,
-        momentumLayer,
-        volumeLayer,
-        volRatio,
-        histTurnedPositive,
-        histNearRecentHigh,
-        isTrueFront,
-        isFakeFront,
-        isStrongException
-      }
+      formulaMode:'v2.1'
     };
     d.scoreDataV2=scoreV2;
     d.scoreCacheKeyV2=signature;
@@ -3358,7 +2860,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       <div class="decision-hero">
         <div class="decision-top">
           <div style="flex:1;min-width:220px">
-            <div class="decision-kicker">AJ Decision Panel · ${AppState.ui.formulaMode==='v2'?'V2.2 結構公式':'V1 原始公式'}</div>
+            <div class="decision-kicker">AJ Decision Panel · ${AppState.ui.formulaMode==='v2'?'V2.1 微調公式':'V1 原始公式'}</div>
             <div class="decision-title">${score.decision}</div>
             <div class="decision-sub">現況｜${status.label}　${inst?`・ ${inst.label}`:''}</div>
           </div>
@@ -3461,7 +2963,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const chipMeta=getChipMeta(code);
       const chipBadgeClass=getChipBadgeClass(code);
       el.innerHTML=`
-        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2.2':'V1'}</div>
+        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2.1':'V1'}</div>
         <div class="sn">${d.name||ep?.n||code}</div>
         <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
         <div class="badge-row">
@@ -3478,7 +2980,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
         <div class="score-row">
           <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2.2':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
+          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2.1':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
         </div>
         ${AppState.ui.formulaMode==='v2' ? `<div class="badge-row">${(score.v2Badges||[]).map(tag=>`<span class="sbg ${tag.includes('過熱')?'bg-red':'bg-blue'}">${tag}</span>`).join('')}${(score.v2Reasons||[]).slice(0,2).map(tag=>`<span class="sbg bg-amber">${tag}</span>`).join('')}</div>` : ''}
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
@@ -3740,18 +3242,14 @@ async function fetchCodes(codes){
     });
     renderCards(codes);
     renderSectorHeat(codes);
-    renderV21(codes);
     renderEarlyStarter(codes);
-    renderV23(codes);
   }
   function renderCurrentView(){
     const codes=currentCodes();
     hydrateScores(codes);
     renderCards(codes);
     renderSectorHeat(codes);
-    renderV21(codes);
     renderEarlyStarter(codes);
-    renderV23(codes);
     if(AppState.ui.activeCode && codes.includes(AppState.ui.activeCode)){
       showDetail(AppState.ui.activeCode);
     }else if(!isMobileView()){
@@ -3932,6 +3430,7 @@ async function refreshAll(){
 
     if(codes.length){
       await loadCodes(codes);
+      await loadTechData(codes);
 
       codes.forEach(c => {
         if(AppState.stocks[c]){
