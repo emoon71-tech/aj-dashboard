@@ -3982,12 +3982,12 @@ window.addEventListener('load', ajieRenderPerf);
       <div class="v21ab-grid">
         <div class="v21ab-panel">
           <div class="v21ab-title">🔵 V2.1（舊版｜漲幅排序）</div>
-          <div class="v21ab-sub">保留原本野性，按漲幅／量能偏熱度排序。</div>
+          <div class="v21ab-sub">保留原本野性，只顯示前 6 檔，按漲幅／量能偏熱度排序。</div>
           <div id="v21-old" class="v21ab-list"></div>
         </div>
         <div class="v21ab-panel">
           <div class="v21ab-title">🧠 V2.1（新版｜策略排序）</div>
-          <div class="v21ab-sub">不改條件，只把準備發動的排到前面。</div>
+          <div class="v21ab-sub">不改條件，只顯示前 6 檔，把準備發動的排到前面。</div>
           <div id="v21-new" class="v21ab-list"></div>
         </div>
       </div>`;
@@ -4113,8 +4113,8 @@ function computeV21RankScore(stock){
       return (b.score?.total||0) - (a.score?.total||0);
     });
 
-    oldWrap.innerHTML = v21List_old.slice(0,25).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
-    newWrap.innerHTML = v21List_new.slice(0,25).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
+    oldWrap.innerHTML = v21List_old.slice(0,6).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
+    newWrap.innerHTML = v21List_new.slice(0,6).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
   }
 
   function hookRender(){
