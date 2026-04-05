@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.1">
+  <meta name="app-version" content="v4.6.2">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1378,16 +1378,30 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const signal=ema(macdLine,9);
     const hist=macdLine.map((m,i)=>m-signal[i]);
     const last=hist.length-1;
+    const ma20=sma(closes,20);
+    const ma20Prev=closes.length>=21 ? +((closes.slice(-21,-1).reduce((a,b)=>a+b,0))/20).toFixed(2) : null;
+    const avgVol20=sma(volumes,20);
+    const lastClose=safeNumber(rows[rows.length-1]?.close);
+    const lastVolume=safeNumber(rows[rows.length-1]?.volume);
+    const histLast=+(hist[last]).toFixed(3);
+    const histPrev=+(hist[last-1] ?? hist[last]).toFixed(3);
     return {
-      ma20:sma(closes,20),
-      avgVol20:sma(volumes,20),
+      ma20,
+      ma20Prev,
+      ma20SlopeUp:Number.isFinite(ma20) && Number.isFinite(ma20Prev) ? ma20 > ma20Prev : null,
+      isAboveMA20:Number.isFinite(lastClose) && Number.isFinite(ma20) && ma20 > 0 ? lastClose > ma20 : null,
+      avgVol20,
+      volRatio:Number.isFinite(lastVolume) && Number.isFinite(avgVol20) && avgVol20 > 0 ? +(lastVolume/avgVol20).toFixed(2) : null,
       macd:+macdLine[last].toFixed(3),
       macdPrev:+(macdLine[last-1] ?? macdLine[last]).toFixed(3),
-      hist:+hist[last].toFixed(3),
-      histPrev:+(hist[last-1] ?? hist[last]).toFixed(3),
+      hist:histLast,
+      histPrev:histPrev,
       histArray:hist.slice(-20).map(v=>+v.toFixed(3)),
+      histImproving:Number.isFinite(histLast) && Number.isFinite(histPrev) ? histLast > histPrev : null,
       high20:highs.length>=20 ? +Math.max(...highs.slice(-20)).toFixed(2) : null,
       low20:lows.length>=20 ? +Math.min(...lows.slice(-20)).toFixed(2) : null,
+      lastClose,
+      lastVolume,
     };
   }
   async function fetchReplayHistory(code,dateStr){
@@ -1757,16 +1771,35 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const code = item.code;
       if (!AppState.stocks[code]) return;
 
+      const ma20 = safeNumber(item.ma20);
+      const ma20Prev = safeNumber(item.ma20Prev);
+      const avgVol20 = safeNumber(item.avgVol20);
+      const hist = safeNumber(item.hist);
+      const histPrev = safeNumber(item.histPrev);
+      const livePrice = safeNumber(AppState.stocks[code]?.price);
+      const fallbackPrice = safeNumber(item.lastClose);
+      const price = Number.isFinite(livePrice) ? livePrice : fallbackPrice;
+      const liveVolume = safeNumber(AppState.stocks[code]?.volume);
+      const fallbackVolume = safeNumber(item.lastVolume);
+      const volume = Number.isFinite(liveVolume) ? liveVolume : fallbackVolume;
+
       AppState.stocks[code].tech = {
-        ma20: item.ma20,
-        avgVol20: item.avgVol20,
+        ma20,
+        ma20Prev,
+        ma20SlopeUp: item.ma20SlopeUp == null ? (Number.isFinite(ma20) && Number.isFinite(ma20Prev) ? ma20 > ma20Prev : null) : item.ma20SlopeUp,
+        isAboveMA20: item.isAboveMA20 == null ? (Number.isFinite(price) && Number.isFinite(ma20) && ma20 > 0 ? price > ma20 : null) : item.isAboveMA20,
+        avgVol20,
+        volRatio: item.volRatio == null ? (Number.isFinite(volume) && Number.isFinite(avgVol20) && avgVol20 > 0 ? +(volume / avgVol20).toFixed(2) : null) : safeNumber(item.volRatio),
         macd: item.macd,
         macdPrev: item.macdPrev,
-        hist: item.hist,
-        histPrev: item.histPrev,
+        hist,
+        histPrev,
         histArray: item.histArray || [],
+        histImproving: item.histImproving == null ? (Number.isFinite(hist) && Number.isFinite(histPrev) ? hist > histPrev : null) : item.histImproving,
         high20: item.high20,
-        low20: item.low20
+        low20: item.low20,
+        lastClose: item.lastClose,
+        lastVolume: item.lastVolume
       };
     });
 
@@ -3611,7 +3644,7 @@ async function refreshAll(){
 <div class="perf-panel" id="perfPanel">
   <div class="perf-top">
     <div>
-      <div class="perf-title">績效面板 v4.6.1</div>
+      <div class="perf-title">績效面板 v4.6.2</div>
       <div class="perf-sub">3日驗方向 / 5日驗品質 / 自動統計短線陷阱率</div>
     </div>
     <div class="perf-actions">
