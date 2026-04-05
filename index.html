@@ -3994,21 +3994,51 @@ window.addEventListener('load', ajieRenderPerf);
     host.parentNode.insertBefore(wrap, host);
   }
 
-  function computeV21RankScore(stock){
-    let score = 0;
-    const tech = stock?.tech || {};
-    const rise = Number.isFinite(stock?.scoreData?.riseFromLow) ? stock.scoreData.riseFromLow :
-                 Number.isFinite(stock?.riseFromLow) ? stock.riseFromLow : null;
-    const vol = Number.isFinite(stock?.scoreData?.volRatio) ? stock.scoreData.volRatio :
-                Number.isFinite(tech?.volRatio) ? tech.volRatio : null;
+  
+function computeV21RankScore(stock){
+  const tech = stock?.tech || {};
+  const scoreData = stock?.scoreData || {};
+  let score = 0;
 
-    if(tech.ma20SlopeUp===true) score += 3;
-    if(tech.isAboveMA20===true) score += 3;
-    if(tech.histImproving===true) score += 3;
-    if(Number.isFinite(vol) && vol > 1.2 && vol < 2.5) score += 1;
-    if(Number.isFinite(rise) && rise > 0.25) score -= 2;
-    return score;
-  }
+  if(tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true) score += 3;
+  if(tech.isAboveMA20 === true || scoreData.isAboveMA20 === true) score += 3;
+  if(tech.histImproving === true || scoreData.histImproving === true) score += 3;
+
+  const hist = Number(
+    tech.hist ??
+    scoreData.hist ??
+    stock?.hist ??
+    0
+  );
+  const histLast = Number(
+    tech.histLast ??
+    tech.histPrev ??
+    scoreData.histLast ??
+    scoreData.histPrev ??
+    stock?.histLast ??
+    stock?.histPrev ??
+    0
+  );
+  if(hist > 0 && histLast <= 0) score += 2;
+
+  const riseFromLow = Number(
+    tech.riseFromLow ??
+    scoreData.riseFromLow ??
+    stock?.riseFromLow ??
+    0
+  );
+  if(riseFromLow > 0.25) score -= 2;
+
+  const volRatio = Number(
+    tech.volRatio ??
+    scoreData.volRatio ??
+    stock?.volRatio ??
+    0
+  );
+  if(volRatio >= 1.2 && volRatio <= 2.5) score += 1;
+
+  return score;
+}
 
   function fmtPct(v){
     return Number.isFinite(v) ? (v>0?'+':'') + (v*100).toFixed(1) + '%' : '--';
@@ -4083,8 +4113,8 @@ window.addEventListener('load', ajieRenderPerf);
       return (b.score?.total||0) - (a.score?.total||0);
     });
 
-    oldWrap.innerHTML = v21List_old.slice(0,10).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
-    newWrap.innerHTML = v21List_new.slice(0,10).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
+    oldWrap.innerHTML = v21List_old.slice(0,25).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
+    newWrap.innerHTML = v21List_new.slice(0,25).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
   }
 
   function hookRender(){
