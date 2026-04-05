@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.4">
+  <title>阿吉股票儀表板 v4.8.0</title>
+  <meta name="app-version" content="v4.8.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -103,6 +103,15 @@
   .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .2s}
   .sc:hover{border-color:var(--border2);transform:translateY(-1px)}.sc:hover::before{opacity:.6}
   .sc.active{border-color:var(--gold)}.sc.active::before{opacity:1}
+
+  .sc.sc-v21{border-color:#40a9ff;box-shadow:inset 0 0 0 1px rgba(64,169,255,.22);background:linear-gradient(180deg,rgba(64,169,255,.06),rgba(15,18,24,1))}
+  .sc.sc-v22{border-color:#fadb14;box-shadow:inset 0 0 0 1px rgba(250,219,20,.22);background:linear-gradient(180deg,rgba(250,219,20,.07),rgba(15,18,24,1))}
+  .sc.sc-v23{border-color:#ff4d4f;box-shadow:inset 0 0 0 1px rgba(255,77,79,.22);background:linear-gradient(180deg,rgba(255,77,79,.08),rgba(15,18,24,1))}
+  .tier-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;border:1px solid;margin-top:5px}
+  .tier-v21{background:#0a1428;border-color:#40a9ff;color:#40a9ff}
+  .tier-v22{background:#2a2408;border-color:#fadb14;color:#fadb14}
+  .tier-v23{background:#2a0f12;border-color:#ff4d4f;color:#ff9b9b}
+
   .sn{font-size:12px;color:var(--text2);font-weight:500}
   .sc2{font-size:9px;color:var(--text3);margin-top:1px}
   .sp{font-size:19px;font-weight:700;margin:6px 0 3px;letter-spacing:-.02em}
@@ -2941,29 +2950,142 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     `;
   }
 
+  
+  function ajieDeriveRiseFromLowForCard(d, score){
+    const tech=d?.tech||{};
+    const fromScore=safeNumber(score?.riseFromLow);
+    if(Number.isFinite(fromScore)) return fromScore;
+    const fromTech=safeNumber(tech?.riseFromLow);
+    if(Number.isFinite(fromTech)) return fromTech;
+    const low20=safeNumber(tech?.low20);
+    const price=safeNumber(d?.price);
+    if(Number.isFinite(price)&&Number.isFinite(low20)&&low20>0) return (price-low20)/low20;
+    return null;
+  }
+
+  function ajieDeriveHistSeriesForCard(tech){
+    const hist = safeNumber(tech?.hist);
+    const histPrev = safeNumber(tech?.histPrev);
+    const arr = Array.isArray(tech?.histArray)?tech.histArray.filter(v=>Number.isFinite(Number(v))).map(Number):[];
+    const h1 = arr.length>=2 ? arr[arr.length-2] : histPrev;
+    const h2 = arr.length>=3 ? arr[arr.length-3] : null;
+    return {hist, histPrev, histLast:h1, histLast2:h2, histArray:arr};
+  }
+
+  function computeAjieScoreV22Card(d, score){
+    const tech=d?.tech||{};
+    const riseFromLow=ajieDeriveRiseFromLowForCard(d, score);
+    const histPack=ajieDeriveHistSeriesForCard(tech);
+    const hist=safeNumber(histPack.hist);
+    const histPrev=safeNumber(histPack.histPrev);
+    const volRatio=Number.isFinite(score?.volRatio)?score.volRatio:safeNumber(tech?.volRatio);
+
+    let total=0, structure=0, momentum=0, volume=0;
+
+    if(tech.ma20SlopeUp===true) structure += 10;
+    if(tech.isAboveMA20===true) structure += 10;
+
+    if(tech.histImproving===true) momentum += 10;
+    if(Number.isFinite(histPrev)&&Number.isFinite(hist)&&histPrev<0&&hist>0) momentum += 12;
+    if(Number.isFinite(hist)&&hist>1.5) momentum -= 6;
+
+    if(Number.isFinite(volRatio)&&volRatio>=1.1&&volRatio<=2.0) volume += 10;
+    else if(Number.isFinite(volRatio)&&volRatio>2.5) volume -= 8;
+
+    if(Number.isFinite(riseFromLow)&&riseFromLow<0.15) total += 8;
+    else if(Number.isFinite(riseFromLow)&&riseFromLow>0.22) total -= 8;
+
+    if(structure>=15 && momentum>=10 && volume>=8) total += 15;
+    if(tech.ma20SlopeUp===false && tech.isAboveMA20===true) total -= 6;
+
+    total += structure + momentum + volume;
+    return {
+      score: total,
+      riseFromLow,
+      volRatio,
+      hist,
+      structure,
+      momentum,
+      volume,
+      qualifies: total >= 24
+    };
+  }
+
+  function calculateV23Card(d, score){
+    const tech=d?.tech||{};
+    const riseFromLow=ajieDeriveRiseFromLowForCard(d, score);
+    const histPack=ajieDeriveHistSeriesForCard(tech);
+    const h=safeNumber(histPack.hist);
+    const h1=safeNumber(histPack.histLast);
+    const h2=safeNumber(histPack.histLast2);
+    const vol=Number.isFinite(score?.volRatio)?score.volRatio:safeNumber(tech?.volRatio);
+
+    const isMomentum = Number.isFinite(h)&&Number.isFinite(h1)&&Number.isFinite(h2) && h>h1 && h1>h2 && h>0.03;
+    const isHighPosition = Number.isFinite(riseFromLow) && riseFromLow>0.18;
+    const isStrongVolume = Number.isFinite(vol) && vol>2.3;
+
+    if(!(isMomentum && isHighPosition && isStrongVolume)) return {qualifies:false,score:0,isHot:false};
+
+    let s=20;
+    if(h>0.1) s+=10;
+    if(vol>=2.3 && vol<=3.0) s+=5;
+    let isHot=false;
+    if(riseFromLow>0.25 && vol>3.5 && h>0.6){isHot=true; s-=10;}
+    return {qualifies:true,score:s,isHot,riseFromLow,vol,h,h1,h2};
+  }
+
+  function getAjieTierForCard(code, d, score){
+    const isV21 = AppState.ui.formulaMode==='v2' ? (score.total||0)>0 : false;
+    const v22 = computeAjieScoreV22Card(d, score);
+    const v23 = calculateV23Card(d, score);
+    if(v23.qualifies) return {tier:'v23', label:'🔴 V2.3 狙擊', v22, v23, isV21};
+    if(v22.qualifies) return {tier:'v22', label:'🟡 V2.2 均衡', v22, v23, isV21};
+    if(isV21) return {tier:'v21', label:'🔵 V2.1 海選', v22, v23, isV21};
+    return {tier:'none', label:'', v22, v23, isV21};
+  }
+
+
+
   function renderCards(codes){
     const g=$('egrid');
     g.innerHTML='';
     const sorted=sortCodes(codes);
-    sorted.forEach((code,idx)=>{
-      const d=AppState.stocks[code]||{}, ep=EPS[code], price=d.price;
+
+    const decorated = sorted.map(code=>{
+      const d=AppState.stocks[code]||{};
+      const score=getActiveScore(code);
+      const tierInfo=getAjieTierForCard(code, d, score);
+      const tierRank=tierInfo.tier==='v23'?3:tierInfo.tier==='v22'?2:tierInfo.tier==='v21'?1:0;
+      return {code,d,score,tierInfo,tierRank};
+    }).sort((a,b)=>{
+      if(b.tierRank!==a.tierRank) return b.tierRank-a.tierRank;
+      if((b.score.total||0)!==(a.score.total||0)) return (b.score.total||0)-(a.score.total||0);
+      return String(a.code).localeCompare(String(b.code),'zh-Hant');
+    });
+
+    decorated.forEach((item,idx)=>{
+      const code=item.code;
+      const d=item.d||{}, ep=EPS[code], price=d.price;
       const v=ep&&price?valLabel(price,ep):null;
       const col=d.chgPct>0?'up':d.chgPct<0?'dn':'neu';
-      const score=getActiveScore(code);
+      const score=item.score;
       const status=getStatusMeta(code);
       const inst=getInstitutionMeta(d);
       const stopRef=calcStopRef(code, price);
       const pctText=d.chgPct!=null?(d.chgPct>0?'▲':d.chgPct<0?'▼':'•')+' '+Math.abs(Number(d.chgPct)).toFixed(2)+'%　'+formatSignedChange(d.chg):'--';
       const el=document.createElement('div');
-      el.className='sc'+(code===AppState.ui.activeCode?' active':'');
+      const tierInfo=item.tierInfo||{tier:'none',label:''};
+      el.className='sc'+(code===AppState.ui.activeCode?' active':'')+(tierInfo.tier!=='none'?' sc-'+tierInfo.tier:'');
       el.onclick=()=>showDetail(code);
       const meta=getStockMeta(code);
       const shieldLabel=getEtfShieldLabel(code);
       const etfTitle=getEtfBadgeTitle(code);
       const chipMeta=getChipMeta(code);
       const chipBadgeClass=getChipBadgeClass(code);
+      const tierTag = tierInfo.label ? `<span class="tier-tag tier-${tierInfo.tier}">${tierInfo.label}</span>` : '';
+      const modeLabel = tierInfo.tier==='v23' ? 'V2.3' : tierInfo.tier==='v22' ? 'V2.2' : (AppState.ui.formulaMode==='v2'?'V2.1':'V1');
       el.innerHTML=`
-        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2.1':'V1'}</div>
+        <div class="rank-badge">#${idx+1} ${score.total} ${modeLabel}</div>
         <div class="sn">${d.name||ep?.n||code}</div>
         <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
         <div class="badge-row">
@@ -2974,13 +3096,14 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
           ${score.techStatus==='none' ? '<span class="sbg bg-red">無技術資料</span>' : ''}
           ${score.techStatus==='partial' ? '<span class="sbg bg-amber">技術資料未齊</span>' : ''}
         </div>
+        ${tierTag}
         ${inst?`<div><span class="inst-note">${inst.label}</span></div>`:''}
         <div class="sp ${col}">${price?price.toLocaleString():'--'}</div>
         <div class="sch ${col}">${pctText}</div>
         <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
         <div class="score-row">
           <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2.1':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
+          <span class="score-mini">${modeLabel} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
         </div>
         ${AppState.ui.formulaMode==='v2' ? `<div class="badge-row">${(score.v2Badges||[]).map(tag=>`<span class="sbg ${tag.includes('過熱')?'bg-red':'bg-blue'}">${tag}</span>`).join('')}${(score.v2Reasons||[]).slice(0,2).map(tag=>`<span class="sbg bg-amber">${tag}</span>`).join('')}</div>` : ''}
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
@@ -2994,6 +3117,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       g.appendChild(el);
     });
   }
+
 
   function showDetail(code){
     AppState.ui.activeCode=code;
@@ -3825,23 +3949,6 @@ function ajieHandlePerfImport(event){
 }
 window.ajieLogPerformance = ajieLogPerformance;
 window.addEventListener('load', ajieRenderPerf);
-</script>
-
-
-<script>
-// ===== FIX V2.2 FLAG =====
-function attachV2Flags(stock){
-  try{
-    const v22Score = computeAjieScoreV22(stock);
-    stock.isV21 = computeAjieScore(stock) > 0;
-    stock.isV22 = v22Score >= 24;
-    const v23 = calculateV23(stock);
-    stock.isV23 = v23 && v23.score;
-  }catch(e){
-    console.warn("flag error", e);
-  }
-  return stock;
-}
 </script>
 
 </body>
