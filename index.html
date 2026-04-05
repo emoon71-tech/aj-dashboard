@@ -4019,7 +4019,7 @@ function computeV21RankScore(stock){
     stock?.histPrev ??
     0
   );
-  if(hist > 0 && histLast <= 0) score += 2;
+  if(hist > 0 && histLast <= 0) score += 4;
 
   const riseFromLow = Number(
     tech.riseFromLow ??
@@ -4027,7 +4027,7 @@ function computeV21RankScore(stock){
     stock?.riseFromLow ??
     0
   );
-  if(riseFromLow > 0.25) score -= 2;
+  if(riseFromLow > 0.25) score -= 3;
 
   const volRatio = Number(
     tech.volRatio ??
