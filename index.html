@@ -3827,5 +3827,22 @@ window.ajieLogPerformance = ajieLogPerformance;
 window.addEventListener('load', ajieRenderPerf);
 </script>
 
+
+<script>
+// ===== FIX V2.2 FLAG =====
+function attachV2Flags(stock){
+  try{
+    const v22Score = computeAjieScoreV22(stock);
+    stock.isV21 = computeAjieScore(stock) > 0;
+    stock.isV22 = v22Score >= 24;
+    const v23 = calculateV23(stock);
+    stock.isV23 = v23 && v23.score;
+  }catch(e){
+    console.warn("flag error", e);
+  }
+  return stock;
+}
+</script>
+
 </body>
   </html>
