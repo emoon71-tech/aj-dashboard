@@ -374,7 +374,25 @@
 .perf-note{font-size:10px;color:var(--text3);margin-top:8px}
 
 </style>
-  </head>
+  
+<style>
+.v21ab-wrap{margin:14px 0 18px}
+.v21ab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.v21ab-panel{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:14px 16px}
+.v21ab-title{font-size:16px;font-weight:800;margin-bottom:6px}
+.v21ab-sub{font-size:11px;color:var(--text3);margin-bottom:10px}
+.v21ab-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.v21ab-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px}
+.v21ab-k{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.v21ab-name{font-size:13px;font-weight:800;color:var(--text)}
+.v21ab-code{font-size:10px;color:var(--text3)}
+.v21ab-r{font-size:11px;font-weight:700;color:var(--gold)}
+.v21ab-meta{font-size:10px;color:var(--text3);line-height:1.55}
+.v21ab-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.v21ab-tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
+</style>
+
+</head>
   <body>
   
   <div class="topbar">
@@ -3583,18 +3601,7 @@ async function refreshAll(){
 }
   window.addEventListener('resize',()=>{ if(!isMobileView()) { if(AppState.ui.activeCode) $('dWrap').style.display='block'; } else { $('dWrap').style.display='none'; } });
   window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
-  
-function computeV21RankScore(stock){
-  let score = 0;
-  if(stock.ma20SlopeUp) score += 3;
-  if(stock.isAboveMA20) score += 3;
-  if(stock.histImproving) score += 3;
-  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
-  if(stock.riseFromLow > 0.25) score -= 2;
-  return score;
-}
-
-</script>
+  </script>
   
 
 
@@ -3774,17 +3781,6 @@ function computeV21RankScore(stock){
     bindSearchBox();
   }
 })();
-
-function computeV21RankScore(stock){
-  let score = 0;
-  if(stock.ma20SlopeUp) score += 3;
-  if(stock.isAboveMA20) score += 3;
-  if(stock.histImproving) score += 3;
-  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
-  if(stock.riseFromLow > 0.25) score -= 2;
-  return score;
-}
-
 </script>
 
 
@@ -3971,17 +3967,143 @@ function ajieHandlePerfImport(event){
 }
 window.ajieLogPerformance = ajieLogPerformance;
 window.addEventListener('load', ajieRenderPerf);
+</script>
 
-function computeV21RankScore(stock){
-  let score = 0;
-  if(stock.ma20SlopeUp) score += 3;
-  if(stock.isAboveMA20) score += 3;
-  if(stock.histImproving) score += 3;
-  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
-  if(stock.riseFromLow > 0.25) score -= 2;
-  return score;
-}
 
+<script>
+(function(){
+  function ensureV21ABMount(){
+    if(document.getElementById('v21abWrap')) return;
+    const host = document.getElementById('egrid') || document.body;
+    const wrap = document.createElement('section');
+    wrap.id = 'v21abWrap';
+    wrap.className = 'v21ab-wrap';
+    wrap.innerHTML = `
+      <div class="v21ab-grid">
+        <div class="v21ab-panel">
+          <div class="v21ab-title">🔵 V2.1（舊版｜漲幅排序）</div>
+          <div class="v21ab-sub">保留原本野性，按漲幅／量能偏熱度排序。</div>
+          <div id="v21-old" class="v21ab-list"></div>
+        </div>
+        <div class="v21ab-panel">
+          <div class="v21ab-title">🧠 V2.1（新版｜策略排序）</div>
+          <div class="v21ab-sub">不改條件，只把準備發動的排到前面。</div>
+          <div id="v21-new" class="v21ab-list"></div>
+        </div>
+      </div>`;
+    host.parentNode.insertBefore(wrap, host);
+  }
+
+  function computeV21RankScore(stock){
+    let score = 0;
+    const tech = stock?.tech || {};
+    const rise = Number.isFinite(stock?.scoreData?.riseFromLow) ? stock.scoreData.riseFromLow :
+                 Number.isFinite(stock?.riseFromLow) ? stock.riseFromLow : null;
+    const vol = Number.isFinite(stock?.scoreData?.volRatio) ? stock.scoreData.volRatio :
+                Number.isFinite(tech?.volRatio) ? tech.volRatio : null;
+
+    if(tech.ma20SlopeUp===true) score += 3;
+    if(tech.isAboveMA20===true) score += 3;
+    if(tech.histImproving===true) score += 3;
+    if(Number.isFinite(vol) && vol > 1.2 && vol < 2.5) score += 1;
+    if(Number.isFinite(rise) && rise > 0.25) score -= 2;
+    return score;
+  }
+
+  function fmtPct(v){
+    return Number.isFinite(v) ? (v>0?'+':'') + (v*100).toFixed(1) + '%' : '--';
+  }
+
+  function fmtNum(v){
+    return Number.isFinite(v) ? v.toFixed(2).replace(/\.00$/,'') : '--';
+  }
+
+  function v21Card(code, d, score, rankScore, mode){
+    const vol = Number.isFinite(score?.volRatio) ? score.volRatio : (Number.isFinite(d?.tech?.volRatio)?d.tech.volRatio:null);
+    const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : null;
+    const tags = [];
+    if(d?.tech?.ma20SlopeUp) tags.push('<span class="v21ab-tag bg-green">MA20上彎</span>');
+    if(d?.tech?.isAboveMA20) tags.push('<span class="v21ab-tag bg-blue">站上MA20</span>');
+    if(d?.tech?.histImproving) tags.push('<span class="v21ab-tag bg-gold">MACD改善</span>');
+    if(Number.isFinite(vol) && vol > 1.2 && vol < 2.5) tags.push('<span class="v21ab-tag bg-purple">量能健康</span>');
+    if(Number.isFinite(rise) && rise > 0.25) tags.push('<span class="v21ab-tag bg-red">位階偏高</span>');
+
+    const right = mode === 'old'
+      ? `V2.1分 ${score?.total||0}`
+      : `策略分 ${rankScore}`;
+
+    return `
+      <div class="v21ab-card">
+        <div class="v21ab-k">
+          <div>
+            <div class="v21ab-name">${d?.name||code}</div>
+            <div class="v21ab-code">${code}</div>
+          </div>
+          <div class="v21ab-r">${right}</div>
+        </div>
+        <div class="v21ab-meta">
+          價格：${fmtNum(d?.price)}<br>
+          漲跌：${fmtNum(d?.chg)} / ${Number.isFinite(d?.chgPct)?d.chgPct.toFixed(2)+'%':'--'}<br>
+          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}
+        </div>
+        <div class="v21ab-tags">${tags.join('')}</div>
+      </div>`;
+  }
+
+  function renderV21AB(){
+    ensureV21ABMount();
+    const oldWrap = document.getElementById('v21-old');
+    const newWrap = document.getElementById('v21-new');
+    if(!oldWrap || !newWrap || typeof AppState === 'undefined') return;
+
+    const codes = (typeof currentCodes === 'function' ? currentCodes() : (AppState.ui?.visibleCodes||[])) || [];
+    const base = [];
+
+    codes.forEach(code=>{
+      try{
+        const d = AppState.stocks[code] || {};
+        const score = typeof computeAjieScore === 'function' ? computeAjieScore(code, true) : null;
+        if(score && (score.total||0) > 0){
+          base.push({code, d, score, rankScore: computeV21RankScore(d)});
+        }
+      }catch(e){}
+    });
+
+    const v21List_old = [...base].sort((a,b)=>{
+      const aPct = Number.isFinite(a.d?.chgPct) ? a.d.chgPct : -999;
+      const bPct = Number.isFinite(b.d?.chgPct) ? b.d.chgPct : -999;
+      if(bPct !== aPct) return bPct - aPct;
+      const aVol = Number.isFinite(a.score?.volRatio) ? a.score.volRatio : -999;
+      const bVol = Number.isFinite(b.score?.volRatio) ? b.score.volRatio : -999;
+      return bVol - aVol;
+    });
+
+    const v21List_new = [...base].sort((a,b)=>{
+      if(b.rankScore !== a.rankScore) return b.rankScore - a.rankScore;
+      return (b.score?.total||0) - (a.score?.total||0);
+    });
+
+    oldWrap.innerHTML = v21List_old.slice(0,10).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
+    newWrap.innerHTML = v21List_new.slice(0,10).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
+  }
+
+  function hookRender(){
+    if(window.__v21abHooked) return;
+    window.__v21abHooked = true;
+    const old = window.renderCurrentView;
+    if(typeof old === 'function'){
+      window.renderCurrentView = function(){
+        const ret = old.apply(this, arguments);
+        try{ renderV21AB(); }catch(e){ console.warn(e); }
+        return ret;
+      };
+    }
+    window.addEventListener('load', ()=>setTimeout(renderV21AB, 1200));
+    document.addEventListener('click', ()=>setTimeout(renderV21AB, 500), true);
+  }
+
+  hookRender();
+})();
 </script>
 
 </body>
