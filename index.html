@@ -558,8 +558,8 @@
       <button class="sort-chip" id="sort-sector" onclick="setSortMode('sector',this)">族群優先</button>
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
-      <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
+      <button class="formula-chip" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
+      <button class="formula-chip on" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1047,7 +1047,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v1'},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v2'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -4019,7 +4019,7 @@ function computeV21RankScore(stock){
     stock?.histPrev ??
     0
   );
-  if(hist > 0 && histLast <= 0) score += 4;
+  if(hist > 0 && histLast <= 0) score += 2;
 
   const riseFromLow = Number(
     tech.riseFromLow ??
@@ -4027,7 +4027,7 @@ function computeV21RankScore(stock){
     stock?.riseFromLow ??
     0
   );
-  if(riseFromLow > 0.25) score -= 3;
+  if(riseFromLow > 0.25) score -= 2;
 
   const volRatio = Number(
     tech.volRatio ??
