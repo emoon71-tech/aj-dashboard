@@ -390,20 +390,6 @@
 .v21ab-meta{font-size:10px;color:var(--text3);line-height:1.55}
 .v21ab-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .v21ab-tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
-.v21v-panel{margin-top:12px;background:linear-gradient(180deg,#121821,#0d1118);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px}
-.v21v-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.v21v-title{font-size:14px;font-weight:800;color:var(--text)}
-.v21v-sub{font-size:10px;color:var(--text3);margin-top:4px}
-.v21v-actions{display:flex;gap:6px;flex-wrap:wrap}
-.v21v-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.v21v-box{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px}
-.v21v-box h4{font-size:12px;font-weight:800;margin-bottom:8px}
-.v21v-lines{display:grid;gap:5px}
-.v21v-line{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--text)}
-.v21v-line span:last-child{color:var(--text3);font-weight:700}
-.v21v-note{margin-top:8px;font-size:10px;color:var(--text3)}
-.v21v-note b{color:var(--gold)}
-@media (max-width:900px){.v21ab-grid,.v21v-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -4004,22 +3990,6 @@ window.addEventListener('load', ajieRenderPerf);
           <div class="v21ab-sub">不改條件，只顯示前 6 檔，把準備發動的排到前面。</div>
           <div id="v21-new" class="v21ab-list"></div>
         </div>
-      </div>
-      <div id="v21-validation" class="v21v-panel">
-        <div class="v21v-top">
-          <div>
-            <div class="v21v-title">驗證摘要</div>
-            <div id="v21v-sub" class="v21v-sub">回放模式下會自動鎖定左右榜前 6，並整理 3 / 5 / 10 日報酬。</div>
-          </div>
-          <div class="v21v-actions">
-            <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
-          </div>
-        </div>
-        <div id="v21v-grid" class="v21v-grid">
-          <div class="v21v-box"><h4>OLD</h4><div class="v21v-lines"><div class="v21v-line"><span>等待回放資料</span><span>--</span></div></div></div>
-          <div class="v21v-box"><h4>NEW</h4><div class="v21v-lines"><div class="v21v-line"><span>等待回放資料</span><span>--</span></div></div></div>
-        </div>
-        <div id="v21v-note" class="v21v-note">先選日期再按回放，這裡才會有東西。系統不是偷懶，是你還沒餵資料。</div>
       </div>`;
     host.parentNode.insertBefore(wrap, host);
   }
@@ -4030,9 +4000,9 @@ function computeV21RankScore(stock){
   const scoreData = stock?.scoreData || {};
   let score = 0;
 
-  if(tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true) score += 3;
-  if(tech.isAboveMA20 === true || scoreData.isAboveMA20 === true) score += 3;
-  if(tech.histImproving === true || scoreData.histImproving === true) score += 3;
+  const ma20SlopeUp = (tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true);
+  const isAboveMA20 = (tech.isAboveMA20 === true || scoreData.isAboveMA20 === true);
+  const histImproving = (tech.histImproving === true || scoreData.histImproving === true);
 
   const hist = Number(
     tech.hist ??
@@ -4049,7 +4019,6 @@ function computeV21RankScore(stock){
     stock?.histPrev ??
     0
   );
-  if(hist > 0 && histLast <= 0) score += 2;
 
   const riseFromLow = Number(
     tech.riseFromLow ??
@@ -4057,7 +4026,6 @@ function computeV21RankScore(stock){
     stock?.riseFromLow ??
     0
   );
-  if(riseFromLow > 0.25) score -= 2;
 
   const volRatio = Number(
     tech.volRatio ??
@@ -4065,7 +4033,19 @@ function computeV21RankScore(stock){
     stock?.volRatio ??
     0
   );
-  if(volRatio >= 1.2 && volRatio <= 2.5) score += 1;
+
+  if(ma20SlopeUp && isAboveMA20) score += 10;
+  else if(isAboveMA20 && !ma20SlopeUp) score -= 8;
+  else if(!ma20SlopeUp) score -= 15;
+
+  if(histImproving) score += 5;
+  if(hist > 0 && histLast <= 0) score += 4;
+  if(Number.isFinite(histLast) && histLast > 20) score -= 10;
+
+  if(Number.isFinite(volRatio) && volRatio >= 1.2 && volRatio <= 1.8) score += 5;
+  else if(Number.isFinite(volRatio) && volRatio > 2.5) score -= 3;
+
+  if(Number.isFinite(riseFromLow) && riseFromLow > 0.25) score -= 3;
 
   return score;
 }
@@ -4078,302 +4058,20 @@ function computeV21RankScore(stock){
     return Number.isFinite(v) ? v.toFixed(2).replace(/\.00$/,'') : '--';
   }
 
-  function fmtPctPlain(v, digits=2){
-    return Number.isFinite(v) ? v.toFixed(digits) : '--';
-  }
-
-  function fmtRet(v){
-    return Number.isFinite(v) ? ((v*100).toFixed(1) + '%') : '--';
-  }
-
-  function getV21Date(){
-    const date = (typeof getReplayDate === 'function' ? getReplayDate() : '') || AppState?.replay?.date || '';
-    return date;
-  }
-
-  function getRiseFromLowValue(item){
-    return Number(
-      item?.score?.riseFromLow ??
-      item?.d?.scoreData?.riseFromLow ??
-      item?.d?.tech?.riseFromLow ??
-      item?.d?.riseFromLow ??
-      0
-    );
-  }
-
-  function getVolRatioValue(item){
-    return Number(
-      item?.score?.volRatio ??
-      item?.d?.scoreData?.volRatio ??
-      item?.d?.tech?.volRatio ??
-      item?.d?.volRatio ??
-      0
-    );
-  }
-
-  function getHistFlipValue(item){
-    const hist = Number(item?.d?.tech?.hist ?? item?.d?.scoreData?.hist ?? item?.d?.hist ?? 0);
-    const histPrev = Number(item?.d?.tech?.histPrev ?? item?.d?.tech?.histLast ?? item?.d?.scoreData?.histPrev ?? item?.d?.scoreData?.histLast ?? item?.d?.histPrev ?? item?.d?.histLast ?? 0);
-    return hist > 0 && histPrev <= 0;
-  }
-
-  function getMa20UpValue(item){
-    return item?.d?.tech?.ma20SlopeUp === true || item?.d?.scoreData?.ma20SlopeUp === true;
-  }
-
-  function getAboveMa20Value(item){
-    return item?.d?.tech?.isAboveMA20 === true || item?.d?.scoreData?.isAboveMA20 === true;
-  }
-
-  function avgMetric(list, getter){
-    const vals = list.map(getter).filter(v => Number.isFinite(v));
-    if(!vals.length) return null;
-    return vals.reduce((a,b)=>a+b,0) / vals.length;
-  }
-
-  function sumMetric(list, getter){
-    return list.reduce((n, item) => n + (getter(item) ? 1 : 0), 0);
-  }
-
-  function getValidationRange(dateStr){
-    const target = new Date(`${dateStr}T23:59:59`);
-    const period1Date = new Date(target);
-    period1Date.setMonth(period1Date.getMonth()-3);
-    period1Date.setHours(0,0,0,0);
-    const period2Date = new Date(target);
-    period2Date.setDate(period2Date.getDate()+20);
-    period2Date.setHours(23,59,59,999);
-    return {
-      period1: Math.floor(period1Date.getTime()/1000),
-      period2: Math.floor(period2Date.getTime()/1000),
-    };
-  }
-
-  async function fetchValidationRows(code, dateStr){
-    const cacheKey = `v21ret_${dateStr}_${code}`;
-    AppState.cache = AppState.cache || {};
-    if(AppState.cache[cacheKey]) return AppState.cache[cacheKey];
-    const { period1, period2 } = getValidationRange(dateStr);
-    const symbols = (typeof getReplaySymbols === 'function' ? getReplaySymbols(code) : [code]);
-    let lastErr = null;
-    for(const symbol of symbols){
-      try{
-        const raw = await apiGetJson(`/yahoo-proxy?symbol=${encodeURIComponent(symbol)}&period1=${period1}&period2=${period2}&interval=1d`, { timeout:15000, retries:1 });
-        const rows = typeof normalizeYahooRows === 'function' ? normalizeYahooRows(raw) : [];
-        if(rows.length){
-          AppState.cache[cacheKey] = rows;
-          return rows;
-        }
-      }catch(err){
-        lastErr = err;
-      }
-    }
-    throw lastErr || new Error(`${code} 驗證歷史資料不足`);
-  }
-
-  function computeFutureReturnsFromRows(rows, dateStr){
-    if(!Array.isArray(rows) || !rows.length) return { ret_3d:null, ret_5d:null, ret_10d:null };
-    const targetTs = new Date(`${dateStr}T23:59:59`).getTime();
-    let idx = -1;
-    for(let i=0;i<rows.length;i++){
-      const ts = Number(rows[i]?.ts || 0) * 1000;
-      if(ts && ts <= targetTs) idx = i;
-    }
-    if(idx < 0) idx = rows.length - 1;
-    const baseClose = Number(rows[idx]?.close);
-    if(!Number.isFinite(baseClose) || baseClose <= 0) return { ret_3d:null, ret_5d:null, ret_10d:null };
-    const pick = (n) => {
-      const next = rows[idx + n];
-      const futureClose = Number(next?.close);
-      if(!Number.isFinite(futureClose)) return null;
-      return (futureClose - baseClose) / baseClose;
-    };
-    return {
-      ret_3d: pick(3),
-      ret_5d: pick(5),
-      ret_10d: pick(10),
-    };
-  }
-
-  function createSnapshotRow(item, strategy, rank, dateStr){
-    return {
-      date: dateStr,
-      strategy,
-      rank,
-      code: item.code,
-      name: item?.d?.name || item.code,
-      riseFromLow: getRiseFromLowValue(item),
-      volRatio: getVolRatioValue(item),
-      histFlip: getHistFlipValue(item),
-      ma20Up: getMa20UpValue(item),
-      isAboveMA20: getAboveMa20Value(item),
-      rankScore: strategy === 'new' ? Number(item.rankScore ?? 0) : 0,
-      ret_3d: null,
-      ret_5d: null,
-      ret_10d: null,
-    };
-  }
-
-  function extractTop6(oldList, newList){
-    const dateStr = getV21Date();
-    return {
-      date: dateStr,
-      oldTop6: oldList.slice(0,6).map((item, idx) => createSnapshotRow(item, 'old', idx + 1, dateStr)),
-      newTop6: newList.slice(0,6).map((item, idx) => createSnapshotRow(item, 'new', idx + 1, dateStr)),
-    };
-  }
-
-  function renderValidationLoading(dateStr){
-    const grid = document.getElementById('v21v-grid');
-    const note = document.getElementById('v21v-note');
-    const sub = document.getElementById('v21v-sub');
-    if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜正在整理左右榜前 6 的驗證摘要。` : '即時模式下不產生回測摘要。';
-    if(grid){
-      grid.innerHTML = `
-        <div class="v21v-box"><h4>OLD</h4><div class="v21v-lines"><div class="v21v-line"><span>整理中</span><span>...</span></div></div></div>
-        <div class="v21v-box"><h4>NEW</h4><div class="v21v-lines"><div class="v21v-line"><span>整理中</span><span>...</span></div></div></div>`;
-    }
-    if(note) note.innerHTML = '正在鎖定榜單快照並整理交易日報酬，等一下，不是裝神祕。';
-  }
-
-  function renderValidationIdle(){
-    const btn = document.getElementById('v21CsvBtn');
-    const grid = document.getElementById('v21v-grid');
-    const note = document.getElementById('v21v-note');
-    const sub = document.getElementById('v21v-sub');
-    if(btn) btn.disabled = true;
-    if(sub) sub.textContent = '回放模式下會自動鎖定左右榜前 6，並整理 3 / 5 / 10 日報酬。';
-    if(grid){
-      grid.innerHTML = `
-        <div class="v21v-box"><h4>OLD</h4><div class="v21v-lines"><div class="v21v-line"><span>等待回放資料</span><span>--</span></div></div></div>
-        <div class="v21v-box"><h4>NEW</h4><div class="v21v-lines"><div class="v21v-line"><span>等待回放資料</span><span>--</span></div></div></div>`;
-    }
-    if(note) note.innerHTML = '先選日期再按回放，這裡才會有東西。系統不是偷懶，是你還沒餵資料。';
-  }
-
-  function renderValidationSummary(grouped, dateStr){
-    const grid = document.getElementById('v21v-grid');
-    const note = document.getElementById('v21v-note');
-    const sub = document.getElementById('v21v-sub');
-    const btn = document.getElementById('v21CsvBtn');
-    if(!grid) return;
-    const buildBox = (label, list) => {
-      const rise = avgMetric(list, x => x.riseFromLow);
-      const vol = avgMetric(list, x => x.volRatio);
-      const flip = sumMetric(list, x => x.histFlip);
-      const ret3 = avgMetric(list, x => x.ret_3d);
-      const ret5 = avgMetric(list, x => x.ret_5d);
-      const ret10 = avgMetric(list, x => x.ret_10d);
-      return `
-        <div class="v21v-box">
-          <h4>${label}</h4>
-          <div class="v21v-lines">
-            <div class="v21v-line"><span>rise</span><span>${fmtPctPlain(rise)}</span></div>
-            <div class="v21v-line"><span>vol</span><span>${fmtPctPlain(vol,1)}</span></div>
-            <div class="v21v-line"><span>flip</span><span>${flip}/${list.length || 6}</span></div>
-            <div class="v21v-line"><span>ret3</span><span>${fmtRet(ret3)}</span></div>
-            <div class="v21v-line"><span>ret5</span><span>${fmtRet(ret5)}</span></div>
-            <div class="v21v-line"><span>ret10</span><span>${fmtRet(ret10)}</span></div>
-          </div>
-        </div>`;
-    };
-    grid.innerHTML = buildBox('OLD', grouped.old) + buildBox('NEW', grouped.new);
-    if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜左右榜已鎖定快照，摘要與 CSV 對同一批資料。` : '驗證摘要';
-    if(note) note.innerHTML = '報酬使用 <b>交易日 K 線</b> 計算：第 3 / 5 / 10 根收盤價對回放當日收盤價。';
-    if(btn) btn.disabled = !(grouped.old?.length === 6 && grouped.new?.length === 6);
-  }
-
-  function prepareCSVData(grouped, dateStr){
-    const rows = [...(grouped.old || []), ...(grouped.new || [])].map(item => ({
-      date: dateStr,
-      strategy: item.strategy,
-      rank: item.rank,
-      code: item.code,
-      riseFromLow: Number.isFinite(item.riseFromLow) ? item.riseFromLow : '',
-      volRatio: Number.isFinite(item.volRatio) ? item.volRatio : '',
-      histFlip: item.histFlip ? 'true' : 'false',
-      ma20Up: item.ma20Up ? 'true' : 'false',
-      isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
-      rankScore: Number.isFinite(item.rankScore) ? item.rankScore : 0,
-      ret_3d: Number.isFinite(item.ret_3d) ? item.ret_3d : '',
-      ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
-      ret_10d: Number.isFinite(item.ret_10d) ? item.ret_10d : '',
-    }));
-    AppState.replay = AppState.replay || {};
-    AppState.replay.v21Validation = {
-      date: dateStr,
-      old: grouped.old || [],
-      new: grouped.new || [],
-      csvRows: rows,
-      fileName: `v21_ab_${dateStr || 'export'}.csv`,
-    };
-  }
-
-  async function enrichSnapshotRows(list, dateStr){
-    const out = [];
-    for(const item of list){
-      let returns = { ret_3d:null, ret_5d:null, ret_10d:null };
-      try{
-        const rows = await fetchValidationRows(item.code, dateStr);
-        returns = computeFutureReturnsFromRows(rows, dateStr);
-      }catch(err){}
-      out.push({ ...item, ...returns });
-    }
-    return out;
-  }
-
-  async function updateV21Validation(snapshot){
-    const dateStr = snapshot?.date || '';
-    if(AppState.ui?.mode !== 'replay' || !dateStr){
-      renderValidationIdle();
-      AppState.replay.v21Validation = null;
-      return;
-    }
-    const token = `${dateStr}_${Date.now()}`;
-    AppState.replay.v21ValidationToken = token;
-    renderValidationLoading(dateStr);
-    const oldRows = await enrichSnapshotRows(snapshot.oldTop6 || [], dateStr);
-    const newRows = await enrichSnapshotRows(snapshot.newTop6 || [], dateStr);
-    if(AppState.replay.v21ValidationToken !== token) return;
-    const grouped = { old: oldRows, new: newRows };
-    renderValidationSummary(grouped, dateStr);
-    prepareCSVData(grouped, dateStr);
-  }
-
-  function toCsvCell(value){
-    const s = String(value ?? '');
-    if(/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-    return s;
-  }
-
-  window.downloadV21ValidationCSV = function(){
-    const payload = AppState?.replay?.v21Validation;
-    const rows = payload?.csvRows || [];
-    if(!rows.length){
-      alert('目前沒有可匯出的驗證資料');
-      return;
-    }
-    const headers = ['date','strategy','rank','code','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','rankScore','ret_3d','ret_5d','ret_10d'];
-    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
-    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = payload.fileName || 'v21_ab_export.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-
   function v21Card(code, d, score, rankScore, mode){
     const vol = Number.isFinite(score?.volRatio) ? score.volRatio : (Number.isFinite(d?.tech?.volRatio)?d.tech.volRatio:null);
-    const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : null;
+    const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : (Number.isFinite(d?.tech?.riseFromLow)?d.tech.riseFromLow:null);
+    const hist = Number(d?.tech?.hist ?? d?.scoreData?.hist ?? d?.hist ?? 0);
+    const histLast = Number(d?.tech?.histLast ?? d?.tech?.histPrev ?? d?.scoreData?.histLast ?? d?.scoreData?.histPrev ?? d?.histLast ?? d?.histPrev ?? 0);
+    const isSixStyle = !!(d?.tech?.ma20SlopeUp && d?.tech?.isAboveMA20 && d?.tech?.histImproving && Number.isFinite(vol) && vol >= 1.2 && vol <= 1.8);
     const tags = [];
     if(d?.tech?.ma20SlopeUp) tags.push('<span class="v21ab-tag bg-green">MA20上彎</span>');
     if(d?.tech?.isAboveMA20) tags.push('<span class="v21ab-tag bg-blue">站上MA20</span>');
     if(d?.tech?.histImproving) tags.push('<span class="v21ab-tag bg-gold">MACD改善</span>');
-    if(Number.isFinite(vol) && vol > 1.2 && vol < 2.5) tags.push('<span class="v21ab-tag bg-purple">量能健康</span>');
+    if(hist > 0 && histLast <= 0) tags.push('<span class="v21ab-tag bg-blue">剛翻正</span>');
+    if(Number.isFinite(vol) && vol >= 1.2 && vol <= 1.8) tags.push('<span class="v21ab-tag bg-purple">量能甜蜜區</span>');
+    if(isSixStyle) tags.push('<span class="v21ab-tag bg-gold">🔥 #6型</span>');
+    if(Number.isFinite(histLast) && histLast > 20) tags.push('<span class="v21ab-tag bg-red">MACD過熱</span>');
     if(Number.isFinite(rise) && rise > 0.25) tags.push('<span class="v21ab-tag bg-red">位階偏高</span>');
 
     const right = mode === 'old'
@@ -4431,17 +4129,8 @@ function computeV21RankScore(stock){
       return (b.score?.total||0) - (a.score?.total||0);
     });
 
-    const oldTop6 = v21List_old.slice(0,6);
-    const newTop6 = v21List_new.slice(0,6);
-
-    oldWrap.innerHTML = oldTop6.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
-    newWrap.innerHTML = newTop6.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
-
-    const snapshot = extractTop6(v21List_old, v21List_new);
-    updateV21Validation(snapshot).catch(err=>{
-      console.warn('V21 validation error', err);
-      renderValidationIdle();
-    });
+    oldWrap.innerHTML = v21List_old.slice(0,6).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
+    newWrap.innerHTML = v21List_new.slice(0,6).map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
   }
 
   function hookRender(){
