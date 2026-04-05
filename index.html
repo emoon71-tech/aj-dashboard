@@ -4009,7 +4009,7 @@ window.addEventListener('load', ajieRenderPerf);
         <div class="v21v-top">
           <div>
             <div class="v21v-title">驗證摘要</div>
-            <div id="v21v-sub" class="v21v-sub">回放模式下會自動鎖定左右榜前 6，並整理 3 / 5 / 10 日報酬。</div>
+            <div id="v21v-sub" class="v21v-sub">回放模式下會自動鎖定左右榜前 8，並整理 3 / 5 / 10 日報酬。</div>
           </div>
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
@@ -4030,9 +4030,9 @@ function computeV21RankScore(stock){
   const scoreData = stock?.scoreData || {};
   let score = 0;
 
-  if(tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true) score += 3;
-  if(tech.isAboveMA20 === true || scoreData.isAboveMA20 === true) score += 3;
-  if(tech.histImproving === true || scoreData.histImproving === true) score += 3;
+  const ma20SlopeUp = (tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true);
+  const isAboveMA20 = (tech.isAboveMA20 === true || scoreData.isAboveMA20 === true);
+  const histImproving = (tech.histImproving === true || scoreData.histImproving === true);
 
   const hist = Number(
     tech.hist ??
@@ -4049,7 +4049,6 @@ function computeV21RankScore(stock){
     stock?.histPrev ??
     0
   );
-  if(hist > 0 && histLast <= 0) score += 2;
 
   const riseFromLow = Number(
     tech.riseFromLow ??
@@ -4057,7 +4056,6 @@ function computeV21RankScore(stock){
     stock?.riseFromLow ??
     0
   );
-  if(riseFromLow > 0.25) score -= 2;
 
   const volRatio = Number(
     tech.volRatio ??
@@ -4065,7 +4063,19 @@ function computeV21RankScore(stock){
     stock?.volRatio ??
     0
   );
-  if(volRatio >= 1.2 && volRatio <= 2.5) score += 1;
+
+  if(ma20SlopeUp && isAboveMA20) score += 10;
+  else if(isAboveMA20 && !ma20SlopeUp) score -= 8;
+  else if(!ma20SlopeUp) score -= 15;
+
+  if(histImproving) score += 5;
+  if(hist > 0 && histLast <= 0) score += 4;
+  if(Number.isFinite(histLast) && histLast > 20) score -= 10;
+
+  if(Number.isFinite(volRatio) && volRatio >= 1.2 && volRatio <= 1.8) score += 5;
+  else if(Number.isFinite(volRatio) && volRatio > 2.5) score -= 3;
+
+  if(Number.isFinite(riseFromLow) && riseFromLow > 0.25) score -= 3;
 
   return score;
 }
@@ -4214,12 +4224,14 @@ function computeV21RankScore(stock){
     };
   }
 
-  function extractTop6(oldList, newList){
+  const V21_TOP_N = 8;
+
+  function extractTopN(oldList, newList){
     const dateStr = getV21Date();
     return {
       date: dateStr,
-      oldTop6: oldList.slice(0,6).map((item, idx) => createSnapshotRow(item, 'old', idx + 1, dateStr)),
-      newTop6: newList.slice(0,6).map((item, idx) => createSnapshotRow(item, 'new', idx + 1, dateStr)),
+      oldTop: oldList.slice(0, V21_TOP_N).map((item, idx) => createSnapshotRow(item, 'old', idx + 1, dateStr)),
+      newTop: newList.slice(0, V21_TOP_N).map((item, idx) => createSnapshotRow(item, 'new', idx + 1, dateStr)),
     };
   }
 
@@ -4227,7 +4239,7 @@ function computeV21RankScore(stock){
     const grid = document.getElementById('v21v-grid');
     const note = document.getElementById('v21v-note');
     const sub = document.getElementById('v21v-sub');
-    if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜正在整理左右榜前 6 的驗證摘要。` : '即時模式下不產生回測摘要。';
+    if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜正在整理左右榜前 8 的驗證摘要。` : '即時模式下不產生回測摘要。';
     if(grid){
       grid.innerHTML = `
         <div class="v21v-box"><h4>OLD</h4><div class="v21v-lines"><div class="v21v-line"><span>整理中</span><span>...</span></div></div></div>
@@ -4242,7 +4254,7 @@ function computeV21RankScore(stock){
     const note = document.getElementById('v21v-note');
     const sub = document.getElementById('v21v-sub');
     if(btn) btn.disabled = true;
-    if(sub) sub.textContent = '回放模式下會自動鎖定左右榜前 6，並整理 3 / 5 / 10 日報酬。';
+    if(sub) sub.textContent = '回放模式下會自動鎖定左右榜前 8，並整理 3 / 5 / 10 日報酬。';
     if(grid){
       grid.innerHTML = `
         <div class="v21v-box"><h4>OLD</h4><div class="v21v-lines"><div class="v21v-line"><span>等待回放資料</span><span>--</span></div></div></div>
@@ -4270,7 +4282,7 @@ function computeV21RankScore(stock){
           <div class="v21v-lines">
             <div class="v21v-line"><span>rise</span><span>${fmtPctPlain(rise)}</span></div>
             <div class="v21v-line"><span>vol</span><span>${fmtPctPlain(vol,1)}</span></div>
-            <div class="v21v-line"><span>flip</span><span>${flip}/${list.length || 6}</span></div>
+            <div class="v21v-line"><span>flip</span><span>${flip}/${list.length || V21_TOP_N}</span></div>
             <div class="v21v-line"><span>ret3</span><span>${fmtRet(ret3)}</span></div>
             <div class="v21v-line"><span>ret5</span><span>${fmtRet(ret5)}</span></div>
             <div class="v21v-line"><span>ret10</span><span>${fmtRet(ret10)}</span></div>
@@ -4280,7 +4292,7 @@ function computeV21RankScore(stock){
     grid.innerHTML = buildBox('OLD', grouped.old) + buildBox('NEW', grouped.new);
     if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜左右榜已鎖定快照，摘要與 CSV 對同一批資料。` : '驗證摘要';
     if(note) note.innerHTML = '報酬使用 <b>交易日 K 線</b> 計算：第 3 / 5 / 10 根收盤價對回放當日收盤價。';
-    if(btn) btn.disabled = !(grouped.old?.length === 6 && grouped.new?.length === 6);
+    if(btn) btn.disabled = !(grouped.old?.length === V21_TOP_N && grouped.new?.length === V21_TOP_N);
   }
 
   function prepareCSVData(grouped, dateStr){
@@ -4332,8 +4344,8 @@ function computeV21RankScore(stock){
     const token = `${dateStr}_${Date.now()}`;
     AppState.replay.v21ValidationToken = token;
     renderValidationLoading(dateStr);
-    const oldRows = await enrichSnapshotRows(snapshot.oldTop6 || [], dateStr);
-    const newRows = await enrichSnapshotRows(snapshot.newTop6 || [], dateStr);
+    const oldRows = await enrichSnapshotRows(snapshot.oldTop || [], dateStr);
+    const newRows = await enrichSnapshotRows(snapshot.newTop || [], dateStr);
     if(AppState.replay.v21ValidationToken !== token) return;
     const grouped = { old: oldRows, new: newRows };
     renderValidationSummary(grouped, dateStr);
@@ -4368,12 +4380,18 @@ function computeV21RankScore(stock){
 
   function v21Card(code, d, score, rankScore, mode){
     const vol = Number.isFinite(score?.volRatio) ? score.volRatio : (Number.isFinite(d?.tech?.volRatio)?d.tech.volRatio:null);
-    const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : null;
+    const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : (Number.isFinite(d?.tech?.riseFromLow)?d.tech.riseFromLow:null);
+    const hist = Number(d?.tech?.hist ?? d?.scoreData?.hist ?? d?.hist ?? 0);
+    const histLast = Number(d?.tech?.histLast ?? d?.tech?.histPrev ?? d?.scoreData?.histLast ?? d?.scoreData?.histPrev ?? d?.histLast ?? d?.histPrev ?? 0);
+    const isSixStyle = !!(d?.tech?.ma20SlopeUp && d?.tech?.isAboveMA20 && d?.tech?.histImproving && Number.isFinite(vol) && vol >= 1.2 && vol <= 1.8);
     const tags = [];
     if(d?.tech?.ma20SlopeUp) tags.push('<span class="v21ab-tag bg-green">MA20上彎</span>');
     if(d?.tech?.isAboveMA20) tags.push('<span class="v21ab-tag bg-blue">站上MA20</span>');
     if(d?.tech?.histImproving) tags.push('<span class="v21ab-tag bg-gold">MACD改善</span>');
-    if(Number.isFinite(vol) && vol > 1.2 && vol < 2.5) tags.push('<span class="v21ab-tag bg-purple">量能健康</span>');
+    if(hist > 0 && histLast <= 0) tags.push('<span class="v21ab-tag bg-blue">剛翻正</span>');
+    if(Number.isFinite(vol) && vol >= 1.2 && vol <= 1.8) tags.push('<span class="v21ab-tag bg-purple">量能甜蜜區</span>');
+    if(isSixStyle) tags.push('<span class="v21ab-tag bg-gold">🔥 #6型</span>');
+    if(Number.isFinite(histLast) && histLast > 20) tags.push('<span class="v21ab-tag bg-red">MACD過熱</span>');
     if(Number.isFinite(rise) && rise > 0.25) tags.push('<span class="v21ab-tag bg-red">位階偏高</span>');
 
     const right = mode === 'old'
@@ -4431,13 +4449,13 @@ function computeV21RankScore(stock){
       return (b.score?.total||0) - (a.score?.total||0);
     });
 
-    const oldTop6 = v21List_old.slice(0,6);
-    const newTop6 = v21List_new.slice(0,6);
+    const oldTop = v21List_old.slice(0, V21_TOP_N);
+    const newTop = v21List_new.slice(0, V21_TOP_N);
 
-    oldWrap.innerHTML = oldTop6.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
-    newWrap.innerHTML = newTop6.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
+    oldWrap.innerHTML = oldTop.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'old')).join('');
+    newWrap.innerHTML = newTop.map(x=>v21Card(x.code, x.d, x.score, x.rankScore, 'new')).join('');
 
-    const snapshot = extractTop6(v21List_old, v21List_new);
+    const snapshot = extractTopN(v21List_old, v21List_new);
     updateV21Validation(snapshot).catch(err=>{
       console.warn('V21 validation error', err);
       renderValidationIdle();
