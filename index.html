@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.4">
+  <meta name="app-version" content="v4.6.5">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -532,7 +532,7 @@
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
       <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
+      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.2</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1017,6 +1017,12 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   }
   const APP_VERSION=(document.querySelector('meta[name="app-version"]')?.content||'v0.0.0').trim();
   const HIST_THRESHOLD = 20;
+  const V22_POSITION_LOW_MAX = 0.12;
+  const V22_POSITION_TRANSITION_MAX = 0.18;
+  const V22_VOLUME_HEALTHY_MIN = 1.1;
+  const V22_VOLUME_HEALTHY_MAX = 1.8;
+  const V22_VOLUME_OVERHEAT = 2.5;
+  const V22_VOLUME_WEAK = 0.8;
   let updateToastShown=false;
   
   const AppState={
@@ -2583,7 +2589,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
 
     const base=computeAjieScore(code, force);
     if(!/^\d+$/.test(code)){
-      d.scoreDataV2={...base, scoreV2: base.total, scoreDeltaV2: 0, v2Reasons:['美股沿用 V1']};
+      d.scoreDataV2={...base, scoreV2: base.total, scoreDeltaV2: 0, v2Reasons:['美股沿用 V1'], formulaMode:'v2.2'};
       d.scoreCacheKeyV2=signature;
       AppState.stocks[code]=d;
       return d.scoreDataV2;
@@ -2594,84 +2600,149 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const v2Reasons=[];
     let v2Delta=0;
 
-    const ma20=safeNumber(techData.ma20);
     const price=safeNumber(d.price);
     const hist=safeNumber(techData.hist);
     const histPrev=safeNumber(techData.histPrev);
     const avgVol20=safeNumber(techData.avgVol20);
     const volume=safeNumber(d.volume);
-
-    const isAboveMA20=Number.isFinite(ma20) && Number.isFinite(price) && ma20>0 ? price > ma20 : null;
+    const low20=safeNumber(techData.low20);
+    const ma20=safeNumber(techData.ma20);
     const prevMa20=safeNumber(techData.ma20Prev);
+    const histArray=Array.isArray(techData.histArray)
+      ? techData.histArray.filter(v=>Number.isFinite(Number(v))).map(Number)
+      : [];
+
     const histImproving=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist > histPrev : null;
-    let ma20SlopeUp=Number.isFinite(ma20) && Number.isFinite(prevMa20) ? ma20 > prevMa20 : null;
-    if(ma20SlopeUp===null && Number.isFinite(ma20) && Number.isFinite(price)){
-      const maBias=(price-ma20)/Math.max(ma20,0.01);
-      if(maBias >= 0.01 && histImproving===true) ma20SlopeUp=true;
-      else if(maBias <= -0.01 && histImproving===false) ma20SlopeUp=false;
-    }
+    const histWeakening=Number.isFinite(hist) && Number.isFinite(histPrev) ? hist < histPrev : null;
+    const ma20SlopeUp=Number.isFinite(ma20) && Number.isFinite(prevMa20) ? ma20 > prevMa20 : null;
+    const isAboveMA20=Number.isFinite(ma20) && Number.isFinite(price) && ma20>0 ? price > ma20 : null;
     const volRatio=(Number.isFinite(avgVol20) && avgVol20>0 && Number.isFinite(volume)) ? volume/avgVol20 : null;
+    const riseFromLow=(Number.isFinite(price) && Number.isFinite(low20) && low20>0) ? ((price-low20)/low20) : null;
 
     const missing=[];
-    if(ma20SlopeUp===null) missing.push('MA20方向');
-    if(isAboveMA20===null) missing.push('站上MA20');
+    if(!Number.isFinite(riseFromLow)) missing.push('位階');
+    if(!Number.isFinite(hist)) missing.push('hist');
     if(histImproving===null) missing.push('MACD改善');
-    if(!Number.isFinite(hist)) missing.push('histLast');
     if(volRatio===null) missing.push('量能');
-    if(missing.length){
-      v2Reasons.push(`技術資料不足：${missing.join(' / ')}`);
-    }
+    if(missing.length) v2Reasons.push(`技術資料不足：${missing.join(' / ')}`);
 
-    if(ma20SlopeUp===true && isAboveMA20===true){
-      v2Delta += 8;
-      v2Reasons.push('MA20向上+站上 +8');
-    }else if(ma20SlopeUp===false && isAboveMA20===false){
-      v2Delta -= 12;
-      v2Reasons.push('MA20向下且未站上 -12');
-    }else if(ma20SlopeUp===false && isAboveMA20===true){
-      v2Delta -= 3;
-      v2Reasons.push('站上MA20但均線未翻 -3');
-    }
-
-    if(histImproving===true){
-      v2Delta += 6;
-      v2Reasons.push('MACD改善 +6');
-    }
-    if(Number.isFinite(hist) && hist > HIST_THRESHOLD){
-      v2Delta -= 10;
-      v2Reasons.push(`MACD頂部>${HIST_THRESHOLD} -10`);
-    }
-    if(Number.isFinite(volRatio)){
-      if(volRatio >= 1.2 && volRatio <= 1.8){
-        v2Delta += 5;
-        v2Reasons.push('健康量能 1.2~1.8x +5');
-      }else if(volRatio >= 0.8 && volRatio < 1.2){
-        v2Delta += 2;
-        v2Reasons.push('溫和量能 0.8~1.2x +2');
-      }else if(volRatio > 2.5){
-        v2Delta -= 5;
-        v2Reasons.push('量能過熱 >2.5x -5');
+    let positionLayer='unknown';
+    if(Number.isFinite(riseFromLow)){
+      if(riseFromLow < V22_POSITION_LOW_MAX){
+        positionLayer='low';
+        v2Delta += 6;
+        v2Reasons.push(`低位啟動區 <${Math.round(V22_POSITION_LOW_MAX*100)}% +6`);
+      }else if(riseFromLow <= V22_POSITION_TRANSITION_MAX){
+        positionLayer='transition';
+        v2Reasons.push(`過渡區 ${Math.round(V22_POSITION_LOW_MAX*100)}~${Math.round(V22_POSITION_TRANSITION_MAX*100)}% +0`);
+      }else{
+        positionLayer='high';
+        v2Delta -= 6;
+        v2Reasons.push(`高位區 >${Math.round(V22_POSITION_TRANSITION_MAX*100)}% -6`);
       }
     }
-    if(ma20SlopeUp===true && histImproving===true && Number.isFinite(hist) && hist < HIST_THRESHOLD){
+
+    let histTurnedPositive=false;
+    if(Number.isFinite(hist) && Number.isFinite(histPrev) && histPrev<=0 && hist>0){
+      histTurnedPositive=true;
+    }else if(histArray.length>=4){
+      const last4=histArray.slice(-4);
+      histTurnedPositive = last4[last4.length-1] > 0 && last4.slice(0,-1).some(v=>v<=0);
+    }
+    const positiveHist=histArray.filter(v=>v>0);
+    const recentPositiveMax=positiveHist.length ? Math.max(...positiveHist.slice(-8)) : null;
+    const histNearRecentHigh=Number.isFinite(hist) && Number.isFinite(recentPositiveMax) && recentPositiveMax>0
+      ? hist >= recentPositiveMax*0.78
+      : false;
+    const histEarlyMomentum=histTurnedPositive!==true && histImproving===true && Number.isFinite(hist) && hist<=HIST_THRESHOLD && histNearRecentHigh===false;
+
+    let momentumLayer='unknown';
+    if(histTurnedPositive){
+      momentumLayer='turning';
+      v2Delta += 8;
+      v2Reasons.push('hist 負轉正（最近1~3天） +8');
+    }else if(histEarlyMomentum){
+      momentumLayer='early';
       v2Delta += 4;
-      v2Reasons.push('早期啟動 +4');
+      v2Reasons.push('hist 改善且仍在早期 +4');
+    }else if(Number.isFinite(hist) && (hist > HIST_THRESHOLD || histNearRecentHigh)){
+      momentumLayer='high';
+      v2Delta -= 6;
+      v2Reasons.push(`hist 位於近期高位區 -6`);
+    }else if(histWeakening===true){
+      momentumLayer='weakening';
+      v2Delta -= 5;
+      v2Reasons.push('hist 轉弱 -5');
+    }
+
+    let volumeLayer='unknown';
+    if(Number.isFinite(volRatio)){
+      if(volRatio >= V22_VOLUME_HEALTHY_MIN && volRatio <= V22_VOLUME_HEALTHY_MAX){
+        volumeLayer='healthy';
+        v2Delta += 4;
+        v2Reasons.push(`健康量 ${V22_VOLUME_HEALTHY_MIN.toFixed(1)}~${V22_VOLUME_HEALTHY_MAX.toFixed(1)}x +4`);
+      }else if(volRatio > V22_VOLUME_OVERHEAT){
+        volumeLayer='overheat';
+        v2Delta -= 6;
+        v2Reasons.push(`異常量 >${V22_VOLUME_OVERHEAT.toFixed(1)}x -6`);
+      }else if(volRatio < V22_VOLUME_WEAK){
+        volumeLayer='weak';
+        v2Delta -= 4;
+        v2Reasons.push(`無動能 <${V22_VOLUME_WEAK.toFixed(1)}x -4`);
+      }else{
+        volumeLayer='normal';
+        v2Reasons.push('量能普通 +0');
+      }
+    }
+
+    const isTrueFront = positionLayer==='low' && momentumLayer==='turning' && volumeLayer==='healthy';
+    const isTransition = positionLayer==='transition' && (momentumLayer==='early' || momentumLayer==='turning') && ['healthy','normal'].includes(volumeLayer);
+    const isFakeFront = positionLayer==='high' && momentumLayer==='high' && volumeLayer==='overheat';
+    const isStrongException = positionLayer==='high' && momentumLayer==='turning' && ['healthy','normal'].includes(volumeLayer);
+
+    if(isTrueFront){
+      v2Delta += 12;
+      v2Reasons.push('真前段聯合判斷 +12');
+    }else if(isTransition){
+      v2Delta += 1;
+      v2Reasons.push('過渡區保留 +1');
+    }else if(isFakeFront){
+      v2Delta -= 14;
+      v2Reasons.push('假前段聯合過濾 -14');
+    }else if(isStrongException){
+      v2Delta += 4;
+      v2Reasons.push('高位但剛翻正，視為強勢例外 +4');
+    }
+
+    if(ma20SlopeUp===true && isAboveMA20===true && momentumLayer!=='high'){
+      v2Delta += 3;
+      v2Reasons.push('MA20向上且站上 +3');
+    }else if(ma20SlopeUp===false && isAboveMA20===false){
+      v2Delta -= 6;
+      v2Reasons.push('MA20向下且未站上 -6');
+    }else if(ma20SlopeUp===false && isAboveMA20===true && positionLayer==='high' && !isStrongException){
+      v2Delta -= 2;
+      v2Reasons.push('高位站上但均線未翻 -2');
     }
 
     const total=clamp(Math.round(base.total + v2Delta),0,100);
     let decision=base.decision, badge=base.badge, note=base.note;
-    if(total>=78 && clone.tech>=35){
-      decision='可進場'; badge='sb-go'; note='V2.1 微調後更偏好早期結構，這檔更接近發動。';
-    }else if(total<=54){
-      decision='先別碰'; badge='sb-no'; note='V2.1 判定結構不夠乾淨，先避開。';
+    if(isTrueFront && total>=76){
+      decision='可進場'; badge='sb-go'; note='V2.2 判定為真前段，結構、動能、量能有對齊。';
+    }else if(isFakeFront || total<=54){
+      decision='先別碰'; badge='sb-no'; note='V2.2 判定偏假前段或過熱，先不要當最後一棒。';
+    }else if(isStrongException && total>=70){
+      decision='觀察'; badge='sb-wait'; note='V2.2 保留高位剛翻正例外，偏強但不追。';
     }else if(total>=60){
-      decision='觀察'; badge='sb-wait'; note='V2.1 判定有早期訊號，但還要等確認。';
+      decision='觀察'; badge='sb-wait'; note='V2.2 顯示有早期訊號，但還需要再確認。';
     }
 
     const extraBadges=[];
-    if(v2Delta>=10) extraBadges.push('V2.1優選');
-    if(v2Reasons.some(t=>t.includes('早期啟動')) || (v2Reasons.some(t=>t.includes('健康量能')) && v2Reasons.some(t=>t.includes('MA20向上+站上')))) extraBadges.push('V2.1早期訊號');
-    if(v2Reasons.some(t=>t.includes('MACD頂部')) || v2Reasons.some(t=>t.includes('量能過熱'))) extraBadges.push('V2.1過熱');
+    if(isTrueFront) extraBadges.push('V2.2真前段');
+    if(isTransition) extraBadges.push('V2.2過渡');
+    if(isFakeFront) extraBadges.push('V2.2假前段');
+    if(isStrongException) extraBadges.push('V2.2強勢例外');
+    if(volumeLayer==='overheat') extraBadges.push('V2.2爆量過熱');
 
     const scoreV2={
       ...clone,
@@ -2684,7 +2755,19 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       v2Delta,
       v2Reasons,
       v2Badges: extraBadges,
-      formulaMode:'v2.1'
+      formulaMode:'v2.2',
+      v22Meta:{
+        riseFromLow,
+        positionLayer,
+        momentumLayer,
+        volumeLayer,
+        volRatio,
+        histTurnedPositive,
+        histNearRecentHigh,
+        isTrueFront,
+        isFakeFront,
+        isStrongException
+      }
     };
     d.scoreDataV2=scoreV2;
     d.scoreCacheKeyV2=signature;
@@ -2860,7 +2943,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       <div class="decision-hero">
         <div class="decision-top">
           <div style="flex:1;min-width:220px">
-            <div class="decision-kicker">AJ Decision Panel · ${AppState.ui.formulaMode==='v2'?'V2.1 微調公式':'V1 原始公式'}</div>
+            <div class="decision-kicker">AJ Decision Panel · ${AppState.ui.formulaMode==='v2'?'V2.2 結構公式':'V1 原始公式'}</div>
             <div class="decision-title">${score.decision}</div>
             <div class="decision-sub">現況｜${status.label}　${inst?`・ ${inst.label}`:''}</div>
           </div>
@@ -2963,7 +3046,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       const chipMeta=getChipMeta(code);
       const chipBadgeClass=getChipBadgeClass(code);
       el.innerHTML=`
-        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2.1':'V1'}</div>
+        <div class="rank-badge">#${idx+1} ${score.total} ${AppState.ui.formulaMode==='v2'?'V2.2':'V1'}</div>
         <div class="sn">${d.name||ep?.n||code}</div>
         <div class="sc2">${code}${d.source?' · '+d.source:''}</div>
         <div class="badge-row">
@@ -2980,7 +3063,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div><span class="status-box ${status.cls}">現況｜${status.label}</span></div>
         <div class="score-row">
           <span class="score-badge ${score.badge}">${score.decision}</span>
-          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2.1':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
+          <span class="score-mini">${AppState.ui.formulaMode==='v2'?'V2.2':'V1'} 分數 ${score.total}/100${AppState.ui.formulaMode==='v2'&&Number.isFinite(score.scoreDeltaV2)?`｜Δ ${score.scoreDeltaV2>=0?'+':''}${score.scoreDeltaV2}`:''}</span>
         </div>
         ${AppState.ui.formulaMode==='v2' ? `<div class="badge-row">${(score.v2Badges||[]).map(tag=>`<span class="sbg ${tag.includes('過熱')?'bg-red':'bg-blue'}">${tag}</span>`).join('')}${(score.v2Reasons||[]).slice(0,2).map(tag=>`<span class="sbg bg-amber">${tag}</span>`).join('')}</div>` : ''}
         ${ep&&ep.e?`<div class="sep">EPS ${ep.e}</div>`:''}
