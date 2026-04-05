@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板</title>
-  <meta name="app-version" content="v4.6.3">
+  <meta name="app-version" content="v4.6.4">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -1378,14 +1378,24 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     const signal=ema(macdLine,9);
     const hist=macdLine.map((m,i)=>m-signal[i]);
     const last=hist.length-1;
+    const ma20=sma(closes,20);
+    const ma20Prev=closes.length>=21 ? +((closes.slice(-21,-1).reduce((a,b)=>a+b,0))/20).toFixed(2) : null;
+    const avgVol20=sma(volumes,20);
+    const lastClose=safeNumber(rows[rows.length-1]?.close);
+    const lastVolume=safeNumber(rows[rows.length-1]?.volume);
     return {
-      ma20:sma(closes,20),
-      avgVol20:sma(volumes,20),
+      ma20,
+      ma20Prev,
+      ma20SlopeUp: ma20!=null && ma20Prev!=null ? ma20>ma20Prev : null,
+      isAboveMA20: lastClose!=null && ma20!=null ? lastClose>ma20 : null,
+      avgVol20,
+      volRatio: lastVolume!=null && avgVol20 ? +(lastVolume/avgVol20).toFixed(2) : null,
       macd:+macdLine[last].toFixed(3),
       macdPrev:+(macdLine[last-1] ?? macdLine[last]).toFixed(3),
       hist:+hist[last].toFixed(3),
       histPrev:+(hist[last-1] ?? hist[last]).toFixed(3),
       histArray:hist.slice(-20).map(v=>+v.toFixed(3)),
+      histImproving: hist[last]!=null && (hist[last-1] ?? hist[last])!=null ? hist[last]>(hist[last-1] ?? hist[last]) : null,
       high20:highs.length>=20 ? +Math.max(...highs.slice(-20)).toFixed(2) : null,
       low20:lows.length>=20 ? +Math.min(...lows.slice(-20)).toFixed(2) : null,
     };
@@ -1606,12 +1616,17 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       error:false,
       tech:{
         ma20: techItem.ma20 ?? null,
+        ma20Prev: techItem.ma20Prev ?? null,
+        ma20SlopeUp: techItem.ma20SlopeUp ?? null,
+        isAboveMA20: techItem.isAboveMA20 ?? null,
         avgVol20: techItem.avgVol20 ?? null,
+        volRatio: techItem.volRatio ?? null,
         macd: techItem.macd ?? null,
         macdPrev: techItem.macdPrev ?? null,
         hist: techItem.hist ?? null,
         histPrev: techItem.histPrev ?? null,
         histArray: techItem.histArray || [],
+        histImproving: techItem.histImproving ?? null,
         high20: techItem.high20 ?? null,
         low20: techItem.low20 ?? null
       }
@@ -1758,15 +1773,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       if (!AppState.stocks[code]) return;
 
       AppState.stocks[code].tech = {
-        ma20: item.ma20,
-        avgVol20: item.avgVol20,
-        macd: item.macd,
-        macdPrev: item.macdPrev,
-        hist: item.hist,
-        histPrev: item.histPrev,
+        ma20: item.ma20 ?? null,
+        ma20Prev: item.ma20Prev ?? null,
+        ma20SlopeUp: item.ma20SlopeUp ?? null,
+        isAboveMA20: item.isAboveMA20 ?? null,
+        avgVol20: item.avgVol20 ?? null,
+        volRatio: item.volRatio ?? null,
+        macd: item.macd ?? null,
+        macdPrev: item.macdPrev ?? null,
+        hist: item.hist ?? null,
+        histPrev: item.histPrev ?? null,
         histArray: item.histArray || [],
-        high20: item.high20,
-        low20: item.low20
+        histImproving: item.histImproving ?? null,
+        high20: item.high20 ?? null,
+        low20: item.low20 ?? null
       };
     });
 
@@ -3213,6 +3233,13 @@ async function fetchCodes(codes){
     AppState.visibleCodes=[...codes];
     renderSkeleton(codes);
     await fetchCodes(codes);
+    await loadTechData(codes);
+    (codes||[]).forEach(code=>{
+      if(AppState.stocks[code]){
+        computeAjieScore(code,true);
+        if(window.computeAjieScoreV2) computeAjieScoreV2(code,true);
+      }
+    });
     renderCards(codes);
     renderSectorHeat(codes);
     renderEarlyStarter(codes);
