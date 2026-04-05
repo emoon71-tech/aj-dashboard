@@ -215,6 +215,25 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+  .v21-section{background:linear-gradient(135deg,rgba(61,220,132,.10),rgba(61,220,132,.05));border:1px solid rgba(61,220,132,.35);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
+  .v21-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .v21-title{font-size:16px;font-weight:800;color:var(--green)}
+  .v21-sub{font-size:11px;color:var(--text3);margin-top:4px}
+  .v21-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(61,220,132,.10);border:1px solid rgba(61,220,132,.35);color:var(--green);font-size:10px;font-weight:700}
+  .v21-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .v21-card{background:var(--bg);border:1px solid rgba(61,220,132,.25);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
+  .v21-card:hover{border-color:rgba(61,220,132,.45);transform:translateY(-1px)}
+  .v21-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .v21-kicker .name{font-size:13px;font-weight:800;color:var(--text)}
+  .v21-kicker .code{font-size:10px;color:var(--text3)}
+  .v21-score{font-size:11px;color:var(--green);font-weight:700}
+  .v21-line{font-size:12px;color:var(--text);font-weight:700;line-height:1.5}
+  .v21-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .v21-tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid}
+  .v21-empty{padding:10px 0 2px;color:var(--text3);font-size:12px}
+  .v21-empty b{color:var(--green)}
+
   .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
   .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .starter-title{font-size:16px;font-weight:800;color:var(--text)}
@@ -525,10 +544,21 @@
     <div class="kpi-mini" id="sectorList"></div>
   </div>
 
+  <div class="v21-section">
+    <div class="v21-top">
+      <div>
+        <div class="v21-title">🟢 V2.1 早期訊號榜</div>
+        <div class="v21-sub">保留 V2.1 的早期訊號與優選邏輯，抓低位剛轉強、量能健康、準備接棒的股票。</div>
+      </div>
+      <div class="v21-badge" id="v21Badge">掃描中</div>
+    </div>
+    <div class="v21-grid" id="v21Grid"></div>
+  </div>
+
   <div class="starter-panel">
     <div class="starter-top">
       <div>
-        <div class="starter-title">🟡 前段啟動榜</div>
+        <div class="starter-title">🟡 V2.2 前段啟動榜</div>
         <div class="starter-sub">抓低位結構轉強、MA20 站穩、量能健康的前段啟動股。</div>
       </div>
       <div class="starter-badge" id="starterBadge">掃描中</div>
@@ -1019,6 +1049,170 @@ function calcSectorHeat(codes){
     return null;
   }
 
+
+  function calculateV21(data){
+    const ma20SlopeUp = data?.ma20SlopeUp === true;
+    const isAboveMA20 = data?.isAboveMA20 === true;
+    const histImproving = data?.histImproving === true;
+    const hist = safeNumber(data?.hist);
+    const volRatio = safeNumber(data?.volRatio);
+    const riseFromLow = safeNumber(data?.riseFromLow);
+
+    let delta = 0;
+    const reasons = [];
+    const badges = [];
+
+    if(ma20SlopeUp && isAboveMA20){
+      delta += 8;
+      reasons.push('MA20向上+站上');
+    }else if(!ma20SlopeUp && !isAboveMA20 && (data?.ma20SlopeUp===false || data?.isAboveMA20===false)){
+      delta -= 12;
+    }else if(data?.ma20SlopeUp===false && isAboveMA20){
+      delta -= 3;
+    }
+
+    if(histImproving){
+      delta += 6;
+      reasons.push('MACD改善');
+    }
+    if(Number.isFinite(hist) && hist > HIST_THRESHOLD){
+      delta -= 10;
+      reasons.push('MACD過熱');
+    }
+
+    if(Number.isFinite(volRatio)){
+      if(volRatio >= 1.2 && volRatio <= 1.8){
+        delta += 5;
+        reasons.push('健康量能');
+      }else if(volRatio >= 0.8 && volRatio < 1.2){
+        delta += 2;
+        reasons.push('溫和量能');
+      }else if(volRatio > V21_OVERHEAT_VOL){
+        delta -= 5;
+        reasons.push('量能過熱');
+      }
+    }
+
+    const earlyStart = ma20SlopeUp && histImproving && Number.isFinite(hist) && hist < HIST_THRESHOLD;
+    if(earlyStart){
+      delta += 4;
+      reasons.push('早期啟動');
+    }
+
+    const positionOk = Number.isFinite(riseFromLow) && riseFromLow < V21_POSITION_MAX;
+    const volumeOk = Number.isFinite(volRatio) && volRatio >= V21_VOL_MIN && volRatio <= V21_VOL_MAX;
+    const warmVolumeOk = Number.isFinite(volRatio) && volRatio >= V21_WARM_VOL_MIN && volRatio <= 2.2;
+    const structureOk = (ma20SlopeUp && isAboveMA20) || (histImproving && isAboveMA20);
+
+    const qualifies = positionOk && histImproving && warmVolumeOk && structureOk;
+    if(delta >= 10) badges.push('V2.1優選');
+    if(earlyStart || (volumeOk && ma20SlopeUp && isAboveMA20)) badges.push('V2.1早期訊號');
+    if((Number.isFinite(hist) && hist > HIST_THRESHOLD) || (Number.isFinite(volRatio) && volRatio > V21_OVERHEAT_VOL)) badges.push('V2.1過熱');
+
+    return { qualifies, delta, reasons, badges, earlyStart, positionOk, volumeOk, warmVolumeOk, structureOk };
+  }
+
+  function getV21Candidates(codes){
+    const v22Codes = new Set(getEarlyStarterCandidates(codes).map(item=>item.code));
+    const v23Codes = new Set(getV23Candidates(codes).map(item=>item.code));
+
+    return (codes||[]).map(code=>{
+      const d=AppState.stocks[code]||{};
+      if(!d || d.loading || d.error || !/^\d+$/.test(code)) return null;
+
+      const tech=d.tech||{};
+      const score=computeAjieScore(code, true);
+      const price=safeNumber(d.price);
+      const ma20=safeNumber(tech.ma20);
+      const maBias=(Number.isFinite(ma20) && Number.isFinite(price) && ma20>0)?((price-ma20)/ma20):null;
+      const riseFromLow=deriveRiseFromLow(score, tech, d);
+      const histPack=deriveHistSeries(tech);
+      const volRatio=Number.isFinite(score.volRatio) ? score.volRatio : safeNumber(tech.volRatio);
+      const v21=calculateV21({
+        ma20SlopeUp: tech.ma20SlopeUp,
+        isAboveMA20: tech.isAboveMA20,
+        histImproving: tech.histImproving,
+        hist: histPack.hist,
+        volRatio,
+        riseFromLow,
+      });
+
+      if(!v21.qualifies) return null;
+      if(v22Codes.has(code) || v23Codes.has(code)) return null;
+
+      const line = `${v21.earlyStart?'MACD 早期轉強':'結構先轉強'} · ${Number.isFinite(riseFromLow)?`低點上來 ${(riseFromLow*100).toFixed(1)}%`:'位階待補'} · ${Number.isFinite(volRatio)?`量比 ${volRatio.toFixed(1)}倍`:'量能待補'}`;
+      const panelScore = Math.max(1, Math.min(99, Math.round((score.total||0) + v21.delta)));
+
+      return {
+        code,
+        name:d.name||EPS[code]?.n||code,
+        price,
+        panelScore,
+        v21Delta:v21.delta,
+        line,
+        badges:v21.badges,
+        reasons:v21.reasons,
+        riseFromLow,
+        volRatio,
+        hist:histPack.hist,
+        maBias,
+        earlyStart:v21.earlyStart,
+      };
+    }).filter(Boolean)
+      .sort((a,b)=>{
+        if((b.earlyStart?1:0)!==(a.earlyStart?1:0)) return (b.earlyStart?1:0)-(a.earlyStart?1:0);
+        if((b.panelScore||0)!==(a.panelScore||0)) return (b.panelScore||0)-(a.panelScore||0);
+        if((a.riseFromLow??999)!==(b.riseFromLow??999)) return (a.riseFromLow??999)-(b.riseFromLow??999);
+        if((b.volRatio||-999)!==(a.volRatio||-999)) return (b.volRatio||-999)-(a.volRatio||-999);
+        return String(a.code).localeCompare(String(b.code),'zh-Hant');
+      }).slice(0,8);
+  }
+
+  function renderV21(codes){
+    const wrap=$('v21Grid');
+    const badge=$('v21Badge');
+    if(!wrap || !badge) return;
+
+    const list=getV21Candidates(codes);
+    if(!list.length){
+      badge.textContent='暫無訊號';
+      wrap.innerHTML=`<div class="v21-empty"><b>今天還沒看到漂亮的 V2.1 早期訊號。</b> 先等低位、MACD 改善、量能回溫三件事一起對上。</div>`;
+      return;
+    }
+
+    badge.textContent=`抓到 ${list.length} 檔`;
+    wrap.innerHTML=list.map((item,idx)=>{
+      const posText=item.riseFromLow!=null ? `低點上來 ${(item.riseFromLow*100).toFixed(1)}%` : '位階待補';
+      const volText=item.volRatio!=null ? `量比 ${item.volRatio.toFixed(1)}倍` : '量能待補';
+      const maText=item.maBias!=null ? `高於MA20 +${Math.round(item.maBias*100)}%` : 'MA20待補';
+      const badgeHtml=(item.badges||[]).slice(0,2).map(tag=>{
+        const cls = tag.includes('優選')
+          ? 'background:#0a2015;border-color:var(--green);color:var(--green)'
+          : tag.includes('過熱')
+            ? 'background:#2a1208;border-color:#ff6b6b;color:#ff9b9b'
+            : 'background:#0a1428;border-color:var(--blue);color:var(--blue)';
+        return `<span class="v21-tag" style="${cls}">${tag}</span>`;
+      }).join('');
+      return `
+        <div class="v21-card" onclick="showDetail('${item.code}')">
+          <div class="v21-kicker">
+            <div>
+              <div class="name">#${idx+1} ${item.name}</div>
+              <div class="code">${item.code}</div>
+            </div>
+            <div class="v21-score">早期分 ${item.panelScore}</div>
+          </div>
+          <div class="v21-line">${item.line}</div>
+          <div class="v21-tags">
+            <span class="v21-tag" style="background:#0a2015;border-color:var(--green);color:var(--green)">${maText}</span>
+            <span class="v21-tag" style="background:#1a1508;border-color:var(--gold);color:var(--gold)">${posText}</span>
+            <span class="v21-tag" style="background:#0a1428;border-color:var(--blue);color:var(--blue)">${volText}</span>
+            ${badgeHtml}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
   function calculateV23(data){
     const rise=safeNumber(data?.riseFromLow);
     const vol=safeNumber(data?.volRatio);
@@ -1209,6 +1403,12 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   const V23_HOT_POSITION = 0.25;
   const V23_HOT_VOLUME = 3.5;
   const V23_HOT_HIST = 0.6;
+
+  const V21_POSITION_MAX = 0.15;
+  const V21_VOL_MIN = 1.0;
+  const V21_VOL_MAX = 2.0;
+  const V21_WARM_VOL_MIN = 0.8;
+  const V21_OVERHEAT_VOL = 2.5;
   let updateToastShown=false;
   
   const AppState={
@@ -1864,6 +2064,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         }));
         renderCards(codes);
         renderSectorHeat(codes);
+        renderV21(codes);
         renderEarlyStarter(codes);
         setStat(`歷史回放中 ${Math.min(i+batchSize,codes.length)}/${codes.length}...`);
         if(i+batchSize<codes.length) await sleep(450);
@@ -3539,6 +3740,7 @@ async function fetchCodes(codes){
     });
     renderCards(codes);
     renderSectorHeat(codes);
+    renderV21(codes);
     renderEarlyStarter(codes);
     renderV23(codes);
   }
@@ -3547,6 +3749,7 @@ async function fetchCodes(codes){
     hydrateScores(codes);
     renderCards(codes);
     renderSectorHeat(codes);
+    renderV21(codes);
     renderEarlyStarter(codes);
     renderV23(codes);
     if(AppState.ui.activeCode && codes.includes(AppState.ui.activeCode)){
