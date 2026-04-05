@@ -3583,7 +3583,18 @@ async function refreshAll(){
 }
   window.addEventListener('resize',()=>{ if(!isMobileView()) { if(AppState.ui.activeCode) $('dWrap').style.display='block'; } else { $('dWrap').style.display='none'; } });
   window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDetailModal(); });
-  </script>
+  
+function computeV21RankScore(stock){
+  let score = 0;
+  if(stock.ma20SlopeUp) score += 3;
+  if(stock.isAboveMA20) score += 3;
+  if(stock.histImproving) score += 3;
+  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
+  if(stock.riseFromLow > 0.25) score -= 2;
+  return score;
+}
+
+</script>
   
 
 
@@ -3763,6 +3774,17 @@ async function refreshAll(){
     bindSearchBox();
   }
 })();
+
+function computeV21RankScore(stock){
+  let score = 0;
+  if(stock.ma20SlopeUp) score += 3;
+  if(stock.isAboveMA20) score += 3;
+  if(stock.histImproving) score += 3;
+  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
+  if(stock.riseFromLow > 0.25) score -= 2;
+  return score;
+}
+
 </script>
 
 
@@ -3949,6 +3971,17 @@ function ajieHandlePerfImport(event){
 }
 window.ajieLogPerformance = ajieLogPerformance;
 window.addEventListener('load', ajieRenderPerf);
+
+function computeV21RankScore(stock){
+  let score = 0;
+  if(stock.ma20SlopeUp) score += 3;
+  if(stock.isAboveMA20) score += 3;
+  if(stock.histImproving) score += 3;
+  if(stock.volRatio > 1.2 && stock.volRatio < 2.5) score += 1;
+  if(stock.riseFromLow > 0.25) score -= 2;
+  return score;
+}
+
 </script>
 
 </body>
