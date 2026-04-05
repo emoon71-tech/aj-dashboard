@@ -3,7 +3,7 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板</title>
+  <title>阿吉股票儀表板 v4.6.9</title>
   <meta name="app-version" content="v4.6.8">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -1955,36 +1955,61 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     throw lastError;
   }
   async function loadTechData(codes,dateStr='') {
+  const list = Array.isArray(codes) ? codes.filter(Boolean) : [];
+  if (!list.length) return;
+
+  const chunkSize = 5;
+  const delayMs = 600;
+
   try {
-    const qs=`/tech?codes=${codes.join(',')}` + (dateStr?`&date=${encodeURIComponent(dateStr)}`:'');
-    const res = await apiGetJson(qs);
-    if (!res?.items) return;
+    for (let i = 0; i < list.length; i += chunkSize) {
+      const chunk = list.slice(i, i + chunkSize);
+      const qs = `/tech?codes=${chunk.join(',')}` + (dateStr ? `&date=${encodeURIComponent(dateStr)}` : '');
+      const res = await apiGetJson(qs, { timeout: 20000, retries: 1 });
+      if (res?.items) {
+        res.items.forEach(item => {
+          const code = item.code;
+          if (!AppState.stocks[code]) return;
 
-    res.items.forEach(item => {
-      const code = item.code;
-      if (!AppState.stocks[code]) return;
+          const histArray = Array.isArray(item.histArray) ? item.histArray : [];
+          const fallbackHistLast = histArray.length >= 2 ? histArray[histArray.length - 2] : null;
+          const fallbackHistLast2 = histArray.length >= 3 ? histArray[histArray.length - 3] : null;
+          const fallbackRiseFromLow =
+            item.riseFromLow ?? (
+              Number.isFinite(Number(item.lastClose)) &&
+              Number.isFinite(Number(item.low20)) &&
+              Number(item.low20) > 0
+            )
+              ? +(((Number(item.lastClose) - Number(item.low20)) / Number(item.low20))).toFixed(4)
+              : null;
 
-      AppState.stocks[code].tech = {
-        ma20: item.ma20 ?? null,
-        ma20Prev: item.ma20Prev ?? null,
-        ma20SlopeUp: item.ma20SlopeUp ?? null,
-        isAboveMA20: item.isAboveMA20 ?? null,
-        avgVol20: item.avgVol20 ?? null,
-        volRatio: item.volRatio ?? null,
-        macd: item.macd ?? null,
-        macdPrev: item.macdPrev ?? null,
-        hist: item.hist ?? null,
-        histPrev: item.histPrev ?? null,
-        histLast: item.histLast ?? item.histPrev ?? null,
-        histLast2: item.histLast2 ?? null,
-        histArray: item.histArray || [],
-        histImproving: item.histImproving ?? null,
-        high20: item.high20 ?? null,
-        low20: item.low20 ?? null,
-        riseFromLow: item.riseFromLow ?? null
-      };
-    });
+          AppState.stocks[code].tech = {
+            ma20: item.ma20 ?? null,
+            ma20Prev: item.ma20Prev ?? null,
+            ma20SlopeUp: item.ma20SlopeUp ?? null,
+            isAboveMA20: item.isAboveMA20 ?? null,
+            avgVol20: item.avgVol20 ?? null,
+            volRatio: item.volRatio ?? null,
+            macd: item.macd ?? null,
+            macdPrev: item.macdPrev ?? null,
+            hist: item.hist ?? null,
+            histPrev: item.histPrev ?? null,
+            histLast: item.histLast ?? fallbackHistLast,
+            histLast2: item.histLast2 ?? fallbackHistLast2,
+            histArray,
+            histImproving: item.histImproving ?? null,
+            high20: item.high20 ?? null,
+            low20: item.low20 ?? null,
+            riseFromLow: fallbackRiseFromLow
+          };
+        });
+      }
 
+      if (i + chunkSize < list.length) {
+        setStat(`技術資料載入中 ${Math.min(i + chunk.length, list.length)}/${list.length}`,'load');
+        await new Promise(r => setTimeout(r, delayMs));
+      }
+    }
   } catch (e) {
     console.error('loadTechData error', e);
   }
@@ -3704,7 +3729,6 @@ async function refreshAll(){
 
     if(codes.length){
       await loadCodes(codes);
-      await loadTechData(codes);
 
       codes.forEach(c => {
         if(AppState.stocks[c]){
