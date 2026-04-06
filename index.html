@@ -1061,7 +1061,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v2'},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v1'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -2777,7 +2777,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCurrentView();
   }
   function updateFormulaButtons(){
-    const mode=AppState.ui.formulaMode||'v2';
+    const mode=AppState.ui.formulaMode||'v1';
     ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
     const active=$(mode==='v2'?'formula-v2':'formula-v1');
     if(active) active.classList.add('on');
@@ -4298,18 +4298,16 @@ function computeV21RankScore(stock){
   function prepareCSVData(grouped, dateStr){
     const rows = [...(grouped.old || []), ...(grouped.new || [])].map(item => ({
       date: dateStr,
-      strategy: item.strategy,
-      rank: item.rank,
+      strategy: item.strategy === 'new' ? 'new' : 'old',
       code: item.code,
+      rank: item.rank,
+      rankScore: Number.isFinite(item.rankScore) ? item.rankScore : 0,
       riseFromLow: Number.isFinite(item.riseFromLow) ? item.riseFromLow : '',
       volRatio: Number.isFinite(item.volRatio) ? item.volRatio : '',
       histFlip: item.histFlip ? 'true' : 'false',
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
-      rankScore: Number.isFinite(item.rankScore) ? item.rankScore : 0,
-      ret_3d: Number.isFinite(item.ret_3d) ? item.ret_3d : '',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
-      ret_10d: Number.isFinite(item.ret_10d) ? item.ret_10d : '',
     }));
     AppState.replay = AppState.replay || {};
     AppState.replay.v21Validation = {
@@ -4365,7 +4363,7 @@ function computeV21RankScore(stock){
       alert('目前沒有可匯出的驗證資料');
       return;
     }
-    const headers = ['date','strategy','rank','code','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','rankScore','ret_3d','ret_5d','ret_10d'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
