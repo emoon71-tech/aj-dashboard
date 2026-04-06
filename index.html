@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阿吉股票儀表板 v4.8.0</title>
-  <meta name="app-version" content="v4.8.0">
+  <meta name="app-version" content="v5.2.0">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -4569,86 +4569,31 @@ function computeV21RankScore(stock){
 
 
 <script>
-// ===== V5.1.1 PATCH START =====
+// ===== V5.2 PATCH =====
 
-// 日期統一
-function formatDateISO(d){
-  const x=new Date(d);
-  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
-}
+// 🔒 預設鎖死 V2.1
+window.DEFAULT_FORMULA = 'v2.1';
+window.currentFormula = 'v2.1';
 
-// 延遲
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+// 強制覆蓋 localStorage
+localStorage.setItem('formula','v2.1');
 
-// 隨機
-function shuffle(a){return a.sort(()=>Math.random()-0.5);}
+// 隨機批次按鈕（自動掛上）
+window.addEventListener('DOMContentLoaded', ()=>{
+  const btn = document.createElement('button');
+  btn.innerText = '隨機5日批次';
+  btn.style.marginLeft = '8px';
+  btn.className = 'btn btn-blue';
+  btn.onclick = runBatchReplay;
 
-// 批次回測（不動原邏輯）
-async function runBatchReplay(){
-  const dates = getAvailableReplayDates ? getAvailableReplayDates() : [];
-  const picked = shuffle([...dates]).slice(0,5);
-
-  let batchRows = [];
-
-  for(let i=0;i<picked.length;i++){
-    const d = picked[i];
-
-    if(window.runSingleReplay){
-      const rows = await runSingleReplay(d); // 你原本回測
-      rows.forEach(r=>{
-        r.date = formatDateISO(r.date);
-        batchRows.push(r);
-      });
-    }
-
-    if(i<picked.length-1){
-      await sleep(20000);
-    }
+  // 找CSV按鈕附近插入
+  const csvBtn = document.querySelector('[onclick*="CSV"]');
+  if(csvBtn && csvBtn.parentNode){
+    csvBtn.parentNode.appendChild(btn);
   }
+});
 
-  exportBatchCSV(batchRows);
-}
-
-// CSV輸出
-function exportBatchCSV(rows){
-  const header = [
-    'date','strategy','code','rank','rankScore',
-    'riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d'
-  ];
-
-  let csv=[header.join(',')];
-
-  rows.forEach(r=>{
-    csv.push([
-      r.date,
-      r.strategy,
-      r.code,
-      r.rank,
-      r.rankScore,
-      r.riseFromLow,
-      r.volRatio,
-      r.histFlip,
-      r.ma20Up,
-      r.isAboveMA20,
-      r.ret_5d
-    ].join(','));
-  });
-
-  const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='batch_merged_'+Date.now()+'.csv';
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-// ===== V5.1.1 PATCH END =====
+// ===== V5.2 PATCH END =====
 </script>
 
 </body>
