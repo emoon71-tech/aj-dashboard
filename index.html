@@ -4899,261 +4899,80 @@ return rankScore;
 </script>
 
 
+
 <script>
 (function(){
-  const RANDOM_PLUS_TEN_DELAY_MS = 13000;
-  let __randomPlusTenTimer = null;
+  window.renderValidationIdle = window.renderValidationIdle || function(){};
 
-  function normalizeCodeList(list){
-    return [...new Set((Array.isArray(list) ? list : [])
-      .map(v => String(v || '').trim())
-      .filter(Boolean))];
+  function runRandomPlusTenSafe(){
+    if (typeof window.runRandomPlusTen === 'function' && window.runRandomPlusTen !== runRandomPlusTenSafe) {
+      return window.runRandomPlusTen();
+    }
+    console.log('[隨機+10] clicked');
   }
 
-  function collectRandomUniverse(){
-    const presetCodes = Object.values(PRESETS || {}).flatMap(v => Array.isArray(v) ? v : []);
-    const poolCodes = Object.entries(AppState?.pools || {})
-      .filter(([name, val]) => name !== '__meta__' && Array.isArray(val))
-      .flatMap(([, val]) => val);
-    return normalizeCodeList([...presetCodes, ...poolCodes]);
-  }
-
-  function pickRandomCodes(source, count){
-    const arr = normalizeCodeList(source);
-    for(let i = arr.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr.slice(0, Math.max(0, count));
-  }
-
-  function buildRandomPlusTenSnapshot(){
-    const codes = normalizeCodeList(typeof currentCodes === 'function' ? currentCodes() : []);
-    const base = [];
-
-    codes.forEach(code => {
-      try{
-        const d = AppState?.stocks?.[code] || {};
-        const score = typeof computeAjieScore === 'function' ? computeAjieScore(code, true) : null;
-        if(score && (score.total || 0) > 0){
-          base.push({ code, d, score, rankScore: computeV21RankScore(d) });
-        }
-      }catch(err){
-        console.warn('[隨機+10] snapshot row failed:', code, err);
-      }
-    });
-
-    const oldList = [...base].sort((a,b)=>{
-      const aPct = Number.isFinite(a.d?.chgPct) ? a.d.chgPct : -999;
-      const bPct = Number.isFinite(b.d?.chgPct) ? b.d.chgPct : -999;
-      if(bPct !== aPct) return bPct - aPct;
-      const aVol = Number.isFinite(a.score?.volRatio) ? a.score.volRatio : -999;
-      const bVol = Number.isFinite(b.score?.volRatio) ? b.score.volRatio : -999;
-      return bVol - aVol;
-    });
-
-    const newList = [...base].sort((a,b)=>{
-      if((b.rankScore || 0) !== (a.rankScore || 0)) return (b.rankScore || 0) - (a.rankScore || 0);
-      return (b.score?.total || 0) - (a.score?.total || 0);
-    });
-
-    const dateStr = typeof getV21Date === 'function' ? getV21Date() : '';
-    const oldTop = oldList.slice(0, typeof V21_TOP_N === 'number' ? V21_TOP_N : 8).map((item, idx) => ({
-      date: dateStr,
-      strategy: 'old',
-      rank: idx + 1,
-      code: item.code,
-      rankScore: 0,
-      riseFromLow: Number.isFinite(item?.score?.riseFromLow) ? item.score.riseFromLow : '',
-      volRatio: Number.isFinite(item?.score?.volRatio) ? item.score.volRatio : '',
-      histFlip: !!(Number(item?.d?.tech?.hist ?? item?.d?.scoreData?.hist ?? item?.d?.hist ?? 0) > 0 &&
-                   Number(item?.d?.tech?.histLast ?? item?.d?.tech?.histPrev ?? item?.d?.scoreData?.histLast ?? item?.d?.scoreData?.histPrev ?? item?.d?.histLast ?? item?.d?.histPrev ?? 0) <= 0),
-      ma20Up: !!(item?.d?.tech?.ma20SlopeUp),
-      isAboveMA20: !!(item?.d?.tech?.isAboveMA20),
-      ret_5d: '',
-    }));
-    const newTop = newList.slice(0, typeof V21_TOP_N === 'number' ? V21_TOP_N : 8).map((item, idx) => ({
-      date: dateStr,
-      strategy: 'new',
-      rank: idx + 1,
-      code: item.code,
-      rankScore: Number.isFinite(item.rankScore) ? item.rankScore : 0,
-      riseFromLow: Number.isFinite(item?.score?.riseFromLow) ? item.score.riseFromLow : '',
-      volRatio: Number.isFinite(item?.score?.volRatio) ? item.score.volRatio : '',
-      histFlip: !!(Number(item?.d?.tech?.hist ?? item?.d?.scoreData?.hist ?? item?.d?.hist ?? 0) > 0 &&
-                   Number(item?.d?.tech?.histLast ?? item?.d?.tech?.histPrev ?? item?.d?.scoreData?.histLast ?? item?.d?.scoreData?.histPrev ?? item?.d?.histLast ?? item?.d?.histPrev ?? 0) <= 0),
-      ma20Up: !!(item?.d?.tech?.ma20SlopeUp),
-      isAboveMA20: !!(item?.d?.tech?.isAboveMA20),
-      ret_5d: '',
-    }));
-
-    const topStocks = (newTop.length ? newTop : oldTop).slice(0, typeof V21_TOP_N === 'number' ? V21_TOP_N : 8);
-    const structure = typeof computeMarketStructure === 'function' ? computeMarketStructure(topStocks) : {};
-    const regime = typeof detectMarketRegime === 'function' ? detectMarketRegime(structure) : '';
-    const marketScore = typeof computeMarketScore === 'function' ? computeMarketScore(structure, regime) : '';
-    const position = typeof computePosition === 'function' ? computePosition(marketScore, regime) : '';
-    const marketLayer = { ...structure, regime, marketScore, position };
-
-    const rows = [...oldTop, ...newTop].map(item => ({
-      date: item.date,
-      strategy: item.strategy,
-      code: item.code,
-      rank: item.rank,
-      rankScore: Number.isFinite(item.rankScore) ? item.rankScore : 0,
-      riseFromLow: Number.isFinite(item.riseFromLow) ? item.riseFromLow : '',
-      volRatio: Number.isFinite(item.volRatio) ? item.volRatio : '',
-      histFlip: item.histFlip ? 'true' : 'false',
-      ma20Up: item.ma20Up ? 'true' : 'false',
-      isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
-      ret_5d: '',
-      regime: marketLayer.regime || '',
-      marketScore: Number.isFinite(marketLayer.marketScore) ? marketLayer.marketScore : '',
-      position: Number.isFinite(marketLayer.position) ? marketLayer.position : '',
-      top3_avg_rise: Number.isFinite(marketLayer.top3_avg_rise) ? marketLayer.top3_avg_rise : '',
-      flipRatio: Number.isFinite(marketLayer.flipRatio) ? marketLayer.flipRatio : '',
-      trendRatio: Number.isFinite(marketLayer.trendRatio) ? marketLayer.trendRatio : '',
-      avg_volRatio: Number.isFinite(marketLayer.avg_volRatio) ? marketLayer.avg_volRatio : '',
-      leaderCount: Number.isFinite(marketLayer.leaderCount) ? marketLayer.leaderCount : '',
-    }));
-
-    return {
-      rows,
-      fileName: `random_plus10_${dateStr || new Date().toISOString().slice(0,10)}.csv`
-    };
-  }
-
-  function downloadRowsAsCSV(rows, fileName){
-    if(!rows || !rows.length){
-      console.warn('[隨機+10] CSV rows empty');
-      return;
-    }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
-    const csv = [headers.join(',')]
-      .concat(rows.map(row => headers.map(h => typeof toCsvCell === 'function' ? toCsvCell(row[h]) : String(row[h] ?? '')).join(',')))
-      .join('\n');
-
-    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName || 'random_plus10_export.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  async function runRandomPlusTen(){
-    console.log('[隨機+10] click triggered');
-    const btn = document.getElementById('randomPlusTenBtn');
-    if(AppState?.ui?.isRefreshing){
-      console.log('[隨機+10] skipped: refreshing');
-      return;
-    }
-
-    const current = normalizeCodeList(typeof currentCodes === 'function' ? currentCodes() : []);
-    const universe = collectRandomUniverse();
-    const extras = universe.filter(code => !current.includes(code));
-    const picked = pickRandomCodes(extras, 10);
-
-    if(!picked.length){
-      alert('目前沒有可加入的新股票');
-      return;
-    }
-
-    const nextCodes = normalizeCodeList([...current, ...picked]);
-    AppState.visibleCodes = nextCodes;
-
-    if(btn) btn.disabled = true;
-    if(typeof setStat === 'function'){
-      setStat(`隨機+10 已加入：${picked.join(', ')}，資料刷新中...`);
-    }
-    console.log('[隨機+10] picked', picked);
-
-    try{
-      await refreshAll();
-      console.log('[隨機+10] refreshAll completed');
-
-      clearTimeout(__randomPlusTenTimer);
-      __randomPlusTenTimer = setTimeout(() => {
-        try{
-          const payload = buildRandomPlusTenSnapshot();
-          downloadRowsAsCSV(payload.rows, payload.fileName);
-          if(typeof setStat === 'function'){
-            setStat(`隨機+10 已自動記錄 CSV ✓（${payload.rows.length} 筆）`, 'ok');
-          }
-          console.log('[隨機+10] CSV exported', payload.fileName, payload.rows.length);
-        }catch(err){
-          console.error('[隨機+10] CSV export failed', err);
-          if(typeof setStat === 'function'){
-            setStat(`隨機+10 自動記錄失敗：${err.message || err}`, 'err');
-          }
-        }finally{
-          if(btn) btn.disabled = false;
-        }
-      }, RANDOM_PLUS_TEN_DELAY_MS);
-
-      console.log(`[隨機+10] export scheduled in ${RANDOM_PLUS_TEN_DELAY_MS}ms`);
-    }catch(err){
-      console.error('[隨機+10] failed', err);
-      if(btn) btn.disabled = false;
-      if(typeof setStat === 'function'){
-        setStat(`隨機+10 失敗：${err.message || err}`, 'err');
-      }
-    }
-  }
-
-  function bindRandomPlusTenButton(){
-    const btn = document.getElementById('randomPlusTenBtn');
-    console.log('btn:', btn);
-
-    if(!btn){
+  function bindRandomPlusTenButton(btn){
+    if (!btn) {
       console.error('randomPlusTenBtn not found');
       return;
     }
 
-    if(btn.dataset.bound === 'true'){
-      return;
-    }
+    btn.id = 'randomPlusTenBtn';
+    btn.type = 'button';
+    btn.style.position = 'relative';
+    btn.style.zIndex = '9999';
+    btn.style.pointerEvents = 'auto';
+    btn.setAttribute('onclick', 'runRandomPlusTenSafe()');
+
+    if (btn.dataset.bound === 'true') return;
 
     btn.dataset.bound = 'true';
     btn.addEventListener('click', function(event){
       event.preventDefault();
       event.stopPropagation();
       console.log('[隨機+10] clicked');
-      runRandomPlusTen();
+      runRandomPlusTenSafe();
     });
 
+    console.log('btn:', btn);
     console.log('[隨機+10] button bound');
   }
 
   function ensureRandomPlusTenButton(){
-    const host = document.querySelector('.toolbar-right');
-    if(!host){
-      console.error('toolbar-right not found');
+    const host = document.querySelector('.toolbar-right, .v21-actions');
+    if (!host) {
+      console.error('randomPlusTen host not found');
       return;
     }
 
     let btn = document.getElementById('randomPlusTenBtn');
-    if(!btn){
+    if (!btn) {
       btn = document.createElement('button');
       btn.className = 'btn btn-blue btn-sm';
       btn.id = 'randomPlusTenBtn';
-      btn.type = 'button';
       btn.textContent = '隨機+10';
       host.appendChild(btn);
     }
 
-    bindRandomPlusTenButton();
+    bindRandomPlusTenButton(btn);
   }
 
-  window.runRandomPlusTen = runRandomPlusTen;
+  window.runRandomPlusTenSafe = runRandomPlusTenSafe;
+
   document.addEventListener('DOMContentLoaded', () => {
     ensureRandomPlusTenButton();
-    setTimeout(ensureRandomPlusTenButton, 1200);
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
+  });
+
+  window.addEventListener('load', () => {
+    ensureRandomPlusTenButton();
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
   });
 })();
 </script>
+
 
 </body>
   </html>
