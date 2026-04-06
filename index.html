@@ -4980,5 +4980,94 @@ return rankScore;
 })();
 </script>
 
+
+<!-- ====== 獨立輪播控制台 ====== -->
+<div style="position:fixed;bottom:20px;right:20px;width:260px;background:#0f1218;border:1px solid #d4a947;border-radius:10px;padding:12px;z-index:9999;font-size:12px;">
+  <div style="color:#d4a947;font-weight:700;margin-bottom:8px;">隨機股池自動輪播</div>
+  <div id="carouselStatus">狀態：待命</div>
+  <div id="carouselGroup">組數：0 / 10</div>
+  <div id="carouselCountdown">倒數：-</div>
+  <div style="margin-top:8px;display:flex;gap:6px;">
+    <button id="startCarouselBtn">開始10組</button>
+    <button id="stopCarouselBtn">停止</button>
+  </div>
+</div>
+
+<script>
+window.carouselRunning = false;
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function getRandomPool(){
+  const list = window.ALL_STOCKS || ["2330","2317","2454","2603","2303","2308"];
+  return list.sort(()=>0.5-Math.random()).slice(0,5);
+}
+
+async function switchPool(pool){
+  if(window.setCustomPool){
+    window.setCustomPool(pool);
+  }
+  if(window.refreshAll){
+    await window.refreshAll();
+  }
+}
+
+
+window.runRandomPoolCarousel = async function(){
+  if(window.carouselRunning) return;
+  window.carouselRunning = true;
+
+  let allRows = [];
+
+  try{
+    for(let i=0;i<10;i++){
+      if(!window.carouselRunning) break;
+
+      document.getElementById('carouselGroup').textContent = `組數：${i+1} / 10`;
+
+      const pool = getRandomPool();
+      document.getElementById('carouselStatus').textContent = '切換股池...';
+
+      await switchPool(pool);
+
+      for(let t=18;t>0;t--){
+        if(!window.carouselRunning) break;
+        document.getElementById('carouselCountdown').textContent = `倒數：${t}s`;
+
+        if(t===5){
+          if(window.getValidationRows){
+            const rows = await window.getValidationRows();
+            if(rows && rows.length){
+              rows.forEach(r=>r.group=i+1);
+              allRows.push(...rows);
+              document.getElementById('carouselStatus').textContent = '已收集資料';
+            }
+          }
+        }
+
+        await sleep(1000);
+      }
+    }
+
+    if(allRows.length){
+      if(window.exportBatchReplayCSV){
+        window.exportBatchReplayCSV(allRows, []);
+      }else if(window.exportCSV){
+        window.exportCSV('carousel_merged_' + Date.now() + '.csv');
+      }
+    }
+
+  }finally{
+    window.carouselRunning = false;
+    document.getElementById('carouselStatus').textContent = '完成(合併輸出)';
+    document.getElementById('carouselCountdown').textContent = '-';
+  }
+};
+
+
+document.getElementById('startCarouselBtn').onclick = ()=>window.runRandomPoolCarousel();
+document.getElementById('stopCarouselBtn').onclick = ()=>{ window.carouselRunning=false; };
+</script>
+
 </body>
   </html>
