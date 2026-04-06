@@ -2110,7 +2110,20 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     for(let i=0;i<6;i++){
       h+=`<div class="vc ${VC[i]}${cur&&cur.idx===i?' vcur':''}"><div class="vl">${VL[i]}</div><div class="vn">${prices[i].toLocaleString()}</div><div class="vs">PE ${pes[i].toFixed(1)}</div></div>`;
     }
-    h+=`</div><div class="hint">預估EPS ${e}　PE ${mn}x → ${mx}x　步距 ${step.toFixed(2)}x</div>`;
+    h+=`</div><div class="hint">預估EPS ${e}　PE ${mn}x → ${mx}x　步距 ${step.toFixed(2)}x</div>
+      <div class="detail-section">
+        <div class="detail-section-title">轉折偵測觀察</div>
+        <div class="ir">
+          <div class="ic"><div class="il">Slope</div><div class="iv">${formatSignedPct((selected.reversalObs?.ma20Slope ?? 0) * 100, 2)}</div></div>
+          <div class="ic"><div class="il">Slope收斂</div><div class="iv">${selected.reversalObs?.slopeRecovering ? 'YES' : 'NO'}</div></div>
+          <div class="ic"><div class="il">Hist轉正</div><div class="iv">${selected.reversalObs?.histTurning ? 'YES' : 'NO'}</div></div>
+          <div class="ic"><div class="il">Bias收回</div><div class="iv">${selected.reversalObs?.biasReclaim ? 'YES' : 'NO'}</div></div>
+        </div>
+        <div class="ir" style="margin-top:6px">
+          <div class="ic"><div class="il">轉折共振</div><div class="iv">${selected.reversalObs?.reversalSignal ? 'YES' : 'NO'}</div></div>
+        </div>
+      </div>
+`;
     return h;
   }
   
@@ -4026,6 +4039,66 @@ window.addEventListener('load', ajieRenderPerf);
   }
 
   
+
+function getReversalObservation(stock = {}, tech = {}, scoreData = {}) {
+  const histRaw = Number(
+    tech?.hist ??
+    scoreData?.hist ??
+    stock?.hist ??
+    0
+  );
+  const histPrevRaw = Number(
+    tech?.histPrev ??
+    tech?.histLast ??
+    scoreData?.histPrev ??
+    scoreData?.histLast ??
+    stock?.histPrev ??
+    stock?.histLast ??
+    0
+  );
+  const biasRaw = Number(
+    stock?.bias ??
+    scoreData?.bias ??
+    0
+  );
+  const ma20SlopeRaw = Number(
+    stock?.ma20Slope ??
+    tech?.ma20Slope ??
+    scoreData?.ma20Slope ??
+    0
+  );
+
+  const safeMa20Slope = Number.isFinite(ma20SlopeRaw) ? ma20SlopeRaw : 0;
+  const safeHist = Number.isFinite(histRaw) ? histRaw : 0;
+  const safeHistPrev = Number.isFinite(histPrevRaw) ? histPrevRaw : 0;
+  const histDelta = safeHist - safeHistPrev;
+  const safeBias = Number.isFinite(biasRaw) ? biasRaw : 0;
+
+  const slopeRecovering =
+    safeMa20Slope < 0.002 && safeMa20Slope > -0.025;
+
+  const histTurning =
+    safeHist > 0 && safeHistPrev <= 0;
+
+  const biasReclaim =
+    safeBias > 0 && safeBias <= 0.03;
+
+  const reversalSignal =
+    slopeRecovering && histTurning && biasReclaim;
+
+  return {
+    ma20Slope: safeMa20Slope,
+    safeHist,
+    safeHistPrev,
+    histDelta,
+    safeBias,
+    slopeRecovering,
+    histTurning,
+    biasReclaim,
+    reversalSignal
+  };
+}
+
 function computeV21RankScore(stock){
   const tech = stock?.tech || {};
   const scoreData = stock?.scoreData || {};
@@ -4237,7 +4310,12 @@ return rankScore;
   }
 
   function computeFutureReturnsFromRows(rows, dateStr){
-    if(!Array.isArray(rows) || !rows.length) return { ret_3d:null, ret_5d:null, ret_10d:null };
+    if(!Array.isArray(rows) || !rows.length) return { ret_3d:null, ret_5d:null,
+      ma20Slope: Number.isFinite(stock?.ma20Slope) ? stock.ma20Slope : '',
+      slopeRecovering: stock?.slopeRecovering ? 'TRUE' : 'FALSE',
+      histTurning: stock?.histTurning ? 'TRUE' : 'FALSE',
+      biasReclaim: stock?.biasReclaim ? 'TRUE' : 'FALSE',
+      reversalSignal: stock?.reversalSignal ? 'TRUE' : 'FALSE', ret_10d:null };
     const targetTs = new Date(`${dateStr}T23:59:59`).getTime();
     let idx = -1;
     for(let i=0;i<rows.length;i++){
@@ -4506,7 +4584,7 @@ return rankScore;
       alert('目前沒有可匯出的驗證資料');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
