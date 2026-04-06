@@ -4029,11 +4029,7 @@ window.addEventListener('load', ajieRenderPerf);
 function computeV21RankScore(stock){
   const tech = stock?.tech || {};
   const scoreData = stock?.scoreData || {};
-  let score = 0;
-
-  const ma20SlopeUp = (tech.ma20SlopeUp === true || scoreData.ma20SlopeUp === true);
-  const isAboveMA20 = (tech.isAboveMA20 === true || scoreData.isAboveMA20 === true);
-  const histImproving = (tech.histImproving === true || scoreData.histImproving === true);
+  let rankScore = 0;
 
   const hist = Number(
     tech.hist ??
@@ -4051,6 +4047,8 @@ function computeV21RankScore(stock){
     0
   );
 
+  const histFlip = hist > 0 && histLast <= 0;
+
   const riseFromLow = Number(
     tech.riseFromLow ??
     scoreData.riseFromLow ??
@@ -4065,20 +4063,49 @@ function computeV21RankScore(stock){
     0
   );
 
-  if(ma20SlopeUp && isAboveMA20) score += 10;
-  else if(isAboveMA20 && !ma20SlopeUp) score -= 8;
-  else if(!ma20SlopeUp) score -= 15;
+  const ma20 = Number(
+    tech.ma20 ??
+    scoreData.ma20 ??
+    stock?.ma20 ??
+    0
+  );
 
-  if(histImproving) score += 5;
-  if(hist > 0 && histLast <= 0) score += 4;
-  if(Number.isFinite(histLast) && histLast > 20) score -= 10;
+  const price = Number(
+    stock?.price ??
+    tech.price ??
+    scoreData.price ??
+    stock?.close ??
+    tech.close ??
+    scoreData.close ??
+    stock?.last ??
+    stock?.lastPrice ??
+    0
+  );
 
-  if(Number.isFinite(volRatio) && volRatio >= 1.2 && volRatio <= 1.8) score += 5;
-  else if(Number.isFinite(volRatio) && volRatio > 2.5) score -= 3;
+  if (histFlip === true) rankScore += 4;
 
-  if(Number.isFinite(riseFromLow) && riseFromLow > 0.25) score -= 3;
+  if (riseFromLow < 0.05) rankScore -= 6;
+  if (riseFromLow >= 0.10 && riseFromLow <= 0.15) rankScore += 2;
+  if (riseFromLow > 0.20) rankScore -= 2;
 
-  return score;
+  if (volRatio >= 1.0 && volRatio <= 1.8) rankScore += 1;
+  if (volRatio > 2.5) rankScore -= 1;
+
+  const bias = (ma20 && ma20 > 0 && price)
+    ? (price - ma20) / ma20
+    : 0;
+
+  if (bias >= 0.01 && bias <= 0.05) {
+    rankScore += 3;
+  } else if (bias > 0.05 && bias <= 0.10) {
+    rankScore += 1;
+  } else if (bias > 0.10) {
+    rankScore -= 2;
+  } else if (bias < 0) {
+    rankScore -= 3;
+  }
+
+  return rankScore;
 }
 
   function fmtPct(v){
