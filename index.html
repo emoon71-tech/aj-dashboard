@@ -4295,7 +4295,80 @@ function computeV21RankScore(stock){
     if(btn) btn.disabled = !(grouped.old?.length === V21_TOP_N && grouped.new?.length === V21_TOP_N);
   }
 
-  function prepareCSVData(grouped, dateStr){
+  function safeMarketNumber(value){
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+  }
+
+  function computeMarketStructure(stocks) {
+    const list = Array.isArray(stocks) ? stocks : [];
+    const top3 = list.slice(0, 3);
+    const valid = list.filter(s => safeMarketNumber(s?.price) > 0);
+    const top3RiseVals = top3.map(s => safeMarketNumber(s?.riseFromLow)).filter(v => v != null);
+    const validVolVals = valid.map(s => safeMarketNumber(s?.volRatio)).filter(v => v != null);
+
+    const top3_avg_rise = top3RiseVals.length ? top3RiseVals.reduce((sum, v) => sum + v, 0) / top3RiseVals.length : 0;
+
+    const flipCount = valid.filter(s => !!s?.histFlip).length;
+    const flipRatio = valid.length ? (flipCount / valid.length) : 0;
+
+    const trendCount = valid.filter(s => !!s?.ma20Up).length;
+    const trendRatio = valid.length ? (trendCount / valid.length) : 0;
+
+    const avg_volRatio = validVolVals.length ? validVolVals.reduce((sum, v) => sum + v, 0) / validVolVals.length : 0;
+
+    const leaderCount = list.filter(s => safeMarketNumber(s?.rank) != null && Number(s.rank) <= 3).length;
+
+    return {
+      top3_avg_rise,
+      flipRatio,
+      trendRatio,
+      avg_volRatio,
+      leaderCount
+    };
+  }
+
+  function detectMarketRegime(structure) {
+    if (
+      structure.top3_avg_rise <= 0.12 &&
+      structure.flipRatio >= 0.25 &&
+      structure.trendRatio >= 0.5 &&
+      structure.avg_volRatio >= 0.8 &&
+      structure.avg_volRatio <= 1.5
+    ) {
+      return 'NEW';
+    }
+
+    if (
+      structure.top3_avg_rise >= 0.10 &&
+      structure.avg_volRatio >= 1.2 &&
+      structure.leaderCount >= 1
+    ) {
+      return 'OLD';
+    }
+
+    return 'SKIP';
+  }
+
+  function computeMarketScore(structure, regime) {
+    let score = 50;
+    score += structure.flipRatio * 30;
+    score += structure.trendRatio * 20;
+    score += Math.min(structure.avg_volRatio, 2) * 10;
+    if (regime === 'SKIP') score -= 30;
+    return Math.max(0, Math.min(100, score));
+  }
+
+  function computePosition(score, regime) {
+    if (regime === 'SKIP') return 0;
+    if (score >= 75) return 80;
+    if (score >= 60) return 50;
+    if (score >= 40) return 20;
+    return 0;
+  }
+
+  function prepareCSVData(grouped, dateStr, marketLayer){
+    const market = marketLayer || {};
     const rows = [...(grouped.old || []), ...(grouped.new || [])].map(item => ({
       date: dateStr,
       strategy: item.strategy === 'new' ? 'new' : 'old',
@@ -4308,12 +4381,21 @@ function computeV21RankScore(stock){
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
+      regime: market.regime || '',
+      marketScore: Number.isFinite(market.marketScore) ? market.marketScore : '',
+      position: Number.isFinite(market.position) ? market.position : '',
+      top3_avg_rise: Number.isFinite(market.top3_avg_rise) ? market.top3_avg_rise : '',
+      flipRatio: Number.isFinite(market.flipRatio) ? market.flipRatio : '',
+      trendRatio: Number.isFinite(market.trendRatio) ? market.trendRatio : '',
+      avg_volRatio: Number.isFinite(market.avg_volRatio) ? market.avg_volRatio : '',
+      leaderCount: Number.isFinite(market.leaderCount) ? market.leaderCount : '',
     }));
     AppState.replay = AppState.replay || {};
     AppState.replay.v21Validation = {
       date: dateStr,
       old: grouped.old || [],
       new: grouped.new || [],
+      market,
       csvRows: rows,
       fileName: `v21_ab_${dateStr || 'export'}.csv`,
     };
@@ -4346,8 +4428,14 @@ function computeV21RankScore(stock){
     const newRows = await enrichSnapshotRows(snapshot.newTop || [], dateStr);
     if(AppState.replay.v21ValidationToken !== token) return;
     const grouped = { old: oldRows, new: newRows };
+    const topStocks = (grouped.new?.length ? grouped.new : grouped.old || []).slice(0, V21_TOP_N);
+    const structure = computeMarketStructure(topStocks);
+    const regime = detectMarketRegime(structure);
+    const marketScore = computeMarketScore(structure, regime);
+    const position = computePosition(marketScore, regime);
+    const marketLayer = { ...structure, regime, marketScore, position };
     renderValidationSummary(grouped, dateStr);
-    prepareCSVData(grouped, dateStr);
+    prepareCSVData(grouped, dateStr, marketLayer);
   }
 
   function toCsvCell(value){
@@ -4363,7 +4451,7 @@ function computeV21RankScore(stock){
       alert('目前沒有可匯出的驗證資料');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
