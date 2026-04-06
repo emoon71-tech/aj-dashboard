@@ -4019,6 +4019,7 @@ window.addEventListener('load', ajieRenderPerf);
           </div>
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
+            <button type="button" class="btn btn-gold btn-sm" id="randomPlusTenBtn" onclick="runRandomPlusTen()" disabled>隨機+10</button>
             <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()" disabled>隨機5日批次</button>
           </div>
         </div>
@@ -4878,101 +4879,161 @@ return rankScore;
   document.addEventListener('DOMContentLoaded', () => {
     AppState.ui.formulaMode = 'v2';
     updateFormulaButtons();
-    const batchBtn = $('v21BatchBtn');
-    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    syncReplayBatchButtons();
   });
 
   const _renderValidationIdle = renderValidationIdle;
   renderValidationIdle = function(){
     _renderValidationIdle();
-    const batchBtn = $('v21BatchBtn');
-    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    syncReplayBatchButtons();
   };
 
   const _renderValidationSummary = renderValidationSummary;
   renderValidationSummary = function(grouped, dateStr){
     _renderValidationSummary(grouped, dateStr);
-    const batchBtn = $('v21BatchBtn');
-    if(batchBtn) batchBtn.disabled = false;
+    syncReplayBatchButtons();
   };
 })();
 </script>
 
 
 
+
 <script>
 (function(){
-  window.renderValidationIdle = window.renderValidationIdle || function(){};
+  
+function syncReplayBatchButtons(){
+  const isReplay = AppState?.ui?.mode === 'replay';
+  const randomBtn = $('randomPlusTenBtn');
+  const batchBtn = $('v21BatchBtn');
+  if(randomBtn) randomBtn.disabled = !isReplay;
+  if(batchBtn) batchBtn.disabled = !isReplay;
+}
 
-  function runRandomPlusTenSafe(){
-    if (typeof window.runRandomPlusTen === 'function' && window.runRandomPlusTen !== runRandomPlusTenSafe) {
-      return window.runRandomPlusTen();
-    }
-    console.log('[隨機+10] clicked');
-  }
-
-  function bindRandomPlusTenButton(btn){
-    if (!btn) {
-      console.error('randomPlusTenBtn not found');
+window.runRandomPlusTen = async function(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
+    const dates = pickRandomReplayDates(10);
+    if(!dates.length){
+      alert('找不到可用的交易日');
       return;
     }
+    const snapshot = {
+      mode: AppState.ui.mode,
+      replayDate: $('replayDate')?.value || '',
+      market: cloneSimple(AppState.market),
+      currentTab: AppState.ui.currentTab,
+      activeCode: AppState.ui.activeCode,
+      formulaMode: AppState.ui.formulaMode
+    };
 
-    btn.id = 'randomPlusTenBtn';
-    btn.type = 'button';
-    btn.style.position = 'relative';
-    btn.style.zIndex = '9999';
-    btn.style.pointerEvents = 'auto';
-    btn.setAttribute('onclick', 'runRandomPlusTenSafe()');
+    setBatchButtonState(true, '隨機+10 進行中...');
+    const exportBtn = $('v21CsvBtn');
+    const randomBtn = $('randomPlusTenBtn');
+    if(exportBtn) exportBtn.disabled = true;
+    if(randomBtn) randomBtn.disabled = true;
 
-    if (btn.dataset.bound === 'true') return;
+    const allRows = [];
+    try{
+      AppState.ui.formulaMode = 'v2';
+      updateFormulaButtons();
 
-    btn.dataset.bound = 'true';
-    btn.addEventListener('click', function(event){
-      event.preventDefault();
-      event.stopPropagation();
-      console.log('[隨機+10] clicked');
-      runRandomPlusTenSafe();
-    });
+      for(let i=0;i<dates.length;i++){
+        const targetDate = getEffectiveTwReplayDate(dates[i]);
+        setReplayDateValue(targetDate,{close:false,render:false});
+        setStat(`批次10日 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
+        await startReplay();
 
-    console.log('btn:', btn);
-    console.log('[隨機+10] button bound');
-  }
+        await sleep(17000);
 
-  function ensureRandomPlusTenButton(){
-    const host = document.querySelector('.toolbar-right, .v21-actions');
-    if (!host) {
-      console.error('randomPlusTen host not found');
-      return;
+        const rows = await waitForValidationRows(targetDate, 45000);
+        if(rows.length){
+          rows.forEach(r => { r.date = targetDate; });
+          allRows.push(...rows);
+        }
+        setStat(`批次10日 ${i+1}/${dates.length}｜完成，目前累積 ${allRows.length} 筆`, 'ok');
+      }
+
+      exportBatchReplayCSV(allRows, dates);
+      setStat(`隨機+10 執行完畢 ✓ 共 ${allRows.length} 筆`, 'ok');
+    }catch(err){
+      console.error('runRandomPlusTen error', err);
+      setStat(`隨機+10 失敗：${err.message || err}`, 'err');
+    }finally{
+      AppState.ui.formulaMode = 'v2';
+      if(snapshot.mode === 'live'){
+        AppState.market = snapshot.market;
+        AppState.ui.mode = 'live';
+        AppState.replay.loading = false;
+        AppState.ui.isRefreshing = false;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+        setAutoRefresh();
+      }else{
+        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
+        AppState.market = snapshot.market;
+        AppState.ui.mode = snapshot.mode;
+        AppState.ui.activeCode = snapshot.activeCode;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+      }
+      setBatchButtonState(false, '隨機5日批次');
+      if(exportBtn) exportBtn.disabled = false;
+      syncReplayBatchButtons();
     }
-
-    let btn = document.getElementById('randomPlusTenBtn');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.className = 'btn btn-blue btn-sm';
-      btn.id = 'randomPlusTenBtn';
-      btn.textContent = '隨機+10';
-      host.appendChild(btn);
-    }
-
-    bindRandomPlusTenButton(btn);
-  }
-
-  window.runRandomPlusTenSafe = runRandomPlusTenSafe;
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
-    ensureRandomPlusTenButton();
-    setTimeout(ensureRandomPlusTenButton, 500);
-    setTimeout(ensureRandomPlusTenButton, 1500);
+    syncReplayBatchButtons();
   });
 
-  window.addEventListener('load', () => {
-    ensureRandomPlusTenButton();
-    setTimeout(ensureRandomPlusTenButton, 500);
-    setTimeout(ensureRandomPlusTenButton, 1500);
-  });
+  const _renderValidationIdleRandom = renderValidationIdle;
+  renderValidationIdle = function(){
+    _renderValidationIdleRandom();
+    syncReplayBatchButtons();
+  };
+
+  const _renderValidationSummaryRandom = renderValidationSummary;
+  renderValidationSummary = function(grouped, dateStr){
+    _renderValidationSummaryRandom(grouped, dateStr);
+    syncReplayBatchButtons();
+  };
 })();
 </script>
 
+
+<script>
+(function(){
+  function syncReplayBatchButtonsHard(){
+    try{
+      const isReplay = window.AppState?.ui?.mode === 'replay';
+      const randomBtn = (typeof $ === 'function') ? $('randomPlusTenBtn') : document.getElementById('randomPlusTenBtn');
+      const batchBtn = (typeof $ === 'function') ? $('v21BatchBtn') : document.getElementById('v21BatchBtn');
+      if(randomBtn) randomBtn.disabled = !isReplay;
+      if(batchBtn) batchBtn.disabled = !isReplay;
+    }catch(err){
+      console.warn('syncReplayBatchButtonsHard failed', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    syncReplayBatchButtonsHard();
+    setTimeout(syncReplayBatchButtonsHard, 300);
+    setTimeout(syncReplayBatchButtonsHard, 1200);
+  });
+
+  window.addEventListener('load', () => {
+    syncReplayBatchButtonsHard();
+    setTimeout(syncReplayBatchButtonsHard, 300);
+    setTimeout(syncReplayBatchButtonsHard, 1200);
+  });
+
+  setInterval(syncReplayBatchButtonsHard, 800);
+
+  window.syncReplayBatchButtonsHard = syncReplayBatchButtonsHard;
+})();
+</script>
 
 </body>
   </html>
