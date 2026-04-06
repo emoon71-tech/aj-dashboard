@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板 v5.2</title>
-  <meta name="app-version" content="v5.2">
+  <title>阿吉股票儀表板 v5.3</title>
+  <meta name="app-version" content="v5.3">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -572,8 +572,8 @@
       <button class="sort-chip" id="sort-sector" onclick="setSortMode('sector',this)">族群優先</button>
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
-      <button class="formula-chip" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip on" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
+      <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
+      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1090,6 +1090,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCustomTabs();
     renderSavedPools();
     applySavedMeta();
+    AppState.ui.formulaMode='v2';
     await loadChipMap();
     await loadEpsMap();
     setTime();
@@ -2778,7 +2779,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   }
   function updateFormulaButtons(){
     const mode='v2';
-    AppState.ui.formulaMode='v2';
     ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
     const active=$(mode==='v2'?'formula-v2':'formula-v1');
     if(active) active.classList.add('on');
@@ -3888,7 +3888,7 @@ function ajieClassifyPerf(day3, day5){
 function ajiePerfTag(type){
   if(type === 'HIGH_QUALITY') return '<span class="perf-tag pt-hq">高品質 🔥</span>';
   if(type === 'DIRECTION_OK') return '<span class="perf-tag pt-ok">方向正確 ✅</span>';
-  if(type === 'TRAP') return '<span class="perf-tag pt-trap">短線陷阱 ⚠️</span>';
+  if(type === 'TRAP') return '<span class="perf-tag pt-trap">短線陷阱⚠️</span>';
   return '<span class="perf-tag pt-fail">失敗 ❌</span>';
 }
 function ajieRenderPerf(){
@@ -4014,7 +4014,7 @@ window.addEventListener('load', ajieRenderPerf);
           </div>
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
-            <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()">隨機5日批次</button>
+            <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()" disabled>隨機5日批次</button>
           </div>
         </div>
         <div id="v21v-grid" class="v21v-grid">
@@ -4256,6 +4256,8 @@ function computeV21RankScore(stock){
     const note = document.getElementById('v21v-note');
     const sub = document.getElementById('v21v-sub');
     if(btn) btn.disabled = true;
+    const batchBtn = document.getElementById('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = false;
     if(sub) sub.textContent = '回放模式下會自動鎖定左右榜前 8，並整理 3 / 5 / 10 日報酬。';
     if(grid){
       grid.innerHTML = `
@@ -4437,31 +4439,21 @@ function computeV21RankScore(stock){
     const position = computePosition(marketScore, regime);
     const marketLayer = { ...structure, regime, marketScore, position };
     renderValidationSummary(grouped, dateStr);
+
     prepareCSVData(grouped, dateStr, marketLayer);
   }
 
-  function toCsvCell(value){
-    const s = String(value ?? '');
-    if(/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-    return s;
-  }
-
   function getAvailableReplayDates(daysBack=120){
-    const dates=[];
-    const seen=new Set();
-    const base=new Date();
+    const out=[];
+    const now=new Date();
     for(let i=1;i<=daysBack;i++){
-      const dt=new Date(base);
-      dt.setDate(base.getDate()-i);
-      const day=dt.getDay();
+      const d=new Date(now);
+      d.setDate(now.getDate()-i);
+      const day=d.getDay();
       if(day===0 || day===6) continue;
-      const iso=formatReplayDateValue(dt);
-      if(!seen.has(iso)){
-        seen.add(iso);
-        dates.push(iso);
-      }
+      out.push(formatReplayDateValue(d));
     }
-    return dates;
+    return out;
   }
 
   function shuffleArray(arr){
@@ -4474,49 +4466,20 @@ function computeV21RankScore(stock){
   }
 
   function pickRandomReplayDates(count=5){
-    return shuffleArray(getAvailableReplayDates()).slice(0,count).sort();
+    return shuffleArray(getAvailableReplayDates(120)).slice(0, count).sort();
   }
 
-  async function runBatchReplay(){
-    if(AppState.ui.isRefreshing || AppState.replay.loading || AppState.replay.batchRunning) return;
-    const dates=pickRandomReplayDates(5);
-    if(!dates.length){
-      alert('目前沒有可用日期');
-      return;
-    }
-    const btn=$('v21BatchBtn');
-    const exportBtn=$('v21CsvBtn');
-    const sub=$('v21v-sub');
-    const note=$('v21v-note');
-    const prevDate=getReplayDate();
-    AppState.replay.batchRunning=true;
-    if(btn) btn.disabled=true;
-    if(exportBtn) exportBtn.disabled=true;
-    if(sub) sub.textContent=`隨機批次：${dates.join('、')}`;
-    if(note) note.innerHTML='批次回放啟動中，系統會逐日跑 5 天並在每一天之間等待 20 秒。';
-    const allRows=[];
-    try{
-      for(let i=0;i<dates.length;i++){
-        const dateStr=dates[i];
-        setReplayDateValue(dateStr,{close:true,render:false});
-        if(sub) sub.textContent=`隨機批次 ${i+1}/5｜${dateStr}`;
-        if(note) note.innerHTML=`第 <b>${i+1}</b> 天回放中：${dateStr}${i<dates.length-1?'｜完成後等待 20 秒再跑下一天。':''}`;
-        await startReplay();
-        const rows=AppState?.replay?.v21Validation?.csvRows||[];
-        rows.forEach(row=>allRows.push({...row,date:dateStr}));
-        if(i<dates.length-1) await sleep(20000);
+  async function waitForReplayReady(dateStr, timeoutMs=180000){
+    const start=Date.now();
+    while(Date.now()-start < timeoutMs){
+      const payload=AppState?.replay?.v21Validation;
+      const loading=!!AppState?.replay?.loading || !!AppState?.ui?.isRefreshing;
+      if(!loading && payload?.date===dateStr && Array.isArray(payload?.csvRows) && payload.csvRows.length){
+        return payload;
       }
-      exportBatchReplayCSV(allRows, dates);
-      if(sub) sub.textContent=`隨機批次完成｜${dates.join('、')}`;
-      if(note) note.innerHTML=`已完成 5 天批次，合併輸出 <b>${allRows.length}</b> 筆資料。`;
-    }catch(err){
-      console.error('runBatchReplay error',err);
-      alert(`隨機5日批次失敗：${err.message||err}`);
-    }finally{
-      AppState.replay.batchRunning=false;
-      if(btn) btn.disabled=false;
-      if(prevDate) setReplayDateValue(prevDate,{close:true,render:false});
+      await sleep(500);
     }
+    throw new Error(`批次等待逾時：${dateStr}`);
   }
 
   function exportBatchReplayCSV(rows, dates){
@@ -4524,17 +4487,64 @@ function computeV21RankScore(stock){
       alert('批次沒有可匯出的資料');
       return;
     }
-    const headers=['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
-    const csv=[headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
-    const blob=new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download=`v21_batch_${dates[0]}_${dates[dates.length-1]}.csv`;
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = `${dates[0]||'start'}_${dates[dates.length-1]||'end'}`;
+    a.href = url;
+    a.download = `v21_batch_${stamp}.csv`;
     document.body.appendChild(a);
     a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+
+  window.runBatchReplay = async function(){
+    const btn = document.getElementById('v21BatchBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    if(btn) btn.disabled = true;
+    if(replayBtn) replayBtn.disabled = true;
+
+    const pickedDates = pickRandomReplayDates(5);
+    if(!pickedDates.length){
+      alert('沒有可用的隨機日期');
+      if(btn) btn.disabled = false;
+      if(replayBtn) replayBtn.disabled = false;
+      return;
+    }
+
+    const batchRows = [];
+    try{
+      for(let i=0;i<pickedDates.length;i++){
+        const dateStr = pickedDates[i];
+        setReplayDateValue(dateStr,{close:true,render:true});
+        setStat(`隨機批次 ${i+1}/${pickedDates.length}：${dateStr}`,'load');
+        await startReplay();
+        const payload = await waitForReplayReady(dateStr);
+        batchRows.push(...(payload.csvRows||[]));
+        if(i < pickedDates.length-1){
+          setStat(`批次等待 20 秒後前往下一天… ${dateStr}`,'load');
+          await sleep(20000);
+        }
+      }
+      exportBatchReplayCSV(batchRows, pickedDates);
+      setStat(`隨機批次完成 ✓ ${pickedDates.join(', ')}`,'ok');
+    }catch(err){
+      console.error('runBatchReplay error', err);
+      setStat(`隨機批次失敗：${err.message||err}`,'err');
+      alert(`隨機批次失敗：${err.message||err}`);
+    }finally{
+      if(btn) btn.disabled = false;
+      if(replayBtn) replayBtn.disabled = false;
+    }
+  };
+
+  function toCsvCell(value){
+    const s = String(value ?? '');
+    if(/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
   }
 
   window.downloadV21ValidationCSV = function(){
