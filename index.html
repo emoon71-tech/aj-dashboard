@@ -224,7 +224,6 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  #randomPlusTenBtn{position:relative;z-index:9999;pointer-events:auto;}
   .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
   .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .starter-title{font-size:16px;font-weight:800;color:var(--text)}
@@ -406,11 +405,6 @@
 .v21v-note b{color:var(--gold)}
 @media (max-width:900px){.v21ab-grid,.v21v-grid{grid-template-columns:1fr}}
 </style>
-
-
-<script>
-window.renderValidationIdle = window.renderValidationIdle || function(){};
-</script>
 
 </head>
   <body>
@@ -2880,6 +2874,13 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     else if(score.techStatus==='none') heroTags.push('技術資料不足');
     else if(score.techStatus==='partial') heroTags.push('技術資料未齊');
     const heroSummary=heroTags.slice(0,4).join(' · ') || '等待更多結構訊號';
+    computeReversalFlags(d);
+    const reversalMeta = [
+      `Slope收斂 ${d?.slopeRecovering ? 'YES' : 'NO'}`,
+      `Hist轉正 ${d?.histTurning ? 'YES' : 'NO'}`,
+      `Bias收回 ${d?.biasReclaim ? 'YES' : 'NO'}`,
+      `轉折共振 ${d?.reversalSignal ? 'YES' : 'NO'}`
+    ].join(' · ');
     const actionText=
       score.badge==='sb-go'
         ? '可做，但以風險控管優先，別追太快。'
@@ -2891,6 +2892,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div>
           <div class="dn2">${d.name||ep?.n||code}（${code}）</div>
           <div class="ds">開 ${d.open||'--'}　高 ${d.high||'--'}　低 ${d.low||'--'}　量 ${d.volume?Number(d.volume).toLocaleString():'--'} 張</div>
+          <div class="ds">Slope: ${Number.isFinite(d?.ma20Slope) ? d.ma20Slope.toFixed(4) : '--'}　${reversalMeta}</div>
           <div class="badge-row">
             <span class="sbg bg-blue">${meta.sector||'其他'}</span>
             ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
@@ -4019,7 +4021,6 @@ window.addEventListener('load', ajieRenderPerf);
           </div>
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
-            <button type="button" class="btn btn-gold btn-sm" id="randomPlusTenBtn" onclick="runRandomPlusTen()" disabled>隨機+10</button>
             <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()" disabled>隨機5日批次</button>
           </div>
         </div>
@@ -4033,6 +4034,73 @@ window.addEventListener('load', ajieRenderPerf);
   }
 
   
+
+function computeReversalFlags(stock){
+  const tech = stock?.tech || {};
+  const scoreData = stock?.scoreData || {};
+
+  const hist = Number(
+    tech.hist ??
+    scoreData.hist ??
+    stock?.hist ??
+    0
+  );
+  const histPrev = Number(
+    tech.histPrev ??
+    tech.histLast ??
+    scoreData.histPrev ??
+    scoreData.histLast ??
+    stock?.histPrev ??
+    stock?.histLast ??
+    0
+  );
+  const ma20 = Number(
+    tech.ma20 ??
+    scoreData.ma20 ??
+    stock?.ma20 ??
+    0
+  );
+  const ma20Prev = Number(
+    tech.ma20Prev ??
+    scoreData.ma20Prev ??
+    stock?.ma20Prev ??
+    0
+  );
+  const price = Number(
+    stock?.price ??
+    tech.price ??
+    scoreData.price ??
+    stock?.close ??
+    tech.close ??
+    scoreData.close ??
+    stock?.last ??
+    stock?.lastPrice ??
+    0
+  );
+
+  const safeHist = Number.isFinite(hist) ? hist : 0;
+  const safeHistPrev = Number.isFinite(histPrev) ? histPrev : 0;
+  const safeMa20Slope = (Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(ma20Prev) && ma20Prev > 0)
+    ? (ma20 - ma20Prev) / ma20Prev
+    : 0;
+  const safeBias = (Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(price) && price > 0)
+    ? (price - ma20) / ma20
+    : 0;
+
+  const slopeRecovering = safeMa20Slope < 0.002 && safeMa20Slope > -0.025;
+  const histTurning = safeHist > 0 && safeHistPrev <= 0;
+  const biasReclaim = safeBias > 0 && safeBias <= 0.03;
+  const reversalSignal = slopeRecovering && histTurning && biasReclaim;
+
+  stock.ma20Slope = safeMa20Slope;
+  stock.slopeRecovering = slopeRecovering;
+  stock.histTurning = histTurning;
+  stock.biasReclaim = biasReclaim;
+  stock.reversalSignal = reversalSignal;
+
+  return stock;
+}
+
 function computeV21RankScore(stock){
   const tech = stock?.tech || {};
   const scoreData = stock?.scoreData || {};
@@ -4279,6 +4347,11 @@ return rankScore;
       histFlip: getHistFlipValue(item),
       ma20Up: getMa20UpValue(item),
       isAboveMA20: getAboveMa20Value(item),
+      ma20Slope: Number.isFinite(item?.d?.ma20Slope) ? item.d.ma20Slope : '',
+      slopeRecovering: item?.d?.slopeRecovering === true,
+      histTurning: item?.d?.histTurning === true,
+      biasReclaim: item?.d?.biasReclaim === true,
+      reversalSignal: item?.d?.reversalSignal === true,
       rankScore: strategy === 'new' ? Number(item.rankScore ?? 0) : 0,
       ret_3d: null,
       ret_5d: null,
@@ -4442,6 +4515,11 @@ return rankScore;
       histFlip: item.histFlip ? 'true' : 'false',
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
+      ma20Slope: Number.isFinite(item.ma20Slope) ? item.ma20Slope : '',
+      slopeRecovering: item.slopeRecovering ? 'TRUE' : 'FALSE',
+      histTurning: item.histTurning ? 'TRUE' : 'FALSE',
+      biasReclaim: item.biasReclaim ? 'TRUE' : 'FALSE',
+      reversalSignal: item.reversalSignal ? 'TRUE' : 'FALSE',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
       regime: market.regime || '',
       marketScore: Number.isFinite(market.marketScore) ? market.marketScore : '',
@@ -4513,7 +4591,7 @@ return rankScore;
       alert('目前沒有可匯出的驗證資料');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -4558,7 +4636,9 @@ return rankScore;
         <div class="v21ab-meta">
           價格：${fmtNum(d?.price)}<br>
           漲跌：${fmtNum(d?.chg)} / ${Number.isFinite(d?.chgPct)?d.chgPct.toFixed(2)+'%':'--'}<br>
-          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}
+          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}<br>
+          Slope收斂：${d?.slopeRecovering ? 'YES' : 'NO'}　Hist轉正：${d?.histTurning ? 'YES' : 'NO'}<br>
+          Bias收回：${d?.biasReclaim ? 'YES' : 'NO'}　轉折共振：${d?.reversalSignal ? 'YES' : 'NO'}
         </div>
         <div class="v21ab-tags">${tags.join('')}</div>
       </div>`;
@@ -4576,6 +4656,7 @@ return rankScore;
     codes.forEach(code=>{
       try{
         const d = AppState.stocks[code] || {};
+        computeReversalFlags(d);
         const score = typeof computeAjieScore === 'function' ? computeAjieScore(code, true) : null;
         if(score && (score.total||0) > 0){
           base.push({code, d, score, rankScore: computeV21RankScore(d)});
@@ -4725,17 +4806,10 @@ return rankScore;
   };
 
   function setBatchButtonState(disabled, text){
-    const batchBtn = $('v21BatchBtn');
-    const randomBtn = $('randomPlusTenBtn');
-    const isDisabled = !!disabled;
-    if(batchBtn){
-      batchBtn.disabled = isDisabled;
-      batchBtn.textContent = text || '隨機5日批次';
-    }
-    if(randomBtn){
-      randomBtn.disabled = isDisabled;
-      randomBtn.textContent = text || '隨機+10';
-    }
+    const btn = $('v21BatchBtn');
+    if(!btn) return;
+    btn.disabled = !!disabled;
+    if(text) btn.textContent = text;
   }
 
   function cloneSimple(x){
@@ -4810,86 +4884,6 @@ return rankScore;
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-
-
-  window.runRandomPlusTen = async function(){
-    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
-    const dates = pickRandomReplayDates(10);
-    if(!dates.length){
-      alert('找不到可用的交易日');
-      return;
-    }
-    const snapshot = {
-      mode: AppState.ui.mode,
-      replayDate: $('replayDate')?.value || '',
-      market: cloneSimple(AppState.market),
-      currentTab: AppState.ui.currentTab,
-      activeCode: AppState.ui.activeCode,
-      formulaMode: AppState.ui.formulaMode
-    };
-
-    setBatchButtonState(true, '隨機+10 進行中...');
-    const exportBtn = $('v21CsvBtn');
-    if(exportBtn) exportBtn.disabled = true;
-
-    const allRows = [];
-    try{
-      AppState.ui.formulaMode = 'v2';
-      updateFormulaButtons();
-
-      for(let i=0;i<dates.length;i++){
-        const targetDate = getEffectiveTwReplayDate(dates[i]);
-        setReplayDateValue(targetDate,{close:false,render:false});
-        setStat(`批次10日 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
-        await startReplay();
-        await sleep(17000);
-
-        const rows = await waitForValidationRows(targetDate, 45000);
-        if(rows.length){
-          rows.forEach(r => { r.date = targetDate; });
-          allRows.push(...rows);
-        }
-        setStat(`批次10日 ${i+1}/${dates.length}｜完成，目前累積 ${allRows.length} 筆`, 'ok');
-      }
-
-      exportBatchReplayCSV(allRows, dates);
-      setStat(`隨機+10 執行完畢 ✓ 共 ${allRows.length} 筆`, 'ok');
-    }catch(err){
-      console.error('runRandomPlusTen error', err);
-      setStat(`隨機+10 失敗：${err.message || err}`, 'err');
-    }finally{
-      AppState.ui.formulaMode = snapshot.formulaMode || 'v2';
-      if(snapshot.mode === 'live'){
-        AppState.market = snapshot.market;
-        AppState.ui.mode = 'live';
-        AppState.replay.loading = false;
-        AppState.ui.isRefreshing = false;
-        updateModeChip();
-        renderMarketPulse();
-        renderCurrentView();
-        setAutoRefresh();
-      }else{
-        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
-        AppState.market = snapshot.market;
-        AppState.ui.mode = snapshot.mode;
-        AppState.ui.activeCode = snapshot.activeCode;
-        updateModeChip();
-        renderMarketPulse();
-        renderCurrentView();
-      }
-      if(exportBtn) exportBtn.disabled = false;
-      const randomBtn = $('randomPlusTenBtn');
-      if(randomBtn){
-        randomBtn.disabled = AppState.ui.mode !== 'replay';
-        randomBtn.textContent = '隨機+10';
-      }
-      const batchBtn = $('v21BatchBtn');
-      if(batchBtn){
-        batchBtn.disabled = AppState.ui.mode !== 'replay';
-        batchBtn.textContent = '隨機5日批次';
-      }
-    }
-  };
 
   window.runBatchReplay = async function(){
     if(AppState.ui.isRefreshing || AppState.replay.loading) return;
@@ -4967,106 +4961,24 @@ return rankScore;
     AppState.ui.formulaMode = 'v2';
     updateFormulaButtons();
     const batchBtn = $('v21BatchBtn');
-    const randomBtn = $('randomPlusTenBtn');
     if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
-    if(randomBtn) randomBtn.disabled = AppState.ui.mode !== 'replay';
   });
 
   const _renderValidationIdle = renderValidationIdle;
   renderValidationIdle = function(){
     _renderValidationIdle();
     const batchBtn = $('v21BatchBtn');
-    const randomBtn = $('randomPlusTenBtn');
     if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
-    if(randomBtn) randomBtn.disabled = AppState.ui.mode !== 'replay';
   };
 
   const _renderValidationSummary = renderValidationSummary;
   renderValidationSummary = function(grouped, dateStr){
     _renderValidationSummary(grouped, dateStr);
     const batchBtn = $('v21BatchBtn');
-    const randomBtn = $('randomPlusTenBtn');
     if(batchBtn) batchBtn.disabled = false;
-    if(randomBtn) randomBtn.disabled = false;
   };
 })();
 </script>
-
-
-
-<script>
-(function(){
-  window.renderValidationIdle = window.renderValidationIdle || function(){};
-
-  function runRandomPlusTenSafe(){
-    if (typeof window.runRandomPlusTen === 'function' && window.runRandomPlusTen !== runRandomPlusTenSafe) {
-      return window.runRandomPlusTen();
-    }
-    console.log('[隨機+10] clicked');
-  }
-
-  function bindRandomPlusTenButton(btn){
-    if (!btn) {
-      console.error('randomPlusTenBtn not found');
-      return;
-    }
-
-    btn.id = 'randomPlusTenBtn';
-    btn.type = 'button';
-    btn.style.position = 'relative';
-    btn.style.zIndex = '9999';
-    btn.style.pointerEvents = 'auto';
-    btn.setAttribute('onclick', 'runRandomPlusTenSafe()');
-
-    if (btn.dataset.bound === 'true') return;
-
-    btn.dataset.bound = 'true';
-    btn.addEventListener('click', function(event){
-      event.preventDefault();
-      event.stopPropagation();
-      console.log('[隨機+10] clicked');
-      runRandomPlusTenSafe();
-    });
-
-    console.log('btn:', btn);
-    console.log('[隨機+10] button bound');
-  }
-
-  function ensureRandomPlusTenButton(){
-    const host = document.querySelector('.toolbar-right, .v21-actions');
-    if (!host) {
-      console.error('randomPlusTen host not found');
-      return;
-    }
-
-    let btn = document.getElementById('randomPlusTenBtn');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.className = 'btn btn-blue btn-sm';
-      btn.id = 'randomPlusTenBtn';
-      btn.textContent = '隨機+10';
-      host.appendChild(btn);
-    }
-
-    bindRandomPlusTenButton(btn);
-  }
-
-  window.runRandomPlusTenSafe = runRandomPlusTenSafe;
-
-  document.addEventListener('DOMContentLoaded', () => {
-    ensureRandomPlusTenButton();
-    setTimeout(ensureRandomPlusTenButton, 500);
-    setTimeout(ensureRandomPlusTenButton, 1500);
-  });
-
-  window.addEventListener('load', () => {
-    ensureRandomPlusTenButton();
-    setTimeout(ensureRandomPlusTenButton, 500);
-    setTimeout(ensureRandomPlusTenButton, 1500);
-  });
-})();
-</script>
-
 
 </body>
   </html>
