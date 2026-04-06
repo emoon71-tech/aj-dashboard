@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板 v5.3</title>
-  <meta name="app-version" content="v5.3">
+  <title>阿吉股票儀表板 v5.3.1</title>
+  <meta name="app-version" content="v5.3.1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -572,8 +572,8 @@
       <button class="sort-chip" id="sort-sector" onclick="setSortMode('sector',this)">族群優先</button>
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
-      <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
+      <button class="formula-chip" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
+      <button class="formula-chip on" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1090,7 +1090,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCustomTabs();
     renderSavedPools();
     applySavedMeta();
-    AppState.ui.formulaMode='v2';
     await loadChipMap();
     await loadEpsMap();
     setTime();
@@ -2778,13 +2777,13 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCurrentView();
   }
   function updateFormulaButtons(){
-    const mode='v2';
+    const mode=AppState.ui.formulaMode||'v1';
     ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
     const active=$(mode==='v2'?'formula-v2':'formula-v1');
     if(active) active.classList.add('on');
   }
   function setFormulaMode(mode,el){
-    AppState.ui.formulaMode='v2';
+    AppState.ui.formulaMode=mode==='v2'?'v2':'v1';
     updateFormulaButtons();
     renderCurrentView();
   }
@@ -3888,7 +3887,7 @@ function ajieClassifyPerf(day3, day5){
 function ajiePerfTag(type){
   if(type === 'HIGH_QUALITY') return '<span class="perf-tag pt-hq">高品質 🔥</span>';
   if(type === 'DIRECTION_OK') return '<span class="perf-tag pt-ok">方向正確 ✅</span>';
-  if(type === 'TRAP') return '<span class="perf-tag pt-trap">短線陷阱⚠️</span>';
+  if(type === 'TRAP') return '<span class="perf-tag pt-trap">短線陷阱 ⚠️</span>';
   return '<span class="perf-tag pt-fail">失敗 ❌</span>';
 }
 function ajieRenderPerf(){
@@ -4256,8 +4255,6 @@ function computeV21RankScore(stock){
     const note = document.getElementById('v21v-note');
     const sub = document.getElementById('v21v-sub');
     if(btn) btn.disabled = true;
-    const batchBtn = document.getElementById('v21BatchBtn');
-    if(batchBtn) batchBtn.disabled = false;
     if(sub) sub.textContent = '回放模式下會自動鎖定左右榜前 8，並整理 3 / 5 / 10 日報酬。';
     if(grid){
       grid.innerHTML = `
@@ -4439,107 +4436,8 @@ function computeV21RankScore(stock){
     const position = computePosition(marketScore, regime);
     const marketLayer = { ...structure, regime, marketScore, position };
     renderValidationSummary(grouped, dateStr);
-
     prepareCSVData(grouped, dateStr, marketLayer);
   }
-
-  function getAvailableReplayDates(daysBack=120){
-    const out=[];
-    const now=new Date();
-    for(let i=1;i<=daysBack;i++){
-      const d=new Date(now);
-      d.setDate(now.getDate()-i);
-      const day=d.getDay();
-      if(day===0 || day===6) continue;
-      out.push(formatReplayDateValue(d));
-    }
-    return out;
-  }
-
-  function shuffleArray(arr){
-    const next=[...arr];
-    for(let i=next.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [next[i],next[j]]=[next[j],next[i]];
-    }
-    return next;
-  }
-
-  function pickRandomReplayDates(count=5){
-    return shuffleArray(getAvailableReplayDates(120)).slice(0, count).sort();
-  }
-
-  async function waitForReplayReady(dateStr, timeoutMs=180000){
-    const start=Date.now();
-    while(Date.now()-start < timeoutMs){
-      const payload=AppState?.replay?.v21Validation;
-      const loading=!!AppState?.replay?.loading || !!AppState?.ui?.isRefreshing;
-      if(!loading && payload?.date===dateStr && Array.isArray(payload?.csvRows) && payload.csvRows.length){
-        return payload;
-      }
-      await sleep(500);
-    }
-    throw new Error(`批次等待逾時：${dateStr}`);
-  }
-
-  function exportBatchReplayCSV(rows, dates){
-    if(!rows.length){
-      alert('批次沒有可匯出的資料');
-      return;
-    }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
-    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
-    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const stamp = `${dates[0]||'start'}_${dates[dates.length-1]||'end'}`;
-    a.href = url;
-    a.download = `v21_batch_${stamp}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url), 1000);
-  }
-
-  window.runBatchReplay = async function(){
-    const btn = document.getElementById('v21BatchBtn');
-    const replayBtn = document.getElementById('replayBtn');
-    if(btn) btn.disabled = true;
-    if(replayBtn) replayBtn.disabled = true;
-
-    const pickedDates = pickRandomReplayDates(5);
-    if(!pickedDates.length){
-      alert('沒有可用的隨機日期');
-      if(btn) btn.disabled = false;
-      if(replayBtn) replayBtn.disabled = false;
-      return;
-    }
-
-    const batchRows = [];
-    try{
-      for(let i=0;i<pickedDates.length;i++){
-        const dateStr = pickedDates[i];
-        setReplayDateValue(dateStr,{close:true,render:true});
-        setStat(`隨機批次 ${i+1}/${pickedDates.length}：${dateStr}`,'load');
-        await startReplay();
-        const payload = await waitForReplayReady(dateStr);
-        batchRows.push(...(payload.csvRows||[]));
-        if(i < pickedDates.length-1){
-          setStat(`批次等待 20 秒後前往下一天… ${dateStr}`,'load');
-          await sleep(20000);
-        }
-      }
-      exportBatchReplayCSV(batchRows, pickedDates);
-      setStat(`隨機批次完成 ✓ ${pickedDates.join(', ')}`,'ok');
-    }catch(err){
-      console.error('runBatchReplay error', err);
-      setStat(`隨機批次失敗：${err.message||err}`,'err');
-      alert(`隨機批次失敗：${err.message||err}`);
-    }finally{
-      if(btn) btn.disabled = false;
-      if(replayBtn) replayBtn.disabled = false;
-    }
-  };
 
   function toCsvCell(value){
     const s = String(value ?? '');
@@ -4667,6 +4565,276 @@ function computeV21RankScore(stock){
   }
 
   hookRender();
+})();
+</script>
+
+
+<script>
+// ===== V5.3.1 stability patch =====
+(function(){
+  const TWSE_HOLIDAYS = new Set([
+    '2025-01-01','2025-01-23','2025-01-24','2025-01-27','2025-01-28','2025-01-29','2025-01-30','2025-01-31',
+    '2025-02-28','2025-04-03','2025-04-04','2025-05-01','2025-05-30','2025-05-31','2025-09-28','2025-09-29',
+    '2025-10-06','2025-10-10','2025-10-24','2025-10-25','2025-12-25',
+    '2026-01-01','2026-02-12','2026-02-13','2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19',
+    '2026-02-20','2026-02-27','2026-02-28','2026-04-03','2026-04-04','2026-04-05','2026-04-06','2026-05-01',
+    '2026-06-19','2026-09-25','2026-09-28','2026-10-09','2026-10-10','2026-10-25','2026-10-26','2026-12-25'
+  ]);
+
+  function isTwTradingDate(dateStr){
+    const dt = parseReplayDateValue(dateStr);
+    if(!dt) return false;
+    const day = dt.getDay();
+    if(day === 0 || day === 6) return false;
+    return !TWSE_HOLIDAYS.has(dateStr);
+  }
+
+  window.getEffectiveTwReplayDate = function(dateStr){
+    let dt = parseReplayDateValue(dateStr);
+    if(!dt){
+      const temp = new Date(dateStr);
+      if(!Number.isFinite(temp.getTime())) return dateStr;
+      dt = new Date(temp.getFullYear(), temp.getMonth(), temp.getDate());
+    }
+    let safe = 0;
+    while(safe < 370){
+      const candidate = formatReplayDateValue(dt);
+      if(isTwTradingDate(candidate)) return candidate;
+      dt.setDate(dt.getDate() - 1);
+      safe += 1;
+    }
+    return formatReplayDateValue(dt);
+  };
+
+  const _ensureReplayDateDefault = ensureReplayDateDefault;
+  ensureReplayDateDefault = function(){
+    const el = $('replayDate');
+    if(!el) return;
+    if(el.value){
+      const fixed = getEffectiveTwReplayDate(el.value);
+      AppState.replay.date = fixed;
+      if(fixed !== el.value) el.value = fixed;
+      const parsed = parseReplayDateValue(fixed);
+      if(parsed) setReplayCalendarMonth(parsed);
+      syncReplayDateDisplay();
+      return;
+    }
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    const fixed = getEffectiveTwReplayDate(formatReplayDateValue(d));
+    setReplayDateValue(fixed,{close:false,render:false});
+  };
+
+  const _getReplayDate = getReplayDate;
+  getReplayDate = function(){
+    const input = $('replayDate');
+    const raw = (input?.value || '').trim();
+    if(!raw) return raw;
+    const fixed = getEffectiveTwReplayDate(raw);
+    if(input && input.value !== fixed) input.value = fixed;
+    AppState.replay.date = fixed;
+    syncReplayDateDisplay();
+    return fixed;
+  };
+
+  setReplayDateToday = function(){
+    const fixed = getEffectiveTwReplayDate(formatReplayDateValue(new Date()));
+    setReplayDateValue(fixed);
+  };
+
+  const _updateFormulaButtons = updateFormulaButtons;
+  updateFormulaButtons = function(){
+    AppState.ui.formulaMode = 'v2';
+    ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
+    const v2 = $('formula-v2');
+    const v1 = $('formula-v1');
+    if(v2) v2.classList.add('on');
+    if(v1){
+      v1.classList.remove('on');
+      v1.style.opacity = '0.45';
+      v1.style.pointerEvents = 'none';
+      v1.title = '已鎖定 V2.1';
+    }
+  };
+
+  setFormulaMode = function(mode,el){
+    AppState.ui.formulaMode = 'v2';
+    updateFormulaButtons();
+    renderCurrentView();
+  };
+
+  function setBatchButtonState(disabled, text){
+    const btn = $('v21BatchBtn');
+    if(!btn) return;
+    btn.disabled = !!disabled;
+    if(text) btn.textContent = text;
+  }
+
+  function cloneSimple(x){
+    return JSON.parse(JSON.stringify(x));
+  }
+
+  function getAvailableReplayDates(daysBack=120){
+    const out = [];
+    const seen = new Set();
+    const base = new Date();
+    for(let i=1;i<=daysBack;i++){
+      const dt = new Date(base);
+      dt.setDate(base.getDate() - i);
+      const dateStr = formatReplayDateValue(dt);
+      if(isTwTradingDate(dateStr) && !seen.has(dateStr)){
+        seen.add(dateStr);
+        out.push(dateStr);
+      }
+    }
+    return out;
+  }
+
+  function shuffleArray(arr){
+    const next = [...arr];
+    for(let i=next.length-1;i>0;i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [next[i], next[j]] = [next[j], next[i]];
+    }
+    return next;
+  }
+
+  function pickRandomReplayDates(count=5){
+    return shuffleArray(getAvailableReplayDates(120)).slice(0, count);
+  }
+
+  async function waitForValidationRows(dateStr, timeoutMs=45000){
+    const started = Date.now();
+    let stableRounds = 0;
+    let lastLen = -1;
+    while(Date.now() - started < timeoutMs){
+      const payload = AppState?.replay?.v21Validation;
+      const rows = payload?.csvRows || [];
+      if(payload?.date === dateStr && rows.length > 0){
+        if(rows.length === lastLen){
+          stableRounds += 1;
+        }else{
+          stableRounds = 0;
+          lastLen = rows.length;
+        }
+        if(stableRounds >= 2) return cloneSimple(rows);
+      }
+      await sleep(800);
+    }
+    return cloneSimple(AppState?.replay?.v21Validation?.csvRows || []);
+  }
+
+  function exportBatchReplayCSV(rows, dates){
+    if(!rows.length){
+      alert('批次資料為空，沒有可匯出的 CSV');
+      return;
+    }
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const tag = (dates || []).join('_') || 'batch';
+    a.download = `v21_batch_${tag}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  window.runBatchReplay = async function(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
+    const dates = pickRandomReplayDates(5);
+    if(!dates.length){
+      alert('找不到可用的交易日');
+      return;
+    }
+    const snapshot = {
+      mode: AppState.ui.mode,
+      replayDate: $('replayDate')?.value || '',
+      market: cloneSimple(AppState.market),
+      currentTab: AppState.ui.currentTab,
+      activeCode: AppState.ui.activeCode,
+      formulaMode: AppState.ui.formulaMode
+    };
+
+    setBatchButtonState(true, '批次進行中...');
+    const exportBtn = $('v21CsvBtn');
+    if(exportBtn) exportBtn.disabled = true;
+
+    const allRows = [];
+    try{
+      AppState.ui.formulaMode = 'v2';
+      updateFormulaButtons();
+
+      for(let i=0;i<dates.length;i++){
+        const targetDate = getEffectiveTwReplayDate(dates[i]);
+        setReplayDateValue(targetDate,{close:false,render:false});
+        setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
+        await startReplay();
+
+        // 關鍵：回放完成後額外等 17 秒，再抓 csvRows
+        await sleep(17000);
+
+        const rows = await waitForValidationRows(targetDate, 45000);
+        if(rows.length){
+          rows.forEach(r => { r.date = targetDate; });
+          allRows.push(...rows);
+        }
+        setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 完成，已累積 ${allRows.length} 筆`, 'ok');
+      }
+
+      exportBatchReplayCSV(allRows, dates);
+      setStat(`隨機5日批次完成 ✓ 共 ${allRows.length} 筆`, 'ok');
+    }catch(err){
+      console.error('runBatchReplay error', err);
+      setStat(`隨機5日批次失敗：${err.message || err}`, 'err');
+    }finally{
+      // 還原 UI / state，避免停在最後一天
+      AppState.ui.formulaMode = 'v2';
+      if(snapshot.mode === 'live'){
+        AppState.market = snapshot.market;
+        AppState.ui.mode = 'live';
+        AppState.replay.loading = false;
+        AppState.ui.isRefreshing = false;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+        setAutoRefresh();
+      }else{
+        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
+        AppState.market = snapshot.market;
+        AppState.ui.mode = snapshot.mode;
+        AppState.ui.activeCode = snapshot.activeCode;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+      }
+      setBatchButtonState(false, '隨機5日批次');
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    AppState.ui.formulaMode = 'v2';
+    updateFormulaButtons();
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+  });
+
+  const _renderValidationIdle = renderValidationIdle;
+  renderValidationIdle = function(){
+    _renderValidationIdle();
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+  };
+
+  const _renderValidationSummary = renderValidationSummary;
+  renderValidationSummary = function(grouped, dateStr){
+    _renderValidationSummary(grouped, dateStr);
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = false;
+  };
 })();
 </script>
 
