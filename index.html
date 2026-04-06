@@ -4037,17 +4037,15 @@ function computeV21RankScore(stock){
     stock?.hist ??
     0
   );
-  const histLast = Number(
-    tech.histLast ??
+  const histPrev = Number(
     tech.histPrev ??
-    scoreData.histLast ??
+    tech.histLast ??
     scoreData.histPrev ??
-    stock?.histLast ??
+    scoreData.histLast ??
     stock?.histPrev ??
+    stock?.histLast ??
     0
   );
-
-  const histFlip = hist > 0 && histLast <= 0;
 
   const riseFromLow = Number(
     tech.riseFromLow ??
@@ -4082,7 +4080,21 @@ function computeV21RankScore(stock){
     0
   );
 
-  if (histFlip === true) rankScore += 4;
+  const safeHist = Number.isFinite(hist) ? hist : 0;
+  const safeHistPrev = Number.isFinite(histPrev) ? histPrev : 0;
+  const histDelta = safeHist - safeHistPrev;
+
+  if (safeHist > 0 && safeHistPrev <= 0 && histDelta > 0) {
+    rankScore += 5;
+  } else if (safeHist > 0 && safeHistPrev <= 0) {
+    rankScore += 3;
+  } else if (safeHist > 0 && histDelta > 0) {
+    rankScore += 2;
+  } else if (safeHist > 0) {
+    rankScore += 1;
+  } else if (safeHist < 0 && histDelta < 0) {
+    rankScore -= 2;
+  }
 
   if (riseFromLow < 0.05) rankScore -= 6;
   if (riseFromLow >= 0.10 && riseFromLow <= 0.15) rankScore += 2;
@@ -4701,68 +4713,6 @@ function computeV21RankScore(stock){
     return JSON.parse(JSON.stringify(x));
   }
 
-  function clearBatchReadyTimer(){
-    if(AppState.replay?.batchReadyTimer){
-      clearTimeout(AppState.replay.batchReadyTimer);
-      AppState.replay.batchReadyTimer = null;
-    }
-  }
-
-  function syncBatchReplayButton(forceText){
-    const btn = $('v21BatchBtn');
-    if(!btn) return;
-    const replayMode = AppState.ui.mode === 'replay';
-    const busy = !!(AppState.ui.isRefreshing || AppState.replay.loading || AppState.replay.batchRunning);
-    const readyAt = Number(AppState.replay?.batchReadyAt || 0);
-    const waiting = replayMode && !busy && readyAt > Date.now();
-    let disabled = true;
-    let text = forceText || btn.textContent || '隨機5日批次';
-
-    if(replayMode && !busy && readyAt > 0 && readyAt <= Date.now()){
-      disabled = false;
-      text = forceText || '隨機5日批次';
-    }else if(waiting){
-      disabled = true;
-      const remainSec = Math.max(1, Math.ceil((readyAt - Date.now()) / 1000));
-      text = forceText || `批次待命 ${remainSec}s`;
-    }else if(replayMode && busy){
-      disabled = true;
-      text = forceText || '回放處理中...';
-    }else if(replayMode){
-      disabled = true;
-      text = forceText || '等待單日回放';
-    }else{
-      disabled = true;
-      text = forceText || '隨機5日批次';
-    }
-
-    setBatchButtonState(disabled, text);
-  }
-
-  function armBatchReplayUnlock(delayMs=17000){
-    clearBatchReadyTimer();
-    AppState.replay.batchReadyAt = Date.now() + delayMs;
-    syncBatchReplayButton();
-
-    const tick = () => {
-      if(AppState.ui.mode !== 'replay'){
-        clearBatchReadyTimer();
-        AppState.replay.batchReadyAt = 0;
-        syncBatchReplayButton('隨機5日批次');
-        return;
-      }
-      syncBatchReplayButton();
-      if(Date.now() >= AppState.replay.batchReadyAt){
-        clearBatchReadyTimer();
-        syncBatchReplayButton('隨機5日批次');
-        return;
-      }
-      AppState.replay.batchReadyTimer = setTimeout(tick, 1000);
-    };
-
-    AppState.replay.batchReadyTimer = setTimeout(tick, 1000);
-  }
-
   function getAvailableReplayDates(daysBack=120){
     const out = [];
     const seen = new Set();
@@ -4848,10 +4798,7 @@ function computeV21RankScore(stock){
       formulaMode: AppState.ui.formulaMode
     };
 
-    AppState.replay.batchRunning = true;
-    clearBatchReadyTimer();
-    AppState.replay.batchReadyAt = 0;
-    syncBatchReplayButton('批次進行中...');
+    setBatchButtonState(true, '批次進行中...');
     const exportBtn = $('v21CsvBtn');
     if(exportBtn) exportBtn.disabled = true;
 
@@ -4903,54 +4850,29 @@ function computeV21RankScore(stock){
         renderMarketPulse();
         renderCurrentView();
       }
-      AppState.replay.batchRunning = false;
-      syncBatchReplayButton('隨機5日批次');
+      setBatchButtonState(false, '隨機5日批次');
     }
-  };
-
-  const _startReplay = startReplay;
-  startReplay = async function(){
-    clearBatchReadyTimer();
-    AppState.replay.batchReadyAt = 0;
-    syncBatchReplayButton('回放處理中...');
-    try{
-      return await _startReplay.apply(this, arguments);
-    }finally{
-      if(AppState.ui.mode === 'replay' && !AppState.replay.batchRunning){
-        armBatchReplayUnlock(17000);
-      }else{
-        syncBatchReplayButton('隨機5日批次');
-      }
-    }
-  };
-
-  const _backToLive = backToLive;
-  backToLive = async function(){
-    clearBatchReadyTimer();
-    AppState.replay.batchReadyAt = 0;
-    AppState.replay.batchRunning = false;
-    syncBatchReplayButton('隨機5日批次');
-    return _backToLive.apply(this, arguments);
   };
 
   document.addEventListener('DOMContentLoaded', () => {
     AppState.ui.formulaMode = 'v2';
     updateFormulaButtons();
-    AppState.replay.batchRunning = false;
-    AppState.replay.batchReadyAt = 0;
-    syncBatchReplayButton('隨機5日批次');
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
   });
 
   const _renderValidationIdle = renderValidationIdle;
   renderValidationIdle = function(){
     _renderValidationIdle();
-    syncBatchReplayButton();
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
   };
 
   const _renderValidationSummary = renderValidationSummary;
   renderValidationSummary = function(grouped, dateStr){
     _renderValidationSummary(grouped, dateStr);
-    syncBatchReplayButton();
+    const batchBtn = $('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = false;
   };
 })();
 </script>
