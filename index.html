@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板 v4.8.0</title>
-  <meta name="app-version" content="v5.2.0">
+  <title>阿吉股票儀表板 v5.2</title>
+  <meta name="app-version" content="v5.2">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -572,8 +572,8 @@
       <button class="sort-chip" id="sort-sector" onclick="setSortMode('sector',this)">族群優先</button>
       <button class="sort-chip" id="sort-chip" onclick="setSortMode('chip',this)">籌碼優先</button>
       <button class="sort-chip" id="sort-code" onclick="setSortMode('code',this)">依代號</button>
-      <button class="formula-chip on" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
-      <button class="formula-chip" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
+      <button class="formula-chip" id="formula-v1" onclick="setFormulaMode('v1',this)">公式 V1</button>
+      <button class="formula-chip on" id="formula-v2" onclick="setFormulaMode('v2',this)">公式 V2.1</button>
       <button class="btn btn-gold btn-sm" onclick="togglePoolPanel()">＋ 股池</button>
     </div>
   </div>
@@ -1061,7 +1061,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v1'},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v2'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -2777,13 +2777,14 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCurrentView();
   }
   function updateFormulaButtons(){
-    const mode=AppState.ui.formulaMode||'v1';
+    const mode='v2';
+    AppState.ui.formulaMode='v2';
     ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
     const active=$(mode==='v2'?'formula-v2':'formula-v1');
     if(active) active.classList.add('on');
   }
   function setFormulaMode(mode,el){
-    AppState.ui.formulaMode=mode==='v2'?'v2':'v1';
+    AppState.ui.formulaMode='v2';
     updateFormulaButtons();
     renderCurrentView();
   }
@@ -4013,6 +4014,7 @@ window.addEventListener('load', ajieRenderPerf);
           </div>
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
+            <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()">隨機5日批次</button>
           </div>
         </div>
         <div id="v21v-grid" class="v21v-grid">
@@ -4444,6 +4446,97 @@ function computeV21RankScore(stock){
     return s;
   }
 
+  function getAvailableReplayDates(daysBack=120){
+    const dates=[];
+    const seen=new Set();
+    const base=new Date();
+    for(let i=1;i<=daysBack;i++){
+      const dt=new Date(base);
+      dt.setDate(base.getDate()-i);
+      const day=dt.getDay();
+      if(day===0 || day===6) continue;
+      const iso=formatReplayDateValue(dt);
+      if(!seen.has(iso)){
+        seen.add(iso);
+        dates.push(iso);
+      }
+    }
+    return dates;
+  }
+
+  function shuffleArray(arr){
+    const next=[...arr];
+    for(let i=next.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [next[i],next[j]]=[next[j],next[i]];
+    }
+    return next;
+  }
+
+  function pickRandomReplayDates(count=5){
+    return shuffleArray(getAvailableReplayDates()).slice(0,count).sort();
+  }
+
+  async function runBatchReplay(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading || AppState.replay.batchRunning) return;
+    const dates=pickRandomReplayDates(5);
+    if(!dates.length){
+      alert('目前沒有可用日期');
+      return;
+    }
+    const btn=$('v21BatchBtn');
+    const exportBtn=$('v21CsvBtn');
+    const sub=$('v21v-sub');
+    const note=$('v21v-note');
+    const prevDate=getReplayDate();
+    AppState.replay.batchRunning=true;
+    if(btn) btn.disabled=true;
+    if(exportBtn) exportBtn.disabled=true;
+    if(sub) sub.textContent=`隨機批次：${dates.join('、')}`;
+    if(note) note.innerHTML='批次回放啟動中，系統會逐日跑 5 天並在每一天之間等待 20 秒。';
+    const allRows=[];
+    try{
+      for(let i=0;i<dates.length;i++){
+        const dateStr=dates[i];
+        setReplayDateValue(dateStr,{close:true,render:false});
+        if(sub) sub.textContent=`隨機批次 ${i+1}/5｜${dateStr}`;
+        if(note) note.innerHTML=`第 <b>${i+1}</b> 天回放中：${dateStr}${i<dates.length-1?'｜完成後等待 20 秒再跑下一天。':''}`;
+        await startReplay();
+        const rows=AppState?.replay?.v21Validation?.csvRows||[];
+        rows.forEach(row=>allRows.push({...row,date:dateStr}));
+        if(i<dates.length-1) await sleep(20000);
+      }
+      exportBatchReplayCSV(allRows, dates);
+      if(sub) sub.textContent=`隨機批次完成｜${dates.join('、')}`;
+      if(note) note.innerHTML=`已完成 5 天批次，合併輸出 <b>${allRows.length}</b> 筆資料。`;
+    }catch(err){
+      console.error('runBatchReplay error',err);
+      alert(`隨機5日批次失敗：${err.message||err}`);
+    }finally{
+      AppState.replay.batchRunning=false;
+      if(btn) btn.disabled=false;
+      if(prevDate) setReplayDateValue(prevDate,{close:true,render:false});
+    }
+  }
+
+  function exportBatchReplayCSV(rows, dates){
+    if(!rows.length){
+      alert('批次沒有可匯出的資料');
+      return;
+    }
+    const headers=['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const csv=[headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
+    const blob=new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`v21_batch_${dates[0]}_${dates[dates.length-1]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   window.downloadV21ValidationCSV = function(){
     const payload = AppState?.replay?.v21Validation;
     const rows = payload?.csvRows || [];
@@ -4565,35 +4658,6 @@ function computeV21RankScore(stock){
 
   hookRender();
 })();
-</script>
-
-
-<script>
-// ===== V5.2 PATCH =====
-
-// 🔒 預設鎖死 V2.1
-window.DEFAULT_FORMULA = 'v2.1';
-window.currentFormula = 'v2.1';
-
-// 強制覆蓋 localStorage
-localStorage.setItem('formula','v2.1');
-
-// 隨機批次按鈕（自動掛上）
-window.addEventListener('DOMContentLoaded', ()=>{
-  const btn = document.createElement('button');
-  btn.innerText = '隨機5日批次';
-  btn.style.marginLeft = '8px';
-  btn.className = 'btn btn-blue';
-  btn.onclick = runBatchReplay;
-
-  // 找CSV按鈕附近插入
-  const csvBtn = document.querySelector('[onclick*="CSV"]');
-  if(csvBtn && csvBtn.parentNode){
-    csvBtn.parentNode.appendChild(btn);
-  }
-});
-
-// ===== V5.2 PATCH END =====
 </script>
 
 </body>
