@@ -4117,7 +4117,22 @@ function computeV21RankScore(stock){
     rankScore -= 3;
   }
 
-  return rankScore;
+  
+  let winnerBoost = 0;
+
+  if (
+    bias >= 0.01 && bias <= 0.05 &&
+    ma20Up === true &&
+    safeHist > 0 &&
+    histDelta > 0 &&
+    volRatio >= 1.0 && volRatio <= 1.8
+  ) {
+    winnerBoost = 5;
+  }
+
+  rankScore += winnerBoost;
+
+return rankScore;
 }
 
   function fmtPct(v){
@@ -4174,28 +4189,6 @@ function computeV21RankScore(stock){
   function getAboveMa20Value(item){
     return item?.d?.tech?.isAboveMA20 === true || item?.d?.scoreData?.isAboveMA20 === true;
   }
-
-  function getMa20SlopeValue(item){
-    const tech = item?.d?.tech || item?.tech || {};
-    const scoreData = item?.d?.scoreData || item?.scoreData || {};
-    const stock = item?.d || item || {};
-    const ma20Value = Number(
-      tech.ma20 ??
-      scoreData.ma20 ??
-      stock?.ma20 ??
-      0
-    );
-    const ma20PrevValue = Number(
-      tech.ma20Prev ??
-      scoreData.ma20Prev ??
-      stock?.ma20Prev ??
-      0
-    );
-    return (ma20Value > 0 && ma20PrevValue > 0)
-      ? (ma20Value - ma20PrevValue) / ma20PrevValue
-      : null;
-  }
-
 
   function avgMetric(list, getter){
     const vals = list.map(getter).filter(v => Number.isFinite(v));
@@ -4279,7 +4272,6 @@ function computeV21RankScore(stock){
       histFlip: getHistFlipValue(item),
       ma20Up: getMa20UpValue(item),
       isAboveMA20: getAboveMa20Value(item),
-      ma20Slope: getMa20SlopeValue(item),
       rankScore: strategy === 'new' ? Number(item.rankScore ?? 0) : 0,
       ret_3d: null,
       ret_5d: null,
@@ -4443,7 +4435,6 @@ function computeV21RankScore(stock){
       histFlip: item.histFlip ? 'true' : 'false',
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
-      ma20Slope: Number.isFinite(item.ma20Slope) ? item.ma20Slope : '',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
       regime: market.regime || '',
       marketScore: Number.isFinite(market.marketScore) ? market.marketScore : '',
@@ -4515,7 +4506,7 @@ function computeV21RankScore(stock){
       alert('目前沒有可匯出的驗證資料');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -4533,10 +4524,6 @@ function computeV21RankScore(stock){
     const rise = Number.isFinite(score?.riseFromLow) ? score.riseFromLow : (Number.isFinite(d?.tech?.riseFromLow)?d.tech.riseFromLow:null);
     const hist = Number(d?.tech?.hist ?? d?.scoreData?.hist ?? d?.hist ?? 0);
     const histLast = Number(d?.tech?.histLast ?? d?.tech?.histPrev ?? d?.scoreData?.histLast ?? d?.scoreData?.histPrev ?? d?.histLast ?? d?.histPrev ?? 0);
-    const ma20Value = Number(d?.tech?.ma20 ?? d?.scoreData?.ma20 ?? d?.ma20 ?? 0);
-    const ma20PrevValue = Number(d?.tech?.ma20Prev ?? d?.scoreData?.ma20Prev ?? d?.ma20Prev ?? 0);
-    const ma20Slope = (ma20Value > 0 && ma20PrevValue > 0) ? (ma20Value - ma20PrevValue) / ma20PrevValue : null;
-    const slopeText = Number.isFinite(ma20Slope) ? `${ma20Slope >= 0 ? '+' : ''}${(ma20Slope * 100).toFixed(1)}%` : '--';
     const isSixStyle = !!(d?.tech?.ma20SlopeUp && d?.tech?.isAboveMA20 && d?.tech?.histImproving && Number.isFinite(vol) && vol >= 1.2 && vol <= 1.8);
     const tags = [];
     if(d?.tech?.ma20SlopeUp) tags.push('<span class="v21ab-tag bg-green">MA20上彎</span>');
@@ -4564,8 +4551,7 @@ function computeV21RankScore(stock){
         <div class="v21ab-meta">
           價格：${fmtNum(d?.price)}<br>
           漲跌：${fmtNum(d?.chg)} / ${Number.isFinite(d?.chgPct)?d.chgPct.toFixed(2)+'%':'--'}<br>
-          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}<br>
-          ${mode === 'new' ? `Slope：${slopeText}` : ''}
+          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}
         </div>
         <div class="v21ab-tags">${tags.join('')}</div>
       </div>`;
@@ -4797,7 +4783,7 @@ function computeV21RankScore(stock){
       alert('批次資料為空，沒有可匯出的 CSV');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
