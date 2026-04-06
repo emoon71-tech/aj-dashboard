@@ -4725,10 +4725,17 @@ return rankScore;
   };
 
   function setBatchButtonState(disabled, text){
-    const btn = $('v21BatchBtn');
-    if(!btn) return;
-    btn.disabled = !!disabled;
-    if(text) btn.textContent = text;
+    const batchBtn = $('v21BatchBtn');
+    const randomBtn = $('randomPlusTenBtn');
+    const isDisabled = !!disabled;
+    if(batchBtn){
+      batchBtn.disabled = isDisabled;
+      batchBtn.textContent = text || '隨機5日批次';
+    }
+    if(randomBtn){
+      randomBtn.disabled = isDisabled;
+      randomBtn.textContent = text || '隨機+10';
+    }
   }
 
   function cloneSimple(x){
@@ -4803,6 +4810,86 @@ return rankScore;
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+
+
+  window.runRandomPlusTen = async function(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
+    const dates = pickRandomReplayDates(10);
+    if(!dates.length){
+      alert('找不到可用的交易日');
+      return;
+    }
+    const snapshot = {
+      mode: AppState.ui.mode,
+      replayDate: $('replayDate')?.value || '',
+      market: cloneSimple(AppState.market),
+      currentTab: AppState.ui.currentTab,
+      activeCode: AppState.ui.activeCode,
+      formulaMode: AppState.ui.formulaMode
+    };
+
+    setBatchButtonState(true, '隨機+10 進行中...');
+    const exportBtn = $('v21CsvBtn');
+    if(exportBtn) exportBtn.disabled = true;
+
+    const allRows = [];
+    try{
+      AppState.ui.formulaMode = 'v2';
+      updateFormulaButtons();
+
+      for(let i=0;i<dates.length;i++){
+        const targetDate = getEffectiveTwReplayDate(dates[i]);
+        setReplayDateValue(targetDate,{close:false,render:false});
+        setStat(`批次10日 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
+        await startReplay();
+        await sleep(17000);
+
+        const rows = await waitForValidationRows(targetDate, 45000);
+        if(rows.length){
+          rows.forEach(r => { r.date = targetDate; });
+          allRows.push(...rows);
+        }
+        setStat(`批次10日 ${i+1}/${dates.length}｜完成，目前累積 ${allRows.length} 筆`, 'ok');
+      }
+
+      exportBatchReplayCSV(allRows, dates);
+      setStat(`隨機+10 執行完畢 ✓ 共 ${allRows.length} 筆`, 'ok');
+    }catch(err){
+      console.error('runRandomPlusTen error', err);
+      setStat(`隨機+10 失敗：${err.message || err}`, 'err');
+    }finally{
+      AppState.ui.formulaMode = snapshot.formulaMode || 'v2';
+      if(snapshot.mode === 'live'){
+        AppState.market = snapshot.market;
+        AppState.ui.mode = 'live';
+        AppState.replay.loading = false;
+        AppState.ui.isRefreshing = false;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+        setAutoRefresh();
+      }else{
+        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
+        AppState.market = snapshot.market;
+        AppState.ui.mode = snapshot.mode;
+        AppState.ui.activeCode = snapshot.activeCode;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+      }
+      if(exportBtn) exportBtn.disabled = false;
+      const randomBtn = $('randomPlusTenBtn');
+      if(randomBtn){
+        randomBtn.disabled = AppState.ui.mode !== 'replay';
+        randomBtn.textContent = '隨機+10';
+      }
+      const batchBtn = $('v21BatchBtn');
+      if(batchBtn){
+        batchBtn.disabled = AppState.ui.mode !== 'replay';
+        batchBtn.textContent = '隨機5日批次';
+      }
+    }
+  };
 
   window.runBatchReplay = async function(){
     if(AppState.ui.isRefreshing || AppState.replay.loading) return;
@@ -4879,161 +4966,107 @@ return rankScore;
   document.addEventListener('DOMContentLoaded', () => {
     AppState.ui.formulaMode = 'v2';
     updateFormulaButtons();
-    syncReplayBatchButtons();
+    const batchBtn = $('v21BatchBtn');
+    const randomBtn = $('randomPlusTenBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    if(randomBtn) randomBtn.disabled = AppState.ui.mode !== 'replay';
   });
 
   const _renderValidationIdle = renderValidationIdle;
   renderValidationIdle = function(){
     _renderValidationIdle();
-    syncReplayBatchButtons();
+    const batchBtn = $('v21BatchBtn');
+    const randomBtn = $('randomPlusTenBtn');
+    if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    if(randomBtn) randomBtn.disabled = AppState.ui.mode !== 'replay';
   };
 
   const _renderValidationSummary = renderValidationSummary;
   renderValidationSummary = function(grouped, dateStr){
     _renderValidationSummary(grouped, dateStr);
-    syncReplayBatchButtons();
-  };
-})();
-</script>
-
-
-
-
-<script>
-(function(){
-  
-function syncReplayBatchButtons(){
-  const isReplay = AppState?.ui?.mode === 'replay';
-  const randomBtn = $('randomPlusTenBtn');
-  const batchBtn = $('v21BatchBtn');
-  if(randomBtn) randomBtn.disabled = !isReplay;
-  if(batchBtn) batchBtn.disabled = !isReplay;
-}
-
-window.runRandomPlusTen = async function(){
-    if(AppState.ui.isRefreshing || AppState.replay.loading) return;
-    const dates = pickRandomReplayDates(10);
-    if(!dates.length){
-      alert('找不到可用的交易日');
-      return;
-    }
-    const snapshot = {
-      mode: AppState.ui.mode,
-      replayDate: $('replayDate')?.value || '',
-      market: cloneSimple(AppState.market),
-      currentTab: AppState.ui.currentTab,
-      activeCode: AppState.ui.activeCode,
-      formulaMode: AppState.ui.formulaMode
-    };
-
-    setBatchButtonState(true, '隨機+10 進行中...');
-    const exportBtn = $('v21CsvBtn');
+    const batchBtn = $('v21BatchBtn');
     const randomBtn = $('randomPlusTenBtn');
-    if(exportBtn) exportBtn.disabled = true;
-    if(randomBtn) randomBtn.disabled = true;
-
-    const allRows = [];
-    try{
-      AppState.ui.formulaMode = 'v2';
-      updateFormulaButtons();
-
-      for(let i=0;i<dates.length;i++){
-        const targetDate = getEffectiveTwReplayDate(dates[i]);
-        setReplayDateValue(targetDate,{close:false,render:false});
-        setStat(`批次10日 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
-        await startReplay();
-
-        await sleep(17000);
-
-        const rows = await waitForValidationRows(targetDate, 45000);
-        if(rows.length){
-          rows.forEach(r => { r.date = targetDate; });
-          allRows.push(...rows);
-        }
-        setStat(`批次10日 ${i+1}/${dates.length}｜完成，目前累積 ${allRows.length} 筆`, 'ok');
-      }
-
-      exportBatchReplayCSV(allRows, dates);
-      setStat(`隨機+10 執行完畢 ✓ 共 ${allRows.length} 筆`, 'ok');
-    }catch(err){
-      console.error('runRandomPlusTen error', err);
-      setStat(`隨機+10 失敗：${err.message || err}`, 'err');
-    }finally{
-      AppState.ui.formulaMode = 'v2';
-      if(snapshot.mode === 'live'){
-        AppState.market = snapshot.market;
-        AppState.ui.mode = 'live';
-        AppState.replay.loading = false;
-        AppState.ui.isRefreshing = false;
-        updateModeChip();
-        renderMarketPulse();
-        renderCurrentView();
-        setAutoRefresh();
-      }else{
-        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
-        AppState.market = snapshot.market;
-        AppState.ui.mode = snapshot.mode;
-        AppState.ui.activeCode = snapshot.activeCode;
-        updateModeChip();
-        renderMarketPulse();
-        renderCurrentView();
-      }
-      setBatchButtonState(false, '隨機5日批次');
-      if(exportBtn) exportBtn.disabled = false;
-      syncReplayBatchButtons();
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    syncReplayBatchButtons();
-  });
-
-  const _renderValidationIdleRandom = renderValidationIdle;
-  renderValidationIdle = function(){
-    _renderValidationIdleRandom();
-    syncReplayBatchButtons();
-  };
-
-  const _renderValidationSummaryRandom = renderValidationSummary;
-  renderValidationSummary = function(grouped, dateStr){
-    _renderValidationSummaryRandom(grouped, dateStr);
-    syncReplayBatchButtons();
+    if(batchBtn) batchBtn.disabled = false;
+    if(randomBtn) randomBtn.disabled = false;
   };
 })();
 </script>
 
 
+
 <script>
 (function(){
-  function syncReplayBatchButtonsHard(){
-    try{
-      const isReplay = window.AppState?.ui?.mode === 'replay';
-      const randomBtn = (typeof $ === 'function') ? $('randomPlusTenBtn') : document.getElementById('randomPlusTenBtn');
-      const batchBtn = (typeof $ === 'function') ? $('v21BatchBtn') : document.getElementById('v21BatchBtn');
-      if(randomBtn) randomBtn.disabled = !isReplay;
-      if(batchBtn) batchBtn.disabled = !isReplay;
-    }catch(err){
-      console.warn('syncReplayBatchButtonsHard failed', err);
+  window.renderValidationIdle = window.renderValidationIdle || function(){};
+
+  function runRandomPlusTenSafe(){
+    if (typeof window.runRandomPlusTen === 'function' && window.runRandomPlusTen !== runRandomPlusTenSafe) {
+      return window.runRandomPlusTen();
     }
+    console.log('[隨機+10] clicked');
   }
 
+  function bindRandomPlusTenButton(btn){
+    if (!btn) {
+      console.error('randomPlusTenBtn not found');
+      return;
+    }
+
+    btn.id = 'randomPlusTenBtn';
+    btn.type = 'button';
+    btn.style.position = 'relative';
+    btn.style.zIndex = '9999';
+    btn.style.pointerEvents = 'auto';
+    btn.setAttribute('onclick', 'runRandomPlusTenSafe()');
+
+    if (btn.dataset.bound === 'true') return;
+
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('[隨機+10] clicked');
+      runRandomPlusTenSafe();
+    });
+
+    console.log('btn:', btn);
+    console.log('[隨機+10] button bound');
+  }
+
+  function ensureRandomPlusTenButton(){
+    const host = document.querySelector('.toolbar-right, .v21-actions');
+    if (!host) {
+      console.error('randomPlusTen host not found');
+      return;
+    }
+
+    let btn = document.getElementById('randomPlusTenBtn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'btn btn-blue btn-sm';
+      btn.id = 'randomPlusTenBtn';
+      btn.textContent = '隨機+10';
+      host.appendChild(btn);
+    }
+
+    bindRandomPlusTenButton(btn);
+  }
+
+  window.runRandomPlusTenSafe = runRandomPlusTenSafe;
+
   document.addEventListener('DOMContentLoaded', () => {
-    syncReplayBatchButtonsHard();
-    setTimeout(syncReplayBatchButtonsHard, 300);
-    setTimeout(syncReplayBatchButtonsHard, 1200);
+    ensureRandomPlusTenButton();
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
   });
 
   window.addEventListener('load', () => {
-    syncReplayBatchButtonsHard();
-    setTimeout(syncReplayBatchButtonsHard, 300);
-    setTimeout(syncReplayBatchButtonsHard, 1200);
+    ensureRandomPlusTenButton();
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
   });
-
-  setInterval(syncReplayBatchButtonsHard, 800);
-
-  window.syncReplayBatchButtonsHard = syncReplayBatchButtonsHard;
 })();
 </script>
+
 
 </body>
   </html>
