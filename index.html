@@ -1061,7 +1061,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
   let updateToastShown=false;
   
   const AppState={
-    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v1'},
+    ui:{currentTab:'ai',activeCode:null,isRefreshing:false,nextRefreshAt:0,sortMode:'score',lastMarketMode:null,mode:'live',formulaMode:'v2'},
     pools:{},
     editCodes:[],
     visibleCodes:[],
@@ -2777,7 +2777,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     renderCurrentView();
   }
   function updateFormulaButtons(){
-    const mode=AppState.ui.formulaMode||'v1';
+    const mode=AppState.ui.formulaMode||'v2';
     ['formula-v1','formula-v2'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('on'); });
     const active=$(mode==='v2'?'formula-v2':'formula-v1');
     if(active) active.classList.add('on');
