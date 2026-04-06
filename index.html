@@ -4080,14 +4080,30 @@ function computeV21RankScore(stock){
     0
   );
 
+  const bias = (ma20 && ma20 > 0 && price)
+    ? (price - ma20) / ma20
+    : 0;
+
+  const ma20Up =
+    tech.ma20Up === true ||
+    scoreData.ma20Up === true ||
+    stock?.ma20Up === true ||
+    tech.ma20SlopeUp === true ||
+    scoreData.ma20SlopeUp === true ||
+    stock?.ma20SlopeUp === true;
+
   const safeHist = Number.isFinite(hist) ? hist : 0;
   const safeHistPrev = Number.isFinite(histPrev) ? histPrev : 0;
   const histDelta = safeHist - safeHistPrev;
 
   if (safeHist > 0 && safeHistPrev <= 0 && histDelta > 0) {
-    rankScore += 5;
+    if (bias > 0 && ma20Up === true) {
+      rankScore += 5;
+    } else {
+      rankScore += 1;
+    }
   } else if (safeHist > 0 && safeHistPrev <= 0) {
-    rankScore += 3;
+    rankScore += 2;
   } else if (safeHist > 0 && histDelta > 0) {
     rankScore += 2;
   } else if (safeHist > 0) {
@@ -4102,10 +4118,6 @@ function computeV21RankScore(stock){
 
   if (volRatio >= 1.0 && volRatio <= 1.8) rankScore += 1;
   if (volRatio > 2.5) rankScore -= 1;
-
-  const bias = (ma20 && ma20 > 0 && price)
-    ? (price - ma20) / ma20
-    : 0;
 
   if (bias >= 0.01 && bias <= 0.05) {
     rankScore += 3;
