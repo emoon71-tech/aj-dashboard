@@ -5004,9 +5004,22 @@ function getRandomPool(){
 }
 
 async function switchPool(pool){
-  if(window.setCustomPool){
-    window.setCustomPool(pool);
+  const input = document.querySelector('.pool-add-row input');
+  if(!input) return;
+
+  input.value = pool.join(',');
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+
+  const addBtn = document.querySelector('.pool-add-row button');
+  if(addBtn) addBtn.click();
+
+  await sleep(1500);
+
+  if(window.refreshAll){
+    await window.refreshAll();
   }
+}
   if(window.refreshAll){
     await window.refreshAll();
   }
@@ -5018,6 +5031,7 @@ window.runRandomPoolCarousel = async function(){
   window.carouselRunning = true;
 
   let allRows = [];
+let usedPools = new Set();
 
   try{
     for(let i=0;i<10;i++){
@@ -5025,7 +5039,11 @@ window.runRandomPoolCarousel = async function(){
 
       document.getElementById('carouselGroup').textContent = `組數：${i+1} / 10`;
 
-      const pool = getRandomPool();
+      let pool;
+do{
+  pool = getRandomPool();
+}while(usedPools.has(pool.join(',')));
+usedPools.add(pool.join(','));
       document.getElementById('carouselStatus').textContent = '切換股池...';
 
       await switchPool(pool);
@@ -5038,7 +5056,10 @@ window.runRandomPoolCarousel = async function(){
           if(window.getValidationRows){
             const rows = await window.getValidationRows();
             if(rows && rows.length){
-              rows.forEach(r=>r.group=i+1);
+              rows.forEach(r=>{
+  r.group=i+1;
+  r.pool=pool.join(',');
+});
               allRows.push(...rows);
               document.getElementById('carouselStatus').textContent = '已收集資料';
             }
