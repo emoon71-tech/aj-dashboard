@@ -4105,25 +4105,6 @@ function computeV21RankScore(stock){
     rankScore -= 3;
   }
 
-  const ma20_5daysAgo = Number(
-    tech.ma20_5daysAgo ??
-    scoreData.ma20_5daysAgo ??
-    stock?.ma20_5daysAgo ??
-    0
-  );
-
-  const slope = ma20_5daysAgo > 0
-    ? (ma20 - ma20_5daysAgo) / ma20_5daysAgo
-    : 0;
-
-  if (slope > 0.01) {
-    rankScore += 3;
-  } else if (slope > 0) {
-    rankScore += 1;
-  } else if (slope < 0) {
-    rankScore -= 3;
-  }
-
   return rankScore;
 }
 
