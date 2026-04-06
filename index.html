@@ -3,8 +3,8 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>阿吉股票儀表板 v5.3.2</title>
-  <meta name="app-version" content="v5.3.2">
+  <title>阿吉股票儀表板 v5.3.1</title>
+  <meta name="app-version" content="v5.3.1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   :root{
@@ -224,6 +224,7 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #randomPlusTenBtn{position:relative;z-index:9999;pointer-events:auto;}
   .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
   .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .starter-title{font-size:16px;font-weight:800;color:var(--text)}
@@ -5097,27 +5098,52 @@ return rankScore;
     }
   }
 
-  function ensureRandomPlusTenButton(){
-    const host = document.querySelector('.toolbar-right');
-    if(!host || document.getElementById('randomPlusTenBtn')) return;
+  function bindRandomPlusTenButton(){
+    const btn = document.getElementById('randomPlusTenBtn');
+    console.log('btn:', btn);
 
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-blue btn-sm';
-    btn.id = 'randomPlusTenBtn';
-    btn.type = 'button';
-    btn.textContent = '隨機+10';
-    host.appendChild(btn);
+    if(!btn){
+      console.error('randomPlusTenBtn not found');
+      return;
+    }
 
-    btn.addEventListener('click', function(){
-      console.log('[隨機+10] button event bound');
+    if(btn.dataset.bound === 'true'){
+      return;
+    }
+
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('[隨機+10] clicked');
       runRandomPlusTen();
     });
 
-    console.log('[隨機+10] button ready');
+    console.log('[隨機+10] button bound');
+  }
+
+  function ensureRandomPlusTenButton(){
+    const host = document.querySelector('.toolbar-right');
+    if(!host){
+      console.error('toolbar-right not found');
+      return;
+    }
+
+    let btn = document.getElementById('randomPlusTenBtn');
+    if(!btn){
+      btn = document.createElement('button');
+      btn.className = 'btn btn-blue btn-sm';
+      btn.id = 'randomPlusTenBtn';
+      btn.type = 'button';
+      btn.textContent = '隨機+10';
+      host.appendChild(btn);
+    }
+
+    bindRandomPlusTenButton();
   }
 
   window.runRandomPlusTen = runRandomPlusTen;
-  window.addEventListener('load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     ensureRandomPlusTenButton();
     setTimeout(ensureRandomPlusTenButton, 1200);
   });
