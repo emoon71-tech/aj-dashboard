@@ -4828,6 +4828,7 @@ return rankScore;
 
   function exportBatchReplayCSV(rows, dates){
     if(!rows.length){
+      console.error('[batch replay] no rows to export');
       alert('批次資料為空，沒有可匯出的 CSV');
       return;
     }
@@ -4880,9 +4881,11 @@ return rankScore;
         await sleep(17000);
 
         const rows = await waitForValidationRows(targetDate, 45000);
-        if(rows.length){
+        if(rows && rows.length > 0){
           rows.forEach(r => { r.date = targetDate; });
           allRows.push(...rows);
+        }else{
+          console.error(`[batch replay] no rows matched for ${targetDate}`);
         }
         setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 完成，已累積 ${allRows.length} 筆`, 'ok');
       }
