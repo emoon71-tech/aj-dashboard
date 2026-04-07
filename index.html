@@ -224,6 +224,7 @@
   .detail-section{margin-top:12px}
   .detail-section-title{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
   .toolbar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #randomPlusTenBtn{position:relative;z-index:9999;pointer-events:auto;}
   .starter-panel{background:linear-gradient(135deg,#111724,#0d1119);border:1px solid var(--gold3);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
   .starter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .starter-title{font-size:16px;font-weight:800;color:var(--text)}
@@ -405,6 +406,11 @@
 .v21v-note b{color:var(--gold)}
 @media (max-width:900px){.v21ab-grid,.v21v-grid{grid-template-columns:1fr}}
 </style>
+
+
+<script>
+window.renderValidationIdle = window.renderValidationIdle || function(){};
+</script>
 
 </head>
   <body>
@@ -2874,13 +2880,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
     else if(score.techStatus==='none') heroTags.push('技術資料不足');
     else if(score.techStatus==='partial') heroTags.push('技術資料未齊');
     const heroSummary=heroTags.slice(0,4).join(' · ') || '等待更多結構訊號';
-    computeReversalFlags(d);
-    const reversalMeta = [
-      `Slope收斂 ${d?.slopeRecovering ? 'YES' : 'NO'}`,
-      `Hist轉正 ${d?.histTurning ? 'YES' : 'NO'}`,
-      `Bias收回 ${d?.biasReclaim ? 'YES' : 'NO'}`,
-      `轉折共振 ${d?.reversalSignal ? 'YES' : 'NO'}`
-    ].join(' · ');
     const actionText=
       score.badge==='sb-go'
         ? '可做，但以風險控管優先，別追太快。'
@@ -2892,7 +2891,6 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
         <div>
           <div class="dn2">${d.name||ep?.n||code}（${code}）</div>
           <div class="ds">開 ${d.open||'--'}　高 ${d.high||'--'}　低 ${d.low||'--'}　量 ${d.volume?Number(d.volume).toLocaleString():'--'} 張</div>
-          <div class="ds">Slope: ${Number.isFinite(d?.ma20Slope) ? d.ma20Slope.toFixed(4) : '--'}　${reversalMeta}</div>
           <div class="badge-row">
             <span class="sbg bg-blue">${meta.sector||'其他'}</span>
             ${shieldLabel?`<span class="sbg bg-gold" title="${etfTitle}">${shieldLabel}</span>`:''}
@@ -4034,73 +4032,6 @@ window.addEventListener('load', ajieRenderPerf);
   }
 
   
-
-function computeReversalFlags(stock){
-  const tech = stock?.tech || {};
-  const scoreData = stock?.scoreData || {};
-
-  const hist = Number(
-    tech.hist ??
-    scoreData.hist ??
-    stock?.hist ??
-    0
-  );
-  const histPrev = Number(
-    tech.histPrev ??
-    tech.histLast ??
-    scoreData.histPrev ??
-    scoreData.histLast ??
-    stock?.histPrev ??
-    stock?.histLast ??
-    0
-  );
-  const ma20 = Number(
-    tech.ma20 ??
-    scoreData.ma20 ??
-    stock?.ma20 ??
-    0
-  );
-  const ma20Prev = Number(
-    tech.ma20Prev ??
-    scoreData.ma20Prev ??
-    stock?.ma20Prev ??
-    0
-  );
-  const price = Number(
-    stock?.price ??
-    tech.price ??
-    scoreData.price ??
-    stock?.close ??
-    tech.close ??
-    scoreData.close ??
-    stock?.last ??
-    stock?.lastPrice ??
-    0
-  );
-
-  const safeHist = Number.isFinite(hist) ? hist : 0;
-  const safeHistPrev = Number.isFinite(histPrev) ? histPrev : 0;
-  const safeMa20Slope = (Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(ma20Prev) && ma20Prev > 0)
-    ? (ma20 - ma20Prev) / ma20Prev
-    : 0;
-  const safeBias = (Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(price) && price > 0)
-    ? (price - ma20) / ma20
-    : 0;
-
-  const slopeRecovering = safeMa20Slope < 0.002 && safeMa20Slope > -0.025;
-  const histTurning = safeHist > 0 && safeHistPrev <= 0;
-  const biasReclaim = safeBias > 0 && safeBias <= 0.03;
-  const reversalSignal = slopeRecovering && histTurning && biasReclaim;
-
-  stock.ma20Slope = safeMa20Slope;
-  stock.slopeRecovering = slopeRecovering;
-  stock.histTurning = histTurning;
-  stock.biasReclaim = biasReclaim;
-  stock.reversalSignal = reversalSignal;
-
-  return stock;
-}
-
 function computeV21RankScore(stock){
   const tech = stock?.tech || {};
   const scoreData = stock?.scoreData || {};
@@ -4335,7 +4266,41 @@ return rankScore;
     };
   }
 
+  function getV21Ma20SlopeValue(item){
+    const tech = item?.d?.tech || {};
+    const scoreData = item?.d?.scoreData || {};
+    const direct = Number(tech?.ma20Slope ?? scoreData?.ma20Slope);
+    if(Number.isFinite(direct)) return Number(direct.toFixed(4));
+    const ma20 = Number(tech?.ma20 ?? scoreData?.ma20);
+    const price = Number(item?.d?.price ?? item?.d?.close ?? scoreData?.price);
+    if(Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(price)){
+      return Number((((price - ma20) / ma20)).toFixed(4));
+    }
+    return null;
+  }
+
+  function getV21BiasValue(item){
+    const tech = item?.d?.tech || {};
+    const scoreData = item?.d?.scoreData || {};
+    const ma20 = Number(tech?.ma20 ?? scoreData?.ma20);
+    const price = Number(item?.d?.price ?? item?.d?.close ?? scoreData?.price);
+    if(Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(price)){
+      return (price - ma20) / ma20;
+    }
+    return null;
+  }
+
   function createSnapshotRow(item, strategy, rank, dateStr){
+    const tech = item?.d?.tech || {};
+    const scoreData = item?.d?.scoreData || {};
+    const hist = Number(tech?.hist ?? scoreData?.hist ?? item?.d?.hist ?? 0);
+    const histPrev = Number(tech?.histPrev ?? tech?.histLast ?? scoreData?.histPrev ?? scoreData?.histLast ?? item?.d?.histPrev ?? item?.d?.histLast ?? 0);
+    const ma20Slope = getV21Ma20SlopeValue(item);
+    const bias = getV21BiasValue(item);
+    const slopeRecovering = Number.isFinite(ma20Slope) ? (ma20Slope > -0.025 && ma20Slope < 0.002) : false;
+    const histTurning = Number.isFinite(hist) && Number.isFinite(histPrev) ? (hist > histPrev) : false;
+    const biasReclaim = Number.isFinite(bias) ? (bias >= 0 && bias <= 0.05) : false;
+    const reversalSignal = !!(slopeRecovering && histTurning && biasReclaim);
     return {
       date: dateStr,
       strategy,
@@ -4347,11 +4312,11 @@ return rankScore;
       histFlip: getHistFlipValue(item),
       ma20Up: getMa20UpValue(item),
       isAboveMA20: getAboveMa20Value(item),
-      ma20Slope: Number.isFinite(item?.d?.ma20Slope) ? item.d.ma20Slope : '',
-      slopeRecovering: item?.d?.slopeRecovering === true,
-      histTurning: item?.d?.histTurning === true,
-      biasReclaim: item?.d?.biasReclaim === true,
-      reversalSignal: item?.d?.reversalSignal === true,
+      ma20Slope: Number.isFinite(ma20Slope) ? ma20Slope : '',
+      slopeRecovering: slopeRecovering ? 'true' : 'false',
+      histTurning: histTurning ? 'true' : 'false',
+      biasReclaim: biasReclaim ? 'true' : 'false',
+      reversalSignal: reversalSignal ? 'true' : 'false',
       rankScore: strategy === 'new' ? Number(item.rankScore ?? 0) : 0,
       ret_3d: null,
       ret_5d: null,
@@ -4428,6 +4393,8 @@ return rankScore;
     if(sub) sub.textContent = dateStr ? `回放日 ${dateStr}｜左右榜已鎖定快照，摘要與 CSV 對同一批資料。` : '驗證摘要';
     if(note) note.innerHTML = '報酬使用 <b>交易日 K 線</b> 計算：第 3 / 5 / 10 根收盤價對回放當日收盤價。';
     if(btn) btn.disabled = !(grouped.old?.length === V21_TOP_N && grouped.new?.length === V21_TOP_N);
+    const batchBtn = document.getElementById('v21BatchBtn');
+    if(batchBtn) batchBtn.disabled = false;
   }
 
   function safeMarketNumber(value){
@@ -4515,11 +4482,6 @@ return rankScore;
       histFlip: item.histFlip ? 'true' : 'false',
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
-      ma20Slope: Number.isFinite(item.ma20Slope) ? item.ma20Slope : '',
-      slopeRecovering: item.slopeRecovering ? 'TRUE' : 'FALSE',
-      histTurning: item.histTurning ? 'TRUE' : 'FALSE',
-      biasReclaim: item.biasReclaim ? 'TRUE' : 'FALSE',
-      reversalSignal: item.reversalSignal ? 'TRUE' : 'FALSE',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
       regime: market.regime || '',
       marketScore: Number.isFinite(market.marketScore) ? market.marketScore : '',
@@ -4636,9 +4598,7 @@ return rankScore;
         <div class="v21ab-meta">
           價格：${fmtNum(d?.price)}<br>
           漲跌：${fmtNum(d?.chg)} / ${Number.isFinite(d?.chgPct)?d.chgPct.toFixed(2)+'%':'--'}<br>
-          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}<br>
-          Slope收斂：${d?.slopeRecovering ? 'YES' : 'NO'}　Hist轉正：${d?.histTurning ? 'YES' : 'NO'}<br>
-          Bias收回：${d?.biasReclaim ? 'YES' : 'NO'}　轉折共振：${d?.reversalSignal ? 'YES' : 'NO'}
+          量比：${Number.isFinite(vol)?vol.toFixed(1)+'x':'--'}　位階：${fmtPct(rise)}
         </div>
         <div class="v21ab-tags">${tags.join('')}</div>
       </div>`;
@@ -4656,7 +4616,6 @@ return rankScore;
     codes.forEach(code=>{
       try{
         const d = AppState.stocks[code] || {};
-        computeReversalFlags(d);
         const score = typeof computeAjieScore === 'function' ? computeAjieScore(code, true) : null;
         if(score && (score.total||0) > 0){
           base.push({code, d, score, rankScore: computeV21RankScore(d)});
@@ -4871,7 +4830,7 @@ return rankScore;
       alert('批次資料為空，沒有可匯出的 CSV');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
     const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -4981,114 +4940,80 @@ return rankScore;
 </script>
 
 
-<!-- ====== 獨立輪播控制台 ====== -->
-<div style="position:fixed;bottom:20px;right:20px;width:260px;background:#0f1218;border:1px solid #d4a947;border-radius:10px;padding:12px;z-index:9999;font-size:12px;">
-  <div style="color:#d4a947;font-weight:700;margin-bottom:8px;">隨機股池自動輪播</div>
-  <div id="carouselStatus">狀態：待命</div>
-  <div id="carouselGroup">組數：0 / 10</div>
-  <div id="carouselCountdown">倒數：-</div>
-  <div style="margin-top:8px;display:flex;gap:6px;">
-    <button id="startCarouselBtn">開始10組</button>
-    <button id="stopCarouselBtn">停止</button>
-  </div>
-</div>
 
 <script>
-window.carouselRunning = false;
+(function(){
+  window.renderValidationIdle = window.renderValidationIdle || function(){};
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-function getRandomPool(){
-  const list = window.ALL_STOCKS || ["2330","2317","2454","2603","2303","2308"];
-  return list.sort(()=>0.5-Math.random()).slice(0,5);
-}
-
-async function switchPool(pool){
-  const input = document.querySelector('.pool-add-row input');
-  if(!input) return;
-
-  input.value = pool.join(',');
-  input.dispatchEvent(new Event('input',{bubbles:true}));
-  input.dispatchEvent(new Event('change',{bubbles:true}));
-
-  const addBtn = document.querySelector('.pool-add-row button');
-  if(addBtn) addBtn.click();
-
-  await sleep(1500);
-
-  if(window.refreshAll){
-    await window.refreshAll();
+  function runRandomPlusTenSafe(){
+    if (typeof window.runRandomPlusTen === 'function' && window.runRandomPlusTen !== runRandomPlusTenSafe) {
+      return window.runRandomPlusTen();
+    }
+    console.log('[隨機+10] clicked');
   }
-}
-  if(window.refreshAll){
-    await window.refreshAll();
-  }
-}
 
-
-window.runRandomPoolCarousel = async function(){
-  if(window.carouselRunning) return;
-  window.carouselRunning = true;
-
-  let allRows = [];
-let usedPools = new Set();
-
-  try{
-    for(let i=0;i<10;i++){
-      if(!window.carouselRunning) break;
-
-      document.getElementById('carouselGroup').textContent = `組數：${i+1} / 10`;
-
-      let pool;
-do{
-  pool = getRandomPool();
-}while(usedPools.has(pool.join(',')));
-usedPools.add(pool.join(','));
-      document.getElementById('carouselStatus').textContent = '切換股池...';
-
-      await switchPool(pool);
-
-      for(let t=18;t>0;t--){
-        if(!window.carouselRunning) break;
-        document.getElementById('carouselCountdown').textContent = `倒數：${t}s`;
-
-        if(t===5){
-          if(window.getValidationRows){
-            const rows = await window.getValidationRows();
-            if(rows && rows.length){
-              rows.forEach(r=>{
-  r.group=i+1;
-  r.pool=pool.join(',');
-});
-              allRows.push(...rows);
-              document.getElementById('carouselStatus').textContent = '已收集資料';
-            }
-          }
-        }
-
-        await sleep(1000);
-      }
+  function bindRandomPlusTenButton(btn){
+    if (!btn) {
+      console.error('randomPlusTenBtn not found');
+      return;
     }
 
-    if(allRows.length){
-      if(window.exportBatchReplayCSV){
-        window.exportBatchReplayCSV(allRows, []);
-      }else if(window.exportCSV){
-        window.exportCSV('carousel_merged_' + Date.now() + '.csv');
-      }
+    btn.id = 'randomPlusTenBtn';
+    btn.type = 'button';
+    btn.style.position = 'relative';
+    btn.style.zIndex = '9999';
+    btn.style.pointerEvents = 'auto';
+    btn.setAttribute('onclick', 'runRandomPlusTenSafe()');
+
+    if (btn.dataset.bound === 'true') return;
+
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('[隨機+10] clicked');
+      runRandomPlusTenSafe();
+    });
+
+    console.log('btn:', btn);
+    console.log('[隨機+10] button bound');
+  }
+
+  function ensureRandomPlusTenButton(){
+    const host = document.querySelector('.toolbar-right, .v21-actions');
+    if (!host) {
+      console.error('randomPlusTen host not found');
+      return;
     }
 
-  }finally{
-    window.carouselRunning = false;
-    document.getElementById('carouselStatus').textContent = '完成(合併輸出)';
-    document.getElementById('carouselCountdown').textContent = '-';
+    let btn = document.getElementById('randomPlusTenBtn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'btn btn-blue btn-sm';
+      btn.id = 'randomPlusTenBtn';
+      btn.textContent = '隨機+10';
+      host.appendChild(btn);
+    }
+
+    bindRandomPlusTenButton(btn);
   }
-};
 
+  window.runRandomPlusTenSafe = runRandomPlusTenSafe;
 
-document.getElementById('startCarouselBtn').onclick = ()=>window.runRandomPoolCarousel();
-document.getElementById('stopCarouselBtn').onclick = ()=>{ window.carouselRunning=false; };
+  document.addEventListener('DOMContentLoaded', () => {
+    ensureRandomPlusTenButton();
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
+  });
+
+  window.addEventListener('load', () => {
+    ensureRandomPlusTenButton();
+    setTimeout(ensureRandomPlusTenButton, 500);
+    setTimeout(ensureRandomPlusTenButton, 1500);
+  });
+})();
 </script>
+
 
 </body>
   </html>
