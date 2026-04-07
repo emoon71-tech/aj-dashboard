@@ -4805,13 +4805,14 @@ return rankScore;
   }
 
   async function waitForValidationRows(dateStr, timeoutMs=45000){
+    const normalizeDate = d => (d || '').replace(/\//g, '-');
     const started = Date.now();
     let stableRounds = 0;
     let lastLen = -1;
     while(Date.now() - started < timeoutMs){
       const payload = AppState?.replay?.v21Validation;
       const rows = payload?.csvRows || [];
-      if(payload?.date === dateStr && rows.length > 0){
+      if(normalizeDate(payload?.date) === normalizeDate(dateStr) && rows.length > 0){
         if(rows.length === lastLen){
           stableRounds += 1;
         }else{
@@ -4886,7 +4887,11 @@ return rankScore;
         setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 完成，已累積 ${allRows.length} 筆`, 'ok');
       }
 
-      exportBatchReplayCSV(allRows, dates);
+      if(!allRows.length){
+        console.error('[batch replay] no rows to export');
+      }else{
+        exportBatchReplayCSV(allRows, dates);
+      }
       setStat(`隨機5日批次完成 ✓ 共 ${allRows.length} 筆`, 'ok');
     }catch(err){
       console.error('runBatchReplay error', err);
