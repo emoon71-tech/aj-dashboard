@@ -4858,7 +4858,22 @@ return rankScore;
       alert('沒有批次資料，請先跑批次回放');
       return;
     }
-    exportBatchReplayCSV(rows, dates);
+    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+    const csvStr = [headers.join(',')].concat(rows.map(row => headers.map(h => {
+      const v = row[h];
+      if(v === null || v === undefined) return '';
+      const s = String(v);
+      return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g,'""') + '"' : s;
+    }).join(','))).join('\n');
+    const blob = new Blob([csvStr], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'v21_batch_' + (dates.join('_') || 'export') + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   window.runBatchReplay = async function(){
