@@ -4909,6 +4909,10 @@ return rankScore;
       window._batchDates = dates;
       const saveBtn = document.getElementById('v21SaveBatchBtn');
       if(saveBtn) saveBtn.disabled = false;
+      window._batchRows = cloneSimple(allRows);
+      window._batchDates = cloneSimple(dates);
+      const saveBtn2 = document.getElementById('v21SaveBatchBtn');
+      if(saveBtn2) saveBtn2.disabled = false;
       exportBatchReplayCSV(allRows, dates);
       setStat(`隨機5日批次完成 ✓ 共 ${allRows.length} 筆 · 可按「儲存批次」重新下載`, 'ok');
     }catch(err){
