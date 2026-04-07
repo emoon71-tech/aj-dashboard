@@ -1743,9 +1743,7 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       AppState.market=AppState.replay.marketBackup;
       AppState.replay.marketBackup=null;
     }
-    const inp=document.getElementById('replayDate');
-    if(inp) inp.value='';
-    ensureReplayDateDefault();
+    setReplayDateToday();
     updateModeChip();
     setAutoRefresh();
     await refreshDashboard();
