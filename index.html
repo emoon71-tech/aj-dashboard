@@ -5258,5 +5258,495 @@ return rankScore;
 </script>
 
 
+
+<script>
+(function(){
+  const V216_BATCH_MIN = 4;
+  const V216_BATCH_MAX = 8;
+  const V216_EXPORT_FIELDS_BASE = ['batch','date','code','name','rank','ret_5d'];
+  const V216_EXPORT_FIELDS_T = ['batch','date','code','name','rank','ret_5d','day_offset','marketScore','volRatio','ma20Slope','riseFromLow','hist','bias','reversalSignal'];
+  const V216_MISSING_TOKEN = 'MISSING';
+  const V216_REPLAY_CACHE = new Map();
+
+  function v216Clone(value){
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function v216Sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function v216NowStamp(){
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+  }
+
+  function v216SafeNumber(value){
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+  }
+
+  function v216IsMissing(value){
+    return value === '' || value === null || value === undefined || value === V216_MISSING_TOKEN;
+  }
+
+  function v216BatchToCsvCell(value){
+    if(value === null || value === undefined) return '';
+    const s = String(value);
+    return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }
+
+  function v216BuildCsv(rows, headers){
+    return [headers.join(',')]
+      .concat((rows || []).map(row => headers.map(h => v216BatchToCsvCell(row[h])).join(',')))
+      .join('\n');
+  }
+
+  function v216BuildSummaryCsv(summaryRows, missingRows){
+    const lines = [];
+    lines.push('metric,value');
+    (summaryRows || []).forEach(row => {
+      lines.push([v216BatchToCsvCell(row.metric), v216BatchToCsvCell(row.value)].join(','));
+    });
+    lines.push('');
+    lines.push('column,爆發組缺值,對照組缺值,總缺值');
+    (missingRows || []).forEach(row => {
+      lines.push([
+        v216BatchToCsvCell(row.column),
+        v216BatchToCsvCell(row['爆發組缺值']),
+        v216BatchToCsvCell(row['對照組缺值']),
+        v216BatchToCsvCell(row['總缺值'])
+      ].join(','));
+    });
+    return lines.join('\n');
+  }
+
+  function v216ParseCsvLine(line){
+    const out = [];
+    let cur = '';
+    let inQuotes = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQuotes && line[i+1] === '"'){
+          cur += '"';
+          i += 1;
+        }else{
+          inQuotes = !inQuotes;
+        }
+      }else if(ch === ',' && !inQuotes){
+        out.push(cur);
+        cur = '';
+      }else{
+        cur += ch;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function v216ParseCsvText(text){
+    const lines = String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(line => line.trim() !== '');
+    if(!lines.length) return [];
+    const headers = v216ParseCsvLine(lines[0]).map(h => String(h || '').trim());
+    return lines.slice(1).map(line => {
+      const cells = v216ParseCsvLine(line);
+      const row = {};
+      headers.forEach((header, idx) => {
+        row[header] = cells[idx] ?? '';
+      });
+      return row;
+    });
+  }
+
+  function v216GetNameForCode(code, fallback=''){
+    try{
+      return fallback || EPS?.[code]?.n || getStockMeta(code)?.n || code;
+    }catch(err){
+      return fallback || code;
+    }
+  }
+
+  function v216NormalizeRet5Pct(value){
+    const num = v216SafeNumber(value);
+    if(num == null) return null;
+    return Math.abs(num) <= 1 ? (num * 100) : num;
+  }
+
+  function v216NormalizeBaseRow(row, batch){
+    const rankNum = v216SafeNumber(row.rank);
+    const retNum = v216SafeNumber(row.ret_5d);
+    return {
+      batch,
+      date: String(row.date || '').trim(),
+      code: String(row.code || '').trim(),
+      name: v216GetNameForCode(String(row.code || '').trim(), String(row.name || '').trim()),
+      rank: rankNum != null ? rankNum : V216_MISSING_TOKEN,
+      ret_5d: retNum != null ? retNum : V216_MISSING_TOKEN,
+      _ret5dPct: v216NormalizeRet5Pct(row.ret_5d),
+      _raw: row
+    };
+  }
+
+  function v216PrevTradingDate(dateStr, steps){
+    let dt = parseReplayDateValue(dateStr);
+    if(!dt) return '';
+    let remaining = steps;
+    while(remaining > 0){
+      dt.setDate(dt.getDate() - 1);
+      const fixed = typeof getEffectiveTwReplayDate === 'function'
+        ? getEffectiveTwReplayDate(formatReplayDateValue(dt))
+        : formatReplayDateValue(dt);
+      dt = parseReplayDateValue(fixed);
+      if(!dt) return '';
+      remaining -= 1;
+    }
+    return formatReplayDateValue(dt);
+  }
+
+  async function v216EnsureFolderHandle(){
+    if(window._batchAutoFolderHandle) return window._batchAutoFolderHandle;
+    if(typeof ensureBatchAutoFolderHandle === 'function'){
+      const handle = await ensureBatchAutoFolderHandle();
+      if(handle) return handle;
+    }
+    if(typeof window.showDirectoryPicker === 'function'){
+      const handle = await window.showDirectoryPicker({ mode:'readwrite', id:'v216-burst-extract' });
+      window._batchAutoFolderHandle = handle;
+      return handle;
+    }
+    return null;
+  }
+
+  async function v216ListBatchFiles(){
+    const dirHandle = await v216EnsureFolderHandle();
+    if(!dirHandle) throw new Error('無法取得批次資料夾');
+    const files = [];
+    for await (const entry of dirHandle.values()){
+      if(!entry || entry.kind !== 'file') continue;
+      const name = String(entry.name || '');
+      if(!/^v21_batch_auto\d+_.*\.csv$/i.test(name)) continue;
+      files.push({ name, handle: entry });
+    }
+    files.sort((a,b) => a.name.localeCompare(b.name, 'zh-Hant'));
+    return files.map((item, idx) => ({
+      ...item,
+      batch: String(idx + 1).padStart(3, '0')
+    }));
+  }
+
+  async function v216ReadBatchRows(fileInfo){
+    const file = await fileInfo.handle.getFile();
+    const text = await file.text();
+    const parsed = v216ParseCsvText(text);
+    return parsed.map(row => v216NormalizeBaseRow(row, fileInfo.batch));
+  }
+
+  function v216SnapshotFeatureForCode(code, market){
+    const stock = AppState.stocks?.[code] || {};
+    const item = { code, d: stock };
+    const tech = stock?.tech || {};
+    const scoreData = stock?.scoreData || {};
+    const hist = v216SafeNumber(tech?.hist ?? scoreData?.hist ?? stock?.hist);
+    const histPrev = v216SafeNumber(tech?.histPrev ?? scoreData?.histPrev ?? stock?.histPrev);
+    const ma20Slope = typeof getV21Ma20SlopeValue === 'function'
+      ? getV21Ma20SlopeValue(item)
+      : null;
+    const bias = typeof getV21BiasValue === 'function'
+      ? getV21BiasValue(item)
+      : null;
+    const riseFromLow = typeof getRiseFromLowValue === 'function'
+      ? getRiseFromLowValue(item)
+      : v216SafeNumber(tech?.riseFromLow ?? scoreData?.riseFromLow ?? stock?.riseFromLow);
+    const volRatio = typeof getVolRatioValue === 'function'
+      ? getVolRatioValue(item)
+      : v216SafeNumber(tech?.volRatio ?? scoreData?.volRatio ?? stock?.volRatio);
+
+    const slopeRecovering = Number.isFinite(ma20Slope) ? (ma20Slope > -0.025 && ma20Slope < 0.002) : false;
+    const histTurning = Number.isFinite(hist) && Number.isFinite(histPrev) ? (hist > 0 && histPrev <= 0) : false;
+    const biasReclaim = Number.isFinite(bias) ? (bias >= 0 && bias <= 0.05) : false;
+    const reversalSignal = slopeRecovering && histTurning && biasReclaim;
+
+    const hasAnyValue = [
+      market?.marketScore,
+      volRatio,
+      ma20Slope,
+      riseFromLow,
+      hist,
+      bias,
+      stock?.name
+    ].some(v => !v216IsMissing(v) && v != null);
+
+    return {
+      name: v216GetNameForCode(code, stock?.name || ''),
+      marketScore: Number.isFinite(market?.marketScore) ? market.marketScore : V216_MISSING_TOKEN,
+      volRatio: Number.isFinite(volRatio) ? volRatio : V216_MISSING_TOKEN,
+      ma20Slope: Number.isFinite(ma20Slope) ? ma20Slope : V216_MISSING_TOKEN,
+      riseFromLow: Number.isFinite(riseFromLow) ? riseFromLow : V216_MISSING_TOKEN,
+      hist: Number.isFinite(hist) ? hist : V216_MISSING_TOKEN,
+      bias: Number.isFinite(bias) ? bias : V216_MISSING_TOKEN,
+      reversalSignal: hasAnyValue ? (reversalSignal ? 'true' : 'false') : V216_MISSING_TOKEN,
+      _available: hasAnyValue
+    };
+  }
+
+  async function v216WaitValidationReady(dateStr, timeoutMs=45000){
+    const normalizeDate = d => (d || '').replace(/\//g, '-');
+    const startedAt = Date.now();
+    while(Date.now() - startedAt < timeoutMs){
+      const payload = AppState?.replay?.v21Validation;
+      if(normalizeDate(payload?.date) === normalizeDate(dateStr) && payload?.market){
+        return v216Clone(payload);
+      }
+      await v216Sleep(500);
+    }
+    const payload = AppState?.replay?.v21Validation;
+    if(normalizeDate(payload?.date) === normalizeDate(dateStr)){
+      return v216Clone(payload);
+    }
+    return null;
+  }
+
+  async function v216CollectReplayDate(dateStr, codesNeeded){
+    if(V216_REPLAY_CACHE.has(dateStr)) return V216_REPLAY_CACHE.get(dateStr);
+
+    setReplayDateValue(dateStr, { close:false, render:false });
+    await startReplay();
+    const validation = await v216WaitValidationReady(dateStr, 45000);
+    const market = validation?.market || {};
+    const featureMap = {};
+    (codesNeeded || []).forEach(code => {
+      featureMap[code] = v216SnapshotFeatureForCode(code, market);
+    });
+
+    const payload = {
+      date: dateStr,
+      market,
+      features: featureMap
+    };
+    V216_REPLAY_CACHE.set(dateStr, payload);
+    return payload;
+  }
+
+  function v216BuildMissingRow(sample, dayOffset){
+    return {
+      batch: sample.batch,
+      date: sample.date,
+      code: sample.code,
+      name: sample.name,
+      rank: sample.rank,
+      ret_5d: sample.ret_5d,
+      day_offset: dayOffset,
+      marketScore: V216_MISSING_TOKEN,
+      volRatio: V216_MISSING_TOKEN,
+      ma20Slope: V216_MISSING_TOKEN,
+      riseFromLow: V216_MISSING_TOKEN,
+      hist: V216_MISSING_TOKEN,
+      bias: V216_MISSING_TOKEN,
+      reversalSignal: V216_MISSING_TOKEN,
+      _available: false
+    };
+  }
+
+  function v216AppendTMinusRows(samples, replayCache){
+    const out = [];
+    (samples || []).forEach(sample => {
+      [{label:'T-1',steps:1},{label:'T-2',steps:2}].forEach(spec => {
+        const prevDate = v216PrevTradingDate(sample.date, spec.steps);
+        if(!prevDate || !replayCache.has(prevDate)){
+          out.push(v216BuildMissingRow(sample, spec.label));
+          return;
+        }
+        const replay = replayCache.get(prevDate);
+        const feature = replay?.features?.[sample.code];
+        if(!feature){
+          out.push(v216BuildMissingRow(sample, spec.label));
+          return;
+        }
+        out.push({
+          batch: sample.batch,
+          date: sample.date,
+          code: sample.code,
+          name: feature.name || sample.name,
+          rank: sample.rank,
+          ret_5d: sample.ret_5d,
+          day_offset: spec.label,
+          marketScore: feature.marketScore,
+          volRatio: feature.volRatio,
+          ma20Slope: feature.ma20Slope,
+          riseFromLow: feature.riseFromLow,
+          hist: feature.hist,
+          bias: feature.bias,
+          reversalSignal: feature.reversalSignal,
+          _available: !!feature._available
+        });
+      });
+    });
+    return out;
+  }
+
+  function v216BuildSummaryRows(burstList, controlList, burstTRows, controlTRows){
+    const t1Available = burstTRows.concat(controlTRows).filter(row => row.day_offset === 'T-1' && row._available).length;
+    const t2Available = burstTRows.concat(controlTRows).filter(row => row.day_offset === 'T-2' && row._available).length;
+    return [
+      { metric:'爆發組樣本數', value: burstList.length },
+      { metric:'對照組樣本數', value: controlList.length },
+      { metric:'T-1 可用筆數', value: t1Available },
+      { metric:'T-2 可用筆數', value: t2Available }
+    ];
+  }
+
+  function v216BuildMissingStats(burstTRows, controlTRows){
+    const cols = ['marketScore','volRatio','ma20Slope','riseFromLow','hist','bias','reversalSignal'];
+    return cols.map(col => ({
+      column: col,
+      '爆發組缺值': burstTRows.filter(row => v216IsMissing(row[col])).length,
+      '對照組缺值': controlTRows.filter(row => v216IsMissing(row[col])).length,
+      '總缺值': burstTRows.concat(controlTRows).filter(row => v216IsMissing(row[col])).length
+    }));
+  }
+
+  async function v216WriteTextFile(dirHandle, fileName, content){
+    const fileHandle = await dirHandle.getFileHandle(fileName, { create:true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(String(content || ''));
+    await writable.close();
+    return fileName;
+  }
+
+  async function v216SaveOutputFiles(files){
+    const dirHandle = await v216EnsureFolderHandle();
+    if(!dirHandle) throw new Error('無法取得輸出資料夾');
+    const saved = [];
+    for(const file of files){
+      saved.push(await v216WriteTextFile(dirHandle, file.name, file.content));
+    }
+    return saved;
+  }
+
+  async function v216RunBurstExtract(){
+    if(AppState.ui?.isRefreshing || AppState.replay?.loading) return;
+    const uiSnapshot = {
+      mode: AppState.ui.mode,
+      replayDate: $('replayDate')?.value || '',
+      market: v216Clone(AppState.market || {}),
+      currentTab: AppState.ui.currentTab,
+      activeCode: AppState.ui.activeCode,
+      formulaMode: AppState.ui.formulaMode,
+      batchRows: v216Clone(window._batchRows || []),
+      batchDates: v216Clone(window._batchDates || [])
+    };
+
+    try{
+      setStat('V2.1.6 爆發特徵解剖｜讀取 004–008 批次中...', 'load');
+      const allFiles = await v216ListBatchFiles();
+      const targetFiles = allFiles.filter(file => {
+        const n = Number(file.batch);
+        return n >= V216_BATCH_MIN && n <= V216_BATCH_MAX;
+      });
+
+      if(targetFiles.length !== (V216_BATCH_MAX - V216_BATCH_MIN + 1)){
+        throw new Error(`批次檔不足：需要 ${V216_BATCH_MIN.toString().padStart(3,'0')}–${V216_BATCH_MAX.toString().padStart(3,'0')}`);
+      }
+
+      let allRows = [];
+      for(const file of targetFiles){
+        const rows = await v216ReadBatchRows(file);
+        allRows = allRows.concat(rows);
+      }
+
+      const burstList = allRows
+        .filter(row => row._ret5dPct != null && row._ret5dPct > 10)
+        .map(row => ({
+          batch: row.batch,
+          date: row.date || V216_MISSING_TOKEN,
+          code: row.code || V216_MISSING_TOKEN,
+          name: row.name || V216_MISSING_TOKEN,
+          rank: row.rank,
+          ret_5d: row.ret_5d
+        }));
+
+      const controlList = allRows
+        .filter(row => row._ret5dPct != null && row._ret5dPct <= 10)
+        .filter(row => Number.isFinite(row.rank) && row.rank >= 1 && row.rank <= 5)
+        .map(row => ({
+          batch: row.batch,
+          date: row.date || V216_MISSING_TOKEN,
+          code: row.code || V216_MISSING_TOKEN,
+          name: row.name || V216_MISSING_TOKEN,
+          rank: row.rank,
+          ret_5d: row.ret_5d
+        }));
+
+      const sampleRows = burstList.concat(controlList);
+      const codesNeeded = [...new Set(sampleRows.map(row => row.code).filter(Boolean))];
+      const prevDates = [...new Set(sampleRows.flatMap(row => [v216PrevTradingDate(row.date, 1), v216PrevTradingDate(row.date, 2)]).filter(Boolean))];
+
+      setStat(`V2.1.6 爆發特徵解剖｜回放 ${prevDates.length} 個前置交易日中...`, 'load');
+      for(let i=0;i<prevDates.length;i++){
+        const prevDate = prevDates[i];
+        setStat(`V2.1.6 爆發特徵解剖｜整理 ${prevDate} (${i+1}/${prevDates.length})`, 'load');
+        await v216CollectReplayDate(prevDate, codesNeeded);
+      }
+
+      const burstTRows = v216AppendTMinusRows(burstList, V216_REPLAY_CACHE);
+      const controlTRows = v216AppendTMinusRows(controlList, V216_REPLAY_CACHE);
+      const summaryRows = v216BuildSummaryRows(burstList, controlList, burstTRows, controlTRows);
+      const missingRows = v216BuildMissingStats(burstTRows, controlTRows);
+
+      const stamp = v216NowStamp();
+      const filesToSave = [
+        { name:`v216_burst_group_004_008_${stamp}.csv`, content:v216BuildCsv(burstList, V216_EXPORT_FIELDS_BASE) },
+        { name:`v216_control_group_004_008_${stamp}.csv`, content:v216BuildCsv(controlList, V216_EXPORT_FIELDS_BASE) },
+        { name:`v216_burst_tminus_004_008_${stamp}.csv`, content:v216BuildCsv(burstTRows, V216_EXPORT_FIELDS_T) },
+        { name:`v216_control_tminus_004_008_${stamp}.csv`, content:v216BuildCsv(controlTRows, V216_EXPORT_FIELDS_T) },
+        { name:`v216_summary_004_008_${stamp}.csv`, content:v216BuildSummaryCsv(summaryRows, missingRows) }
+      ];
+
+      const savedFiles = await v216SaveOutputFiles(filesToSave);
+      setStat(`V2.1.6 爆發特徵解剖已輸出 ${savedFiles.length} 份表`, 'ok');
+      return savedFiles;
+    }catch(err){
+      console.error('v216RunBurstExtract error', err);
+      setStat(`V2.1.6 爆發特徵解剖失敗：${err.message || err}`, 'err');
+      throw err;
+    }finally{
+      try{
+        window._batchRows = uiSnapshot.batchRows;
+        window._batchDates = uiSnapshot.batchDates;
+        AppState.ui.formulaMode = uiSnapshot.formulaMode || 'v2';
+        if(uiSnapshot.mode === 'live'){
+          AppState.market = uiSnapshot.market;
+          AppState.ui.mode = 'live';
+          AppState.replay.loading = false;
+          AppState.ui.isRefreshing = false;
+          updateModeChip();
+          renderMarketPulse();
+          renderCurrentView();
+          setAutoRefresh();
+        }else{
+          if(uiSnapshot.replayDate){
+            setReplayDateValue(uiSnapshot.replayDate, { close:false, render:false });
+          }
+          AppState.market = uiSnapshot.market;
+          AppState.ui.mode = uiSnapshot.mode;
+          AppState.ui.activeCode = uiSnapshot.activeCode;
+          updateModeChip();
+          renderMarketPulse();
+          renderCurrentView();
+        }
+      }catch(restoreErr){
+        console.warn('v216 restore warning', restoreErr);
+      }
+    }
+  }
+
+  window.runV216BurstExtract = v216RunBurstExtract;
+  window.exportV216BurstTables = v216RunBurstExtract;
+})();
+</script>
+
+
 </body>
   </html>
