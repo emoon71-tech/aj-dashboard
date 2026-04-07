@@ -4811,7 +4811,7 @@ return rankScore;
     while(Date.now() - started < timeoutMs){
       const payload = AppState?.replay?.v21Validation;
       const rows = payload?.csvRows || [];
-      if(payload?.date === dateStr && rows.length > 0){
+      if(normalizeDate(payload?.date) === normalizeDate(dateStr) && rows.length > 0){
         if(rows.length === lastLen){
           stableRounds += 1;
         }else{
