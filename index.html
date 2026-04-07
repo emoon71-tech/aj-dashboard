@@ -4805,6 +4805,7 @@ return rankScore;
   }
 
   async function waitForValidationRows(dateStr, timeoutMs=45000){
+    const normalizeDate = d => (d || '').replace(/\//g, '-');
     const started = Date.now();
     let stableRounds = 0;
     let lastLen = -1;
@@ -4823,7 +4824,6 @@ return rankScore;
       await sleep(800);
     }
     const finalPayload = AppState?.replay?.v21Validation;
-    const normalizeDate = d => (d || '').replace(/\//g, '-');
     if(normalizeDate(finalPayload?.date) === normalizeDate(dateStr)){
       return cloneSimple(finalPayload?.csvRows || []);
     }
@@ -4880,8 +4880,8 @@ return rankScore;
         setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
         await startReplay();
 
-        // 關鍵：回放完成後額外等 17 秒，再抓 csvRows
-        await sleep(17000);
+        // 關鍵：回放完成後額外等 18 秒，再抓 csvRows
+        await sleep(18000);
 
         const rows = await waitForValidationRows(targetDate, 45000);
         if(rows.length){
