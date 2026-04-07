@@ -4019,8 +4019,10 @@ window.addEventListener('load', ajieRenderPerf);
             <div id="v21v-sub" class="v21v-sub">回放模式下會自動鎖定左右榜前 8，並整理 3 / 5 / 10 日報酬。</div>
           </div>
           <div class="v21v-actions">
+            <button type="button" class="btn btn-sm" id="v21AutoBatchBtn" onclick="runBatchReplayAuto2()" style="background:#10263d;color:#7cc6ff;border:1px solid #5b9cf6">自動跑存10輪</button>
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
             <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()" disabled>隨機5日批次</button>
+            <button type="button" class="btn btn-sm" id="v21StopAutoBatchBtn" onclick="stopBatchReplayAuto()" disabled style="background:#3a1414;color:#ff8f8f;border:1px solid #ff6b6b">停止自動</button>
             <button type="button" class="btn btn-sm" id="v21SaveBatchBtn" onclick="saveBatchRows()" disabled style="background:#1a3a1a;color:#3ddc84;border:1px solid #3ddc84">💾 儲存批次</button>
           </div>
         </div>
@@ -4305,12 +4307,14 @@ return rankScore;
     const histTurning = Number.isFinite(hist) && Number.isFinite(histPrev) ? (hist > 0 && histPrev <= 0) : false;
     const biasReclaim = Number.isFinite(bias) ? (bias >= 0 && bias <= 0.05) : false;
     const reversalSignal = !!(slopeRecovering && histTurning && biasReclaim);
+    const price = Number(item?.d?.price ?? item?.d?.close ?? scoreData?.price ?? tech?.price);
     return {
       date: dateStr,
       strategy,
       rank,
       code: item.code,
       name: item?.d?.name || item.code,
+      price: Number.isFinite(price) ? price : '',
       riseFromLow: getRiseFromLowValue(item),
       volRatio: getVolRatioValue(item),
       histFlip: getHistFlipValue(item),
@@ -4547,8 +4551,8 @@ return rankScore;
     const newRows = await enrichSnapshotRows(snapshot.newTop || [], dateStr);
     if(AppState.replay.v21ValidationToken !== token) return;
     const grouped = { old: oldRows, new: newRows };
-    const topStocks = (grouped.new?.length ? grouped.new : grouped.old || []).slice(0, V21_TOP_N);
-    const structure = computeMarketStructure(topStocks);
+    const marketStocks = [...grouped.old, ...grouped.new].filter(Boolean);
+    const structure = computeMarketStructure(marketStocks);
     const regime = detectMarketRegime(structure);
     const marketScore = computeMarketScore(structure, regime);
     const position = computePosition(marketScore, regime);
@@ -4847,48 +4851,229 @@ return rankScore;
     return [];
   }
 
+  const V21_BATCH_HEADERS = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
+  const V21_AUTO_SAVE_GROUPS = 10;
+  window._batchAutoRunning = false;
+  window._batchAutoSeq = window._batchAutoSeq || 0;
+  window._batchAutoFolderHandle = window._batchAutoFolderHandle || null;
+
+  function batchToCsvCell(v){
+    if(v === null || v === undefined) return '';
+    const s = String(v);
+    return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }
+
+  function buildBatchReplayCSV(rows){
+    return [V21_BATCH_HEADERS.join(',')]
+      .concat(rows.map(row => V21_BATCH_HEADERS.map(h => batchToCsvCell(row[h])).join(',')))
+      .join('\n');
+  }
+
+  function getBatchReplayFileName(prefix='v21_batch'){
+    window._batchAutoSeq = (window._batchAutoSeq || 0) + 1;
+    const now = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+    const seq = String(window._batchAutoSeq).padStart(3,'0');
+    return `${prefix}_${stamp}_${seq}.csv`;
+  }
+
+  function triggerBatchReplayDownload(rows, fileName){
+    if(!rows.length) return '';
+    const csv = buildBatchReplayCSV(rows);
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || getBatchReplayFileName('v21_batch');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return a.download;
+  }
+
+  async function ensureBatchAutoFolderHandle(){
+    if(window._batchAutoFolderHandle) return window._batchAutoFolderHandle;
+    if(typeof window.showDirectoryPicker !== 'function') return null;
+    try{
+      const handle = await window.showDirectoryPicker({ mode:'readwrite', id:'v21-batch-auto-save' });
+      window._batchAutoFolderHandle = handle;
+      return handle;
+    }catch(err){
+      console.error('ensureBatchAutoFolderHandle error', err);
+      return null;
+    }
+  }
+
+  async function saveBatchReplayAuto(rows, prefix='v21_batch_auto2'){
+    const fileName = getBatchReplayFileName(prefix);
+    const csv = buildBatchReplayCSV(rows);
+    const dirHandle = window._batchAutoFolderHandle;
+    if(dirHandle){
+      try{
+        const fileHandle = await dirHandle.getFileHandle(fileName, { create:true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(csv);
+        await writable.close();
+        return fileName;
+      }catch(err){
+        console.error('saveBatchReplayAuto folder write error', err);
+      }
+    }
+    return triggerBatchReplayDownload(rows, fileName) || fileName;
+  }
+
   function exportBatchReplayCSV(rows, dates){
     if(!rows.length){
       alert('批次資料為空，沒有可匯出的 CSV');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
-    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row[h])).join(','))).join('\n');
-    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    const tag = (dates || []).join('_') || 'batch';
-    a.download = `v21_batch_${tag}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    triggerBatchReplayDownload(rows, getBatchReplayFileName('v21_batch'));
+  }
+
+  function setAutoBatchButtonState(isRunning){
+    const startBtn = document.getElementById('v21AutoBatchBtn');
+    const stopBtn = document.getElementById('v21StopAutoBatchBtn');
+    if(startBtn) startBtn.disabled = !!isRunning;
+    if(stopBtn) stopBtn.disabled = !isRunning;
+  }
+
+  async function flushAutoBatchGroups(groupBuffer, forceAll = false){
+    const needCount = forceAll ? groupBuffer.length : V21_AUTO_SAVE_GROUPS;
+    if(!Array.isArray(groupBuffer) || !needCount || groupBuffer.length < needCount) return 0;
+    const picked = groupBuffer.splice(0, needCount);
+    const exportRows = picked.flatMap(g => cloneSimple(g.rows || []));
+    const exportDates = picked.map(g => g.date);
+    if(!exportRows.length) return 0;
+    window._batchRows = cloneSimple(exportRows);
+    window._batchDates = cloneSimple(exportDates);
+    const saveBtn = document.getElementById('v21SaveBatchBtn');
+    if(saveBtn) saveBtn.disabled = false;
+    const fileName = await saveBatchReplayAuto(exportRows, 'v21_batch_auto10');
+    setStat(`自動跑存已儲存 ${exportRows.length} 筆｜${fileName}`, 'ok');
+    return exportRows.length;
   }
 
   window.saveBatchRows = function(){
     const rows = window._batchRows || [];
-    const dates = window._batchDates || [];
     if(!rows.length){
       alert('沒有批次資料，請先跑批次回放');
       return;
     }
-    const headers = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
-    const csvStr = [headers.join(',')].concat(rows.map(row => headers.map(h => {
-      const v = row[h];
-      if(v === null || v === undefined) return '';
-      const s = String(v);
-      return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g,'""') + '"' : s;
-    }).join(','))).join('\n');
-    const blob = new Blob([csvStr], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'v21_batch_' + (dates.join('_') || 'export') + '.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    triggerBatchReplayDownload(rows, getBatchReplayFileName('v21_batch_manual'));
+  };
+
+  window.stopBatchReplayAuto = function(){
+    window._batchAutoRunning = false;
+    setStat('自動跑存已停止，會在本輪結束後收尾。','ok');
+    setAutoBatchButtonState(false);
+  };
+
+  window.runBatchReplayAuto2 = async function(){
+    if(AppState.ui.isRefreshing || AppState.replay.loading || window._batchAutoRunning) return;
+
+    if(typeof window.showDirectoryPicker === 'function'){
+      const folder = await ensureBatchAutoFolderHandle();
+      if(!folder){
+        setStat('你沒有選自動儲存資料夾，這次先不啟動。', 'err');
+        return;
+      }
+    }
+
+    const snapshot = {
+      mode: AppState.ui.mode,
+      replayDate: $('replayDate')?.value || '',
+      market: cloneSimple(AppState.market),
+      currentTab: AppState.ui.currentTab,
+      activeCode: AppState.ui.activeCode,
+      formulaMode: AppState.ui.formulaMode
+    };
+
+    let groupBuffer = [];
+    let round = 0;
+
+    window._batchAutoRunning = true;
+    setAutoBatchButtonState(true);
+
+    try{
+      AppState.ui.formulaMode = 'v2';
+      updateFormulaButtons();
+
+      while(window._batchAutoRunning){
+        const dates = pickRandomReplayDates(10);
+        if(!dates.length){
+          console.error('[auto batch] no replay dates');
+          await sleep(1000);
+          continue;
+        }
+        round += 1;
+
+        for(let i=0;i<dates.length;i++){
+          if(!window._batchAutoRunning) break;
+
+          const targetDate = getEffectiveTwReplayDate(dates[i]);
+          setReplayDateValue(targetDate,{close:false,render:false});
+          setStat(`自動跑存 ${round}-${i+1}｜${targetDate} 啟動中...`);
+          await startReplay();
+          await sleep(18000);
+
+          const rows = await waitForValidationRows(targetDate, 45000);
+          if(rows.length){
+            rows.forEach(r => { r.date = targetDate; });
+            groupBuffer.push({ date: targetDate, rows: cloneSimple(rows) });
+            setStat(`自動跑存 ${round}-${i+1}｜${targetDate} 完成，已累積 ${groupBuffer.length} 輪 / 10 輪`, 'ok');
+          }else{
+            console.error('[auto batch] no rows for', targetDate);
+            setStat(`自動跑存 ${round}-${i+1}｜${targetDate} 無資料，跳過`, 'err');
+          }
+
+          while(groupBuffer.length >= V21_AUTO_SAVE_GROUPS){
+            try{
+              await flushAutoBatchGroups(groupBuffer, false);
+            }catch(err){
+              console.error('flushAutoBatchGroups error', err);
+              setStat(`自動儲存失敗：${err.message || err}`, 'err');
+            }
+            await sleep(300);
+          }
+        }
+      }
+
+      if(groupBuffer.length){
+        try{
+          await flushAutoBatchGroups(groupBuffer, true);
+        }catch(err){
+          console.error('flushAutoBatchGroups final error', err);
+        }
+      }
+      setStat('自動跑存已收尾 ✓', 'ok');
+    }catch(err){
+      console.error('runBatchReplayAuto2 error', err);
+      setStat(`自動跑存失敗：${err.message || err}`, 'err');
+    }finally{
+      window._batchAutoRunning = false;
+      AppState.ui.formulaMode = 'v2';
+      if(snapshot.mode === 'live'){
+        AppState.market = snapshot.market;
+        AppState.ui.mode = 'live';
+        AppState.replay.loading = false;
+        AppState.ui.isRefreshing = false;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+        setAutoRefresh();
+      }else{
+        setReplayDateValue(snapshot.replayDate || getEffectiveTwReplayDate(formatReplayDateValue(new Date())), {close:false,render:false});
+        AppState.market = snapshot.market;
+        AppState.ui.mode = snapshot.mode;
+        AppState.ui.activeCode = snapshot.activeCode;
+        updateModeChip();
+        renderMarketPulse();
+        renderCurrentView();
+      }
+      setAutoBatchButtonState(false);
+    }
   };
 
   window.runBatchReplay = async function(){
@@ -4976,6 +5161,7 @@ return rankScore;
     updateFormulaButtons();
     const batchBtn = $('v21BatchBtn');
     if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    setAutoBatchButtonState(false);
   });
 
   const _renderValidationIdle = renderValidationIdle;
@@ -4983,6 +5169,7 @@ return rankScore;
     _renderValidationIdle();
     const batchBtn = $('v21BatchBtn');
     if(batchBtn) batchBtn.disabled = AppState.ui.mode !== 'replay';
+    setAutoBatchButtonState(window._batchAutoRunning);
   };
 
   const _renderValidationSummary = renderValidationSummary;
@@ -4990,6 +5177,7 @@ return rankScore;
     _renderValidationSummary(grouped, dateStr);
     const batchBtn = $('v21BatchBtn');
     if(batchBtn) batchBtn.disabled = false;
+    setAutoBatchButtonState(window._batchAutoRunning);
   };
 })();
 </script>
