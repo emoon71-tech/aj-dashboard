@@ -4486,6 +4486,11 @@ return rankScore;
       histFlip: item.histFlip ? 'true' : 'false',
       ma20Up: item.ma20Up ? 'true' : 'false',
       isAboveMA20: item.isAboveMA20 ? 'true' : 'false',
+      ma20Slope: Number.isFinite(item.ma20Slope) ? item.ma20Slope : '',
+      slopeRecovering: item.slopeRecovering === 'true' || item.slopeRecovering === true ? 'true' : 'false',
+      histTurning: item.histTurning === 'true' || item.histTurning === true ? 'true' : 'false',
+      biasReclaim: item.biasReclaim === 'true' || item.biasReclaim === true ? 'true' : 'false',
+      reversalSignal: item.reversalSignal === 'true' || item.reversalSignal === true ? 'true' : 'false',
       ret_5d: Number.isFinite(item.ret_5d) ? item.ret_5d : '',
       regime: market.regime || '',
       marketScore: Number.isFinite(market.marketScore) ? market.marketScore : '',
@@ -4515,7 +4520,15 @@ return rankScore;
         const rows = await fetchValidationRows(item.code, dateStr);
         returns = computeFutureReturnsFromRows(rows, dateStr);
       }catch(err){}
-      out.push({ ...item, ...returns });
+      out.push({
+        ...item,
+        ma20Slope: Number.isFinite(item.ma20Slope) ? item.ma20Slope : '',
+        slopeRecovering: item.slopeRecovering === 'true' || item.slopeRecovering === true ? 'true' : 'false',
+        histTurning: item.histTurning === 'true' || item.histTurning === true ? 'true' : 'false',
+        biasReclaim: item.biasReclaim === 'true' || item.biasReclaim === true ? 'true' : 'false',
+        reversalSignal: item.reversalSignal === 'true' || item.reversalSignal === true ? 'true' : 'false',
+        ...returns
+      });
     }
     return out;
   }
