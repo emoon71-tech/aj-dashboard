@@ -4271,12 +4271,14 @@ return rankScore;
   function getV21Ma20SlopeValue(item){
     const tech = item?.d?.tech || {};
     const scoreData = item?.d?.scoreData || {};
+    // 優先用直接的 ma20Slope 欄位
     const direct = Number(tech?.ma20Slope ?? scoreData?.ma20Slope);
-    if(Number.isFinite(direct)) return Number(direct.toFixed(4));
+    if(Number.isFinite(direct) && direct !== -999) return Number(direct.toFixed(4));
+    // 用 ma20 和 ma20Prev 計算真正的 slope
     const ma20 = Number(tech?.ma20 ?? scoreData?.ma20);
-    const price = Number(item?.d?.price ?? item?.d?.close ?? scoreData?.price);
-    if(Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(price)){
-      return Number((((price - ma20) / ma20)).toFixed(4));
+    const ma20Prev = Number(tech?.ma20Prev ?? scoreData?.ma20Prev);
+    if(Number.isFinite(ma20) && ma20 > 0 && Number.isFinite(ma20Prev) && ma20Prev > 0){
+      return Number(((ma20 - ma20Prev) / ma20Prev).toFixed(6));
     }
     return null;
   }
@@ -4300,7 +4302,7 @@ return rankScore;
     const ma20Slope = getV21Ma20SlopeValue(item);
     const bias = getV21BiasValue(item);
     const slopeRecovering = Number.isFinite(ma20Slope) ? (ma20Slope > -0.025 && ma20Slope < 0.002) : false;
-    const histTurning = Number.isFinite(hist) && Number.isFinite(histPrev) ? (hist > histPrev) : false;
+    const histTurning = Number.isFinite(hist) && Number.isFinite(histPrev) ? (hist > 0 && histPrev <= 0) : false;
     const biasReclaim = Number.isFinite(bias) ? (bias >= 0 && bias <= 0.05) : false;
     const reversalSignal = !!(slopeRecovering && histTurning && biasReclaim);
     return {
@@ -4326,7 +4328,7 @@ return rankScore;
     };
   }
 
-  const V21_TOP_N = 8;
+  const V21_TOP_N = 10;
 
   function extractTopN(oldList, newList){
     const dateStr = getV21Date();
@@ -4878,7 +4880,7 @@ return rankScore;
 
   window.runBatchReplay = async function(){
     if(AppState.ui.isRefreshing || AppState.replay.loading) return;
-    const dates = pickRandomReplayDates(5);
+    const dates = pickRandomReplayDates(10);
     if(!dates.length){
       alert('找不到可用的交易日');
       return;
