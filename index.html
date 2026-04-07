@@ -1743,6 +1743,9 @@ function isOtcDirect(code){ return OTC_DIRECT_CODES.has(String(code||'').trim())
       AppState.market=AppState.replay.marketBackup;
       AppState.replay.marketBackup=null;
     }
+    const inp=document.getElementById('replayDate');
+    if(inp) inp.value='';
+    ensureReplayDateDefault();
     updateModeChip();
     setAutoRefresh();
     await refreshDashboard();
@@ -4020,6 +4023,7 @@ window.addEventListener('load', ajieRenderPerf);
           <div class="v21v-actions">
             <button type="button" class="btn btn-blue btn-sm" id="v21CsvBtn" onclick="downloadV21ValidationCSV()" disabled>匯出驗證 CSV</button>
             <button type="button" class="btn btn-gold btn-sm" id="v21BatchBtn" onclick="runBatchReplay()" disabled>隨機5日批次</button>
+            <button type="button" class="btn btn-sm" id="v21SaveBatchBtn" onclick="saveBatchRows()" disabled style="background:#1a3a1a;color:#3ddc84;border:1px solid #3ddc84">💾 儲存批次</button>
           </div>
         </div>
         <div id="v21v-grid" class="v21v-grid">
@@ -4849,6 +4853,16 @@ return rankScore;
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  window.saveBatchRows = function(){
+    const rows = window._batchRows || [];
+    const dates = window._batchDates || [];
+    if(!rows.length){
+      alert('沒有批次資料，請先跑批次回放');
+      return;
+    }
+    exportBatchReplayCSV(rows, dates);
+  };
+
   window.runBatchReplay = async function(){
     if(AppState.ui.isRefreshing || AppState.replay.loading) return;
     const dates = pickRandomReplayDates(5);
@@ -4880,7 +4894,7 @@ return rankScore;
         setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 啟動中...`);
         await startReplay();
 
-        // 關鍵：回放完成後額外等 18 秒，再抓 csvRows
+        // 關鍵：回放完成後額外等 17 秒，再抓 csvRows
         await sleep(18000);
 
         const rows = await waitForValidationRows(targetDate, 45000);
@@ -4891,8 +4905,12 @@ return rankScore;
         setStat(`批次回放 ${i+1}/${dates.length}｜${targetDate} 完成，已累積 ${allRows.length} 筆`, 'ok');
       }
 
+      window._batchRows = cloneSimple(allRows);
+      window._batchDates = dates;
+      const saveBtn = document.getElementById('v21SaveBatchBtn');
+      if(saveBtn) saveBtn.disabled = false;
       exportBatchReplayCSV(allRows, dates);
-      setStat(`隨機5日批次完成 ✓ 共 ${allRows.length} 筆`, 'ok');
+      setStat(`隨機5日批次完成 ✓ 共 ${allRows.length} 筆 · 可按「儲存批次」重新下載`, 'ok');
     }catch(err){
       console.error('runBatchReplay error', err);
       setStat(`隨機5日批次失敗：${err.message || err}`, 'err');
