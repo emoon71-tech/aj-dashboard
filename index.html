@@ -5344,7 +5344,7 @@ return rankScore;
     if(!end){ setRangeCsvMsg('請選結束日期', 'var(--red)'); return; }
     if(start > end){ setRangeCsvMsg('開始日期不能晚於結束日期', 'var(--red)'); return; }
 
-    const workerBase=(window.CONFIG && window.CONFIG.workerUrl) ? window.CONFIG.workerUrl : '';
+    const workerBase=(typeof CONFIG!=='undefined' && CONFIG && CONFIG.workerUrl) ? CONFIG.workerUrl : ((window.CONFIG && window.CONFIG.workerUrl) ? window.CONFIG.workerUrl : '');
     if(!workerBase){ setRangeCsvMsg('找不到 Worker 位址', 'var(--red)'); return; }
 
     const url=`${workerBase}/range-csv?code=${encodeURIComponent(code)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
