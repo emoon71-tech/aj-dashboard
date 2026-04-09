@@ -475,6 +475,42 @@ window.renderValidationIdle = window.renderValidationIdle || function(){};
     <div class="cfg-st" id="cfgSt">已內建 Worker，頁面載入後自動抓取即時 / 收盤資料</div>
   </div>
   
+
+  <style>
+    .range-panel{background:var(--bg2);border:1px solid var(--gold3);border-radius:10px;padding:14px 16px;margin:0 0 16px}
+    .range-title{font-size:11px;color:var(--gold);margin-bottom:10px;font-weight:600;letter-spacing:.04em}
+    .range-grid{display:grid;grid-template-columns:180px 170px 170px auto;gap:8px;align-items:end}
+    .range-help{font-size:10px;color:var(--text3);margin-top:8px;line-height:1.5}
+    .range-msg{font-size:10px;color:var(--text3);margin-top:8px;min-height:14px}
+    @media (max-width: 900px){
+      .range-grid{grid-template-columns:1fr}
+    }
+  </style>
+
+  <div class="range-panel">
+    <div class="range-title">⇩ 台股日線區段 CSV 抓取（外掛功能）</div>
+    <div class="range-grid">
+      <div>
+        <div class="card-label">股票代號</div>
+        <input class="inp" id="rangeCsvCode" placeholder="8046 或 8046.TW" />
+      </div>
+      <div>
+        <div class="card-label">開始日期</div>
+        <input class="inp" id="rangeCsvStart" type="date" />
+      </div>
+      <div>
+        <div class="card-label">結束日期</div>
+        <input class="inp" id="rangeCsvEnd" type="date" />
+      </div>
+      <div>
+        <button class="btn btn-gold" id="rangeCsvBtn" onclick="ajDownloadRangeCsv()">下載 CSV</button>
+      </div>
+    </div>
+    <div class="range-help">會自動往前補抓至少 60 個交易日，再回切成你指定區間；不影響原本股票排序、分數與公式。</div>
+    <div class="range-msg" id="rangeCsvMsg">待命中</div>
+  </div>
+
+
   <!-- 全球指數 -->
   <div class="sec">全球指數總覽</div>
   <div class="idx-grid">
@@ -4317,8 +4353,6 @@ return rankScore;
       price: Number.isFinite(price) ? price : '',
       riseFromLow: getRiseFromLowValue(item),
       volRatio: getVolRatioValue(item),
-      hist: Number.isFinite(hist) ? hist : '',
-      bias: Number.isFinite(bias) ? bias : '',
       histFlip: getHistFlipValue(item),
       ma20Up: getMa20UpValue(item),
       isAboveMA20: getAboveMa20Value(item),
@@ -4855,188 +4889,9 @@ return rankScore;
 
   const V21_BATCH_HEADERS = ['date','strategy','code','rank','rankScore','riseFromLow','volRatio','histFlip','ma20Up','isAboveMA20','ma20Slope','slopeRecovering','histTurning','biasReclaim','reversalSignal','ret_5d','regime','marketScore','position','top3_avg_rise','flipRatio','trendRatio','avg_volRatio','leaderCount'];
   const V21_AUTO_SAVE_GROUPS = 10;
-  const V216_RETAINED_BATCH_KEY = 'v216_retained_batches_v1';
-  const V216_ANALYSIS_BATCH_LIMIT = 8;
   window._batchAutoRunning = false;
   window._batchAutoSeq = window._batchAutoSeq || 0;
   window._batchAutoFolderHandle = window._batchAutoFolderHandle || null;
-  window._v216RetainedBatches = window._v216RetainedBatches || loadV216RetainedBatches();
-  window._v216LastAnalysisExportBatch = window._v216LastAnalysisExportBatch || 0;
-
-  function loadV216RetainedBatches(){
-    try{
-      const raw = localStorage.getItem(V216_RETAINED_BATCH_KEY);
-      const parsed = JSON.parse(raw || '[]');
-      return Array.isArray(parsed) ? parsed : [];
-    }catch(err){
-      console.error('loadV216RetainedBatches error', err);
-      return [];
-    }
-  }
-
-  function saveV216RetainedBatches(){
-    try{
-      localStorage.setItem(V216_RETAINED_BATCH_KEY, JSON.stringify(window._v216RetainedBatches || []));
-    }catch(err){
-      console.error('saveV216RetainedBatches error', err);
-    }
-  }
-
-  function normalizeV216Bool(v){
-    return v === true || v === 'true' ? 'true' : 'false';
-  }
-
-  function buildV216RowsFromPayload(payload, batchNo){
-    if(!payload) return [];
-    const market = payload?.market || {};
-    const sourceRows = [...(payload?.old || []), ...(payload?.new || [])].filter(Boolean);
-    return sourceRows.map(row => ({
-      batch: batchNo,
-      date: row?.date || payload?.date || '',
-      code: row?.code || '',
-      name: row?.name || row?.code || '',
-      rank: Number.isFinite(Number(row?.rank)) ? Number(row.rank) : '',
-      ret_5d: Number.isFinite(Number(row?.ret_5d)) ? Number(row.ret_5d) : '',
-      marketScore: Number.isFinite(Number(market?.marketScore)) ? Number(market.marketScore) : '',
-      volRatio: Number.isFinite(Number(row?.volRatio)) ? Number(row.volRatio) : '',
-      ma20Slope: Number.isFinite(Number(row?.ma20Slope)) ? Number(row.ma20Slope) : '',
-      riseFromLow: Number.isFinite(Number(row?.riseFromLow)) ? Number(row.riseFromLow) : '',
-      hist: Number.isFinite(Number(row?.hist)) ? Number(row.hist) : '',
-      bias: Number.isFinite(Number(row?.bias)) ? Number(row.bias) : '',
-      reversalSignal: normalizeV216Bool(row?.reversalSignal)
-    }));
-  }
-
-  function toV216ListRows(rows){
-    return rows.map(r => ({
-      batch: r.batch,
-      date: r.date,
-      code: r.code,
-      name: r.name,
-      rank: r.rank,
-      ret_5d: r.ret_5d
-    }));
-  }
-
-  function getV216PreviousTradingDates(allDates, currentDate){
-    const idx = allDates.indexOf(currentDate);
-    return {
-      t1: idx > 0 ? allDates[idx - 1] : '',
-      t2: idx > 1 ? allDates[idx - 2] : ''
-    };
-  }
-
-  function buildV216LagRows(sourceRows, rowMap, allDates){
-    const out = [];
-    for(const base of sourceRows){
-      const prev = getV216PreviousTradingDates(allDates, base.date);
-      [['T-1', prev.t1], ['T-2', prev.t2]].forEach(([offset, prevDate]) => {
-        const key = `${base.code}__${prevDate}`;
-        const found = prevDate ? rowMap.get(key) : null;
-        out.push({
-          batch: base.batch,
-          date: base.date,
-          code: base.code,
-          name: base.name,
-          rank: base.rank,
-          ret_5d: base.ret_5d,
-          day_offset: offset,
-          marketScore: found ? found.marketScore : 'MISSING',
-          volRatio: found ? found.volRatio : 'MISSING',
-          ma20Slope: found ? found.ma20Slope : 'MISSING',
-          riseFromLow: found ? found.riseFromLow : 'MISSING',
-          hist: found ? found.hist : 'MISSING',
-          bias: found ? found.bias : 'MISSING',
-          reversalSignal: found ? found.reversalSignal : 'MISSING'
-        });
-      });
-    }
-    return out;
-  }
-
-  function buildV216Summary(burstRows, controlRows, burstLagRows, controlLagRows){
-    const allLagRows = [...burstLagRows, ...controlLagRows];
-    const valueFields = ['marketScore','volRatio','ma20Slope','riseFromLow','hist','bias','reversalSignal'];
-    const missingCounts = valueFields.map(field => ({
-      metric: `missing_${field}`,
-      value: allLagRows.filter(r => r[field] === 'MISSING' || r[field] === '' || r[field] === null || r[field] === undefined).length
-    }));
-    return [
-      { metric:'burst_group_count', value: burstRows.length },
-      { metric:'control_group_count', value: controlRows.length },
-      { metric:'t1_available_count', value: allLagRows.filter(r => r.day_offset === 'T-1' && r.marketScore !== 'MISSING').length },
-      { metric:'t2_available_count', value: allLagRows.filter(r => r.day_offset === 'T-2' && r.marketScore !== 'MISSING').length },
-      ...missingCounts
-    ];
-  }
-
-  async function saveV216CsvLike(rows, headers, prefix){
-    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => toCsvCell(row?.[h])).join(','))).join('\n');
-    const fileName = getBatchReplayFileName(prefix);
-    const dirHandle = window._batchAutoFolderHandle;
-    if(dirHandle){
-      try{
-        const fileHandle = await dirHandle.getFileHandle(fileName, { create:true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(csv);
-        await writable.close();
-        return fileName;
-      }catch(err){
-        console.error('saveV216CsvLike folder write error', err);
-      }
-    }
-    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    return fileName;
-  }
-
-  async function exportV216BatchTablesFromRetained(){
-    const retained = (window._v216RetainedBatches || []).filter(Boolean).sort((a,b) => Number(a.batch || 0) - Number(b.batch || 0));
-    const sourceBatches = retained.filter(b => Number(b.batch || 0) >= 1 && Number(b.batch || 0) <= V216_ANALYSIS_BATCH_LIMIT);
-    if(sourceBatches.length < V216_ANALYSIS_BATCH_LIMIT) return false;
-
-    const sourceRows = sourceBatches.flatMap(b => Array.isArray(b.rows) ? b.rows : []).filter(r => r && r.code && r.date);
-    if(!sourceRows.length) return false;
-
-    const burstRows = sourceRows.filter(r => Number.isFinite(Number(r.ret_5d)) && Number(r.ret_5d) > 0.10);
-    const controlRows = sourceRows.filter(r => Number.isFinite(Number(r.ret_5d)) && Number(r.ret_5d) <= 0.10);
-
-    const allDates = [...new Set(sourceRows.map(r => r.date).filter(Boolean))].sort();
-    const rowMap = new Map(sourceRows.map(r => [`${r.code}__${r.date}`, r]));
-    const burstLagRows = buildV216LagRows(burstRows, rowMap, allDates);
-    const controlLagRows = buildV216LagRows(controlRows, rowMap, allDates);
-    const summaryRows = buildV216Summary(burstRows, controlRows, burstLagRows, controlLagRows);
-
-    await saveV216CsvLike(toV216ListRows(burstRows), ['batch','date','code','name','rank','ret_5d'], 'v216_burst_list');
-    await saveV216CsvLike(toV216ListRows(controlRows), ['batch','date','code','name','rank','ret_5d'], 'v216_control_list');
-    await saveV216CsvLike(burstLagRows, ['batch','date','code','name','rank','ret_5d','day_offset','marketScore','volRatio','ma20Slope','riseFromLow','hist','bias','reversalSignal'], 'v216_burst_t12');
-    await saveV216CsvLike(controlLagRows, ['batch','date','code','name','rank','ret_5d','day_offset','marketScore','volRatio','ma20Slope','riseFromLow','hist','bias','reversalSignal'], 'v216_control_t12');
-    await saveV216CsvLike(summaryRows, ['metric','value'], 'v216_summary');
-    window._v216LastAnalysisExportBatch = sourceBatches[sourceBatches.length - 1]?.batch || 0;
-    return true;
-  }
-
-  async function retainAndMaybeExportV216Batches(picked){
-    if(!Array.isArray(picked) || !picked.length) return;
-    const nextBatchNo = ((window._v216RetainedBatches || []).slice(-1)[0]?.batch || 0) + 1;
-    const rows = picked.flatMap(group => buildV216RowsFromPayload(group?.payload, nextBatchNo));
-    window._v216RetainedBatches = [...(window._v216RetainedBatches || []), { batch: nextBatchNo, rows }];
-    saveV216RetainedBatches();
-    if(nextBatchNo >= V216_ANALYSIS_BATCH_LIMIT){
-      try{
-        await exportV216BatchTablesFromRetained();
-      }catch(err){
-        console.error('exportV216BatchTablesFromRetained error', err);
-      }
-    }
-  }
 
   function batchToCsvCell(v){
     if(v === null || v === undefined) return '';
@@ -5124,7 +4979,6 @@ return rankScore;
     const needCount = forceAll ? groupBuffer.length : V21_AUTO_SAVE_GROUPS;
     if(!Array.isArray(groupBuffer) || !needCount || groupBuffer.length < needCount) return 0;
     const picked = groupBuffer.splice(0, needCount);
-    await retainAndMaybeExportV216Batches(picked);
     const exportRows = picked.flatMap(g => cloneSimple(g.rows || []));
     const exportDates = picked.map(g => g.date);
     if(!exportRows.length) return 0;
@@ -5144,10 +4998,6 @@ return rankScore;
       return;
     }
     triggerBatchReplayDownload(rows, getBatchReplayFileName('v21_batch_manual'));
-  };
-
-  window.exportV216BatchTablesFromRetained = async function(){
-    return await exportV216BatchTablesFromRetained();
   };
 
   window.stopBatchReplayAuto = function(){
@@ -5207,8 +5057,7 @@ return rankScore;
           const rows = await waitForValidationRows(targetDate, 45000);
           if(rows.length){
             rows.forEach(r => { r.date = targetDate; });
-            const retainedPayload = cloneSimple(AppState?.replay?.v21Validation || null);
-            groupBuffer.push({ date: targetDate, rows: cloneSimple(rows), payload: retainedPayload });
+            groupBuffer.push({ date: targetDate, rows: cloneSimple(rows) });
             setStat(`自動跑存 ${round}-${i+1}｜${targetDate} 完成，已累積 ${groupBuffer.length} 輪 / 10 輪`, 'ok');
           }else{
             console.error('[auto batch] no rows for', targetDate);
@@ -5441,6 +5290,101 @@ return rankScore;
     setTimeout(ensureRandomPlusTenButton, 500);
     setTimeout(ensureRandomPlusTenButton, 1500);
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  function pad2(n){ return String(n).padStart(2, '0'); }
+  function formatDateInput(date){
+    return `${date.getFullYear()}-${pad2(date.getMonth()+1)}-${pad2(date.getDate())}`;
+  }
+  function setRangeCsvMsg(text, color){
+    const el=document.getElementById('rangeCsvMsg');
+    if(!el) return;
+    el.textContent=text;
+    el.style.color=color || 'var(--text3)';
+  }
+  function setRangeCsvBusy(busy){
+    const btn=document.getElementById('rangeCsvBtn');
+    if(!btn) return;
+    btn.disabled=busy;
+    btn.textContent=busy ? '下載中...' : '下載 CSV';
+  }
+  function initRangeCsvDefaults(){
+    const codeEl=document.getElementById('rangeCsvCode');
+    const startEl=document.getElementById('rangeCsvStart');
+    const endEl=document.getElementById('rangeCsvEnd');
+    if(!codeEl || !startEl || !endEl) return;
+    if(!codeEl.value) codeEl.value='8046';
+    if(!endEl.value){
+      const end=new Date();
+      endEl.value=formatDateInput(end);
+    }
+    if(!startEl.value){
+      const start=new Date();
+      start.setDate(start.getDate()-60);
+      startEl.value=formatDateInput(start);
+    }
+    setRangeCsvMsg('待命中');
+  }
+  async function ajDownloadRangeCsv(){
+    const codeEl=document.getElementById('rangeCsvCode');
+    const startEl=document.getElementById('rangeCsvStart');
+    const endEl=document.getElementById('rangeCsvEnd');
+    if(!codeEl || !startEl || !endEl) return;
+
+    const code=(codeEl.value||'').trim().toUpperCase();
+    const start=(startEl.value||'').trim();
+    const end=(endEl.value||'').trim();
+
+    if(!code){ setRangeCsvMsg('請輸入股票代號', 'var(--red)'); return; }
+    if(!start){ setRangeCsvMsg('請選開始日期', 'var(--red)'); return; }
+    if(!end){ setRangeCsvMsg('請選結束日期', 'var(--red)'); return; }
+    if(start > end){ setRangeCsvMsg('開始日期不能晚於結束日期', 'var(--red)'); return; }
+
+    const workerBase=(window.CONFIG && window.CONFIG.workerUrl) ? window.CONFIG.workerUrl : '';
+    if(!workerBase){ setRangeCsvMsg('找不到 Worker 位址', 'var(--red)'); return; }
+
+    const url=`${workerBase}/range-csv?code=${encodeURIComponent(code)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+
+    try{
+      setRangeCsvBusy(true);
+      setRangeCsvMsg('正在抓資料並計算 MA20 / MACD ...', 'var(--gold)');
+      const res=await fetch(url, { method:'GET' });
+      if(!res.ok){
+        let msg=`下載失敗（HTTP ${res.status}）`;
+        try{
+          const err=await res.json();
+          msg=err?.error || msg;
+        }catch(_){
+          try{ msg=await res.text() || msg; }catch(__){}
+        }
+        throw new Error(msg);
+      }
+
+      const blob=await res.blob();
+      const filename=`${code.replace(/\.(TW|TWO)$/i,'')}_${start}_${end}.csv`;
+      const blobUrl=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=blobUrl;
+      a.download=filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(blobUrl), 1500);
+      setRangeCsvMsg(`下載完成：${filename}`, 'var(--green)');
+    }catch(err){
+      setRangeCsvMsg(`失敗：${err?.message || err}`, 'var(--red)');
+    }finally{
+      setRangeCsvBusy(false);
+    }
+  }
+
+  window.ajDownloadRangeCsv=ajDownloadRangeCsv;
+  document.addEventListener('DOMContentLoaded', initRangeCsvDefaults);
+  window.addEventListener('load', initRangeCsvDefaults);
 })();
 </script>
 
