@@ -1,42 +1,24 @@
 [
   {
-    "code": "00400A",
-    "date": "2026-05-12",
-    "foreign": -11861350,
-    "trust": 0
-  },
-  {
-    "code": "00401A",
-    "date": "2026-05-12",
-    "foreign": 3869500,
-    "trust": 0
-  },
-  {
-    "code": "00403A",
-    "date": "2026-05-12",
-    "foreign": -327967957,
-    "trust": 0
-  },
-  {
     "code": "0050",
     "date": "2026-05-12",
-    "foreign": -12502532,
+    "foreign": -1261000,
     "trust": 0
   },
   {
     "code": "0051",
     "date": "2026-05-12",
-    "foreign": -549,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "0052",
     "date": "2026-05-12",
-    "foreign": 88350,
+    "foreign": -24000,
     "trust": 0
   },
   {
-    "code": "0053",
+    "code": "0054",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
@@ -44,14 +26,14 @@
   {
     "code": "0055",
     "date": "2026-05-12",
-    "foreign": -168804,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "0056",
     "date": "2026-05-12",
-    "foreign": -1001731,
-    "trust": -200000
+    "foreign": 0,
+    "trust": 0
   },
   {
     "code": "0057",
@@ -60,9 +42,15 @@
     "trust": 0
   },
   {
+    "code": "0059",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
     "code": "0061",
     "date": "2026-05-12",
-    "foreign": 83000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -72,39 +60,27 @@
     "trust": 82000
   },
   {
-    "code": "006203",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "006204",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
     "code": "006205",
     "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
+    "foreign": -212000,
+    "trust": -1500000
   },
   {
     "code": "006206",
     "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": -450000,
     "trust": 0
   },
   {
     "code": "006207",
     "date": "2026-05-12",
-    "foreign": -1000,
+    "foreign": 81000,
     "trust": 0
   },
   {
     "code": "006208",
     "date": "2026-05-12",
-    "foreign": 2223603,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -116,37 +92,37 @@
   {
     "code": "00631L",
     "date": "2026-05-12",
-    "foreign": -5367520,
+    "foreign": -92000,
     "trust": 0
   },
   {
     "code": "00632R",
     "date": "2026-05-12",
-    "foreign": 1070000,
+    "foreign": 1382000,
     "trust": 0
   },
   {
     "code": "00633L",
     "date": "2026-05-12",
-    "foreign": 190000,
+    "foreign": -135000,
     "trust": 0
   },
   {
     "code": "00634R",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -38000,
     "trust": 0
   },
   {
     "code": "00635U",
     "date": "2026-05-12",
-    "foreign": -372423,
+    "foreign": 679000,
     "trust": 0
   },
   {
     "code": "00636",
     "date": "2026-05-12",
-    "foreign": -11000,
+    "foreign": -612000,
     "trust": 0
   },
   {
@@ -158,79 +134,79 @@
   {
     "code": "00637L",
     "date": "2026-05-12",
-    "foreign": 367000,
+    "foreign": 1450000,
     "trust": 0
   },
   {
     "code": "00638R",
     "date": "2026-05-12",
-    "foreign": 486000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00639",
     "date": "2026-05-12",
-    "foreign": 44000,
+    "foreign": -663000,
     "trust": 0
   },
   {
     "code": "00640L",
     "date": "2026-05-12",
-    "foreign": -26000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00641R",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -16000,
     "trust": 0
   },
   {
     "code": "00642U",
     "date": "2026-05-12",
-    "foreign": 126000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00643",
     "date": "2026-05-12",
-    "foreign": -20000,
-    "trust": 0
-  },
-  {
-    "code": "00643K",
-    "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -641000,
     "trust": 0
   },
   {
     "code": "00645",
     "date": "2026-05-12",
-    "foreign": 15000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00646",
     "date": "2026-05-12",
-    "foreign": 611,
+    "foreign": -81000,
     "trust": 0
   },
   {
     "code": "00647L",
     "date": "2026-05-12",
-    "foreign": -6,
+    "foreign": -12000,
     "trust": 0
   },
   {
     "code": "00648R",
     "date": "2026-05-12",
-    "foreign": 3000,
+    "foreign": 30000,
+    "trust": 0
+  },
+  {
+    "code": "00649",
+    "date": "2026-05-12",
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00650L",
     "date": "2026-05-12",
-    "foreign": 247000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -242,26 +218,26 @@
   {
     "code": "00652",
     "date": "2026-05-12",
-    "foreign": 23051,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00653L",
     "date": "2026-05-12",
-    "foreign": -9000,
+    "foreign": 388000,
     "trust": 0
   },
   {
     "code": "00654R",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -304000,
     "trust": 0
   },
   {
     "code": "00655L",
     "date": "2026-05-12",
-    "foreign": 119000,
-    "trust": 0
+    "foreign": -641000,
+    "trust": -100000
   },
   {
     "code": "00656R",
@@ -272,7 +248,7 @@
   {
     "code": "00657",
     "date": "2026-05-12",
-    "foreign": -12860,
+    "foreign": -145000,
     "trust": 0
   },
   {
@@ -282,27 +258,39 @@
     "trust": 0
   },
   {
+    "code": "00658L",
+    "date": "2026-05-12",
+    "foreign": -60000,
+    "trust": 0
+  },
+  {
+    "code": "00659R",
+    "date": "2026-05-12",
+    "foreign": -163000,
+    "trust": 0
+  },
+  {
     "code": "00660",
     "date": "2026-05-12",
-    "foreign": -964,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00661",
     "date": "2026-05-12",
-    "foreign": 68013,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00662",
     "date": "2026-05-12",
-    "foreign": -101774,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00663L",
     "date": "2026-05-12",
-    "foreign": -402000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -314,7 +302,7 @@
   {
     "code": "00665L",
     "date": "2026-05-12",
-    "foreign": 332000,
+    "foreign": 100000,
     "trust": 0
   },
   {
@@ -324,9 +312,15 @@
     "trust": 0
   },
   {
+    "code": "00667",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
     "code": "00668",
     "date": "2026-05-12",
-    "foreign": -1000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -344,19 +338,25 @@
   {
     "code": "00670L",
     "date": "2026-05-12",
-    "foreign": -101000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00671R",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -66000,
+    "trust": 0
+  },
+  {
+    "code": "00672L",
+    "date": "2026-05-12",
+    "foreign": 1442000,
     "trust": 0
   },
   {
     "code": "00673R",
     "date": "2026-05-12",
-    "foreign": -216000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -368,7 +368,7 @@
   {
     "code": "00675L",
     "date": "2026-05-12",
-    "foreign": -113000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -378,9 +378,15 @@
     "trust": 0
   },
   {
+    "code": "00677U",
+    "date": "2026-05-12",
+    "foreign": 7068000,
+    "trust": 0
+  },
+  {
     "code": "00678",
     "date": "2026-05-12",
-    "foreign": 86871,
+    "foreign": 68000,
     "trust": 0
   },
   {
@@ -392,19 +398,13 @@
   {
     "code": "00680L",
     "date": "2026-05-12",
-    "foreign": -857000,
-    "trust": 0
-  },
-  {
-    "code": "00681R",
-    "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
   },
   {
     "code": "00682U",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": 6000,
     "trust": 0
   },
   {
@@ -414,9 +414,15 @@
     "trust": 0
   },
   {
+    "code": "00684R",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
     "code": "00685L",
     "date": "2026-05-12",
-    "foreign": -72000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -440,31 +446,37 @@
   {
     "code": "00688L",
     "date": "2026-05-12",
-    "foreign": -139000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00689R",
     "date": "2026-05-12",
-    "foreign": 200000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00690",
     "date": "2026-05-12",
-    "foreign": -42000,
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "00691R",
+    "date": "2026-05-12",
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00692",
     "date": "2026-05-12",
-    "foreign": 69010,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00693U",
     "date": "2026-05-12",
-    "foreign": -12000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -494,23 +506,35 @@
   {
     "code": "00700",
     "date": "2026-05-12",
-    "foreign": 12000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "00701",
     "date": "2026-05-12",
-    "foreign": 659000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00702",
     "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -197000,
     "trust": 0
   },
   {
     "code": "00703",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "00704L",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "00705R",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
@@ -530,19 +554,19 @@
   {
     "code": "00708L",
     "date": "2026-05-12",
-    "foreign": 76000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00709",
     "date": "2026-05-12",
-    "foreign": -1000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00710B",
     "date": "2026-05-12",
-    "foreign": -33000,
+    "foreign": 10000,
     "trust": 0
   },
   {
@@ -554,31 +578,37 @@
   {
     "code": "00712",
     "date": "2026-05-12",
-    "foreign": -949664,
+    "foreign": 31000,
     "trust": 0
   },
   {
     "code": "00713",
     "date": "2026-05-12",
-    "foreign": 209524,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00714",
     "date": "2026-05-12",
-    "foreign": 313000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00715L",
     "date": "2026-05-12",
-    "foreign": 589000,
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "00716R",
+    "date": "2026-05-12",
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "00717",
     "date": "2026-05-12",
-    "foreign": 362000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -630,60 +660,6 @@
     "trust": 0
   },
   {
-    "code": "00728",
-    "date": "2026-05-12",
-    "foreign": 67000,
-    "trust": 0
-  },
-  {
-    "code": "00730",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00731",
-    "date": "2026-05-12",
-    "foreign": 148000,
-    "trust": 0
-  },
-  {
-    "code": "00733",
-    "date": "2026-05-12",
-    "foreign": 317250,
-    "trust": 0
-  },
-  {
-    "code": "00735",
-    "date": "2026-05-12",
-    "foreign": -59460,
-    "trust": 0
-  },
-  {
-    "code": "00736",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00737",
-    "date": "2026-05-12",
-    "foreign": 147000,
-    "trust": 0
-  },
-  {
-    "code": "00738U",
-    "date": "2026-05-12",
-    "foreign": 755725,
-    "trust": 0
-  },
-  {
-    "code": "00739",
-    "date": "2026-05-12",
-    "foreign": 3000,
-    "trust": 0
-  },
-  {
     "code": "00740B",
     "date": "2026-05-12",
     "foreign": 981000,
@@ -720,18 +696,6 @@
     "trust": 0
   },
   {
-    "code": "00752",
-    "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "00753L",
-    "date": "2026-05-12",
-    "foreign": -793000,
-    "trust": 0
-  },
-  {
     "code": "00754B",
     "date": "2026-05-12",
     "foreign": -2000,
@@ -747,12 +711,6 @@
     "code": "00756B",
     "date": "2026-05-12",
     "foreign": -57000,
-    "trust": 0
-  },
-  {
-    "code": "00757",
-    "date": "2026-05-12",
-    "foreign": -103900,
     "trust": 0
   },
   {
@@ -780,18 +738,6 @@
     "trust": 0
   },
   {
-    "code": "00762",
-    "date": "2026-05-12",
-    "foreign": -209950,
-    "trust": 0
-  },
-  {
-    "code": "00763U",
-    "date": "2026-05-12",
-    "foreign": 249000,
-    "trust": 0
-  },
-  {
     "code": "00764B",
     "date": "2026-05-12",
     "foreign": 46000,
@@ -804,18 +750,6 @@
     "trust": 0
   },
   {
-    "code": "00770",
-    "date": "2026-05-12",
-    "foreign": 44000,
-    "trust": 0
-  },
-  {
-    "code": "00771",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
     "code": "00772B",
     "date": "2026-05-12",
     "foreign": 1226000,
@@ -825,12 +759,6 @@
     "code": "00773B",
     "date": "2026-05-12",
     "foreign": 372000,
-    "trust": 0
-  },
-  {
-    "code": "00775B",
-    "date": "2026-05-12",
-    "foreign": 0,
     "trust": 0
   },
   {
@@ -867,12 +795,6 @@
     "code": "00782B",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00783",
-    "date": "2026-05-12",
-    "foreign": -19000,
     "trust": 0
   },
   {
@@ -933,12 +855,6 @@
     "code": "00799B",
     "date": "2026-05-12",
     "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "00830",
-    "date": "2026-05-12",
-    "foreign": 308168,
     "trust": 0
   },
   {
@@ -1008,24 +924,6 @@
     "trust": 0
   },
   {
-    "code": "00850",
-    "date": "2026-05-12",
-    "foreign": -738900,
-    "trust": 0
-  },
-  {
-    "code": "00851",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00852L",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
     "code": "00853B",
     "date": "2026-05-12",
     "foreign": 6000,
@@ -1062,12 +960,6 @@
     "trust": 0
   },
   {
-    "code": "00861",
-    "date": "2026-05-12",
-    "foreign": 50981,
-    "trust": 0
-  },
-  {
     "code": "00862B",
     "date": "2026-05-12",
     "foreign": 135000,
@@ -1086,12 +978,6 @@
     "trust": 0
   },
   {
-    "code": "00865B",
-    "date": "2026-05-12",
-    "foreign": -671000,
-    "trust": 0
-  },
-  {
     "code": "00867B",
     "date": "2026-05-12",
     "foreign": -1000,
@@ -1104,51 +990,15 @@
     "trust": 0
   },
   {
-    "code": "00875",
-    "date": "2026-05-12",
-    "foreign": 38000,
-    "trust": 0
-  },
-  {
-    "code": "00876",
-    "date": "2026-05-12",
-    "foreign": 7999,
-    "trust": 0
-  },
-  {
     "code": "00877",
     "date": "2026-05-12",
     "foreign": 129800,
     "trust": 0
   },
   {
-    "code": "00878",
-    "date": "2026-05-12",
-    "foreign": -480378,
-    "trust": 0
-  },
-  {
-    "code": "00881",
-    "date": "2026-05-12",
-    "foreign": 2326019,
-    "trust": 0
-  },
-  {
-    "code": "00882",
-    "date": "2026-05-12",
-    "foreign": 237241,
-    "trust": 0
-  },
-  {
     "code": "00884B",
     "date": "2026-05-12",
     "foreign": -57000,
-    "trust": 0
-  },
-  {
-    "code": "00885",
-    "date": "2026-05-12",
-    "foreign": -552800,
     "trust": 0
   },
   {
@@ -1176,225 +1026,9 @@
     "trust": 0
   },
   {
-    "code": "00891",
-    "date": "2026-05-12",
-    "foreign": -12065482,
-    "trust": 0
-  },
-  {
-    "code": "00892",
-    "date": "2026-05-12",
-    "foreign": -93000,
-    "trust": 0
-  },
-  {
-    "code": "00893",
-    "date": "2026-05-12",
-    "foreign": -205009,
-    "trust": 0
-  },
-  {
-    "code": "00894",
-    "date": "2026-05-12",
-    "foreign": -843500,
-    "trust": 0
-  },
-  {
-    "code": "00895",
-    "date": "2026-05-12",
-    "foreign": -44690,
-    "trust": 0
-  },
-  {
-    "code": "00896",
-    "date": "2026-05-12",
-    "foreign": 446000,
-    "trust": 0
-  },
-  {
-    "code": "00897",
-    "date": "2026-05-12",
-    "foreign": 526000,
-    "trust": 0
-  },
-  {
-    "code": "00898",
-    "date": "2026-05-12",
-    "foreign": 430000,
-    "trust": 0
-  },
-  {
-    "code": "00899",
-    "date": "2026-05-12",
-    "foreign": 14000,
-    "trust": 0
-  },
-  {
-    "code": "00900",
-    "date": "2026-05-12",
-    "foreign": 6323050,
-    "trust": 0
-  },
-  {
-    "code": "00901",
-    "date": "2026-05-12",
-    "foreign": -133000,
-    "trust": 0
-  },
-  {
-    "code": "00902",
-    "date": "2026-05-12",
-    "foreign": -178000,
-    "trust": 0
-  },
-  {
-    "code": "00903",
-    "date": "2026-05-12",
-    "foreign": 27000,
-    "trust": 0
-  },
-  {
-    "code": "00904",
-    "date": "2026-05-12",
-    "foreign": 11550,
-    "trust": 0
-  },
-  {
-    "code": "00905",
-    "date": "2026-05-12",
-    "foreign": -254920,
-    "trust": 0
-  },
-  {
-    "code": "00907",
-    "date": "2026-05-12",
-    "foreign": 221000,
-    "trust": 0
-  },
-  {
-    "code": "00908",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "00909",
-    "date": "2026-05-12",
-    "foreign": 752700,
-    "trust": 0
-  },
-  {
-    "code": "00910",
-    "date": "2026-05-12",
-    "foreign": 395690,
-    "trust": 0
-  },
-  {
-    "code": "00911",
-    "date": "2026-05-12",
-    "foreign": -33947,
-    "trust": 0
-  },
-  {
-    "code": "00912",
-    "date": "2026-05-12",
-    "foreign": 489000,
-    "trust": 0
-  },
-  {
-    "code": "00913",
-    "date": "2026-05-12",
-    "foreign": -698000,
-    "trust": 0
-  },
-  {
-    "code": "00915",
-    "date": "2026-05-12",
-    "foreign": 3430500,
-    "trust": 0
-  },
-  {
-    "code": "00916",
-    "date": "2026-05-12",
-    "foreign": -46000,
-    "trust": 0
-  },
-  {
-    "code": "00917",
-    "date": "2026-05-12",
-    "foreign": -21000,
-    "trust": 0
-  },
-  {
-    "code": "00918",
-    "date": "2026-05-12",
-    "foreign": 7131120,
-    "trust": 0
-  },
-  {
-    "code": "00919",
-    "date": "2026-05-12",
-    "foreign": 33245441,
-    "trust": 0
-  },
-  {
-    "code": "00920",
-    "date": "2026-05-12",
-    "foreign": -8582,
-    "trust": 0
-  },
-  {
-    "code": "00921",
-    "date": "2026-05-12",
-    "foreign": -85000,
-    "trust": 0
-  },
-  {
-    "code": "00922",
-    "date": "2026-05-12",
-    "foreign": 2377702,
-    "trust": 0
-  },
-  {
-    "code": "00923",
-    "date": "2026-05-12",
-    "foreign": 859020,
-    "trust": 0
-  },
-  {
-    "code": "00924",
-    "date": "2026-05-12",
-    "foreign": 18072,
-    "trust": 0
-  },
-  {
-    "code": "00926",
-    "date": "2026-05-12",
-    "foreign": 323000,
-    "trust": 0
-  },
-  {
-    "code": "00927",
-    "date": "2026-05-12",
-    "foreign": -1279850,
-    "trust": 0
-  },
-  {
     "code": "00928",
     "date": "2026-05-12",
     "foreign": -42000,
-    "trust": 0
-  },
-  {
-    "code": "00929",
-    "date": "2026-05-12",
-    "foreign": -3529249,
-    "trust": 0
-  },
-  {
-    "code": "00930",
-    "date": "2026-05-12",
-    "foreign": 817000,
     "trust": 0
   },
   {
@@ -1404,33 +1038,9 @@
     "trust": 0
   },
   {
-    "code": "00932",
-    "date": "2026-05-12",
-    "foreign": -362000,
-    "trust": 0
-  },
-  {
     "code": "00933B",
     "date": "2026-05-12",
     "foreign": 2282000,
-    "trust": 0
-  },
-  {
-    "code": "00934",
-    "date": "2026-05-12",
-    "foreign": -665000,
-    "trust": 0
-  },
-  {
-    "code": "00935",
-    "date": "2026-05-12",
-    "foreign": -1276155,
-    "trust": 187000
-  },
-  {
-    "code": "00936",
-    "date": "2026-05-12",
-    "foreign": -186700,
     "trust": 0
   },
   {
@@ -1440,63 +1050,9 @@
     "trust": 0
   },
   {
-    "code": "00938",
-    "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "00939",
-    "date": "2026-05-12",
-    "foreign": 1180500,
-    "trust": 0
-  },
-  {
-    "code": "00940",
-    "date": "2026-05-12",
-    "foreign": 352325,
-    "trust": 0
-  },
-  {
-    "code": "00941",
-    "date": "2026-05-12",
-    "foreign": 307000,
-    "trust": 0
-  },
-  {
     "code": "00942B",
     "date": "2026-05-12",
     "foreign": 1076000,
-    "trust": 0
-  },
-  {
-    "code": "00943",
-    "date": "2026-05-12",
-    "foreign": 195000,
-    "trust": 0
-  },
-  {
-    "code": "00944",
-    "date": "2026-05-12",
-    "foreign": -857000,
-    "trust": 0
-  },
-  {
-    "code": "00945B",
-    "date": "2026-05-12",
-    "foreign": 1881000,
-    "trust": 0
-  },
-  {
-    "code": "00946",
-    "date": "2026-05-12",
-    "foreign": 1359500,
-    "trust": 0
-  },
-  {
-    "code": "00947",
-    "date": "2026-05-12",
-    "foreign": -5156000,
     "trust": 0
   },
   {
@@ -1506,51 +1062,15 @@
     "trust": 0
   },
   {
-    "code": "00949",
-    "date": "2026-05-12",
-    "foreign": 309000,
-    "trust": 0
-  },
-  {
     "code": "00950B",
     "date": "2026-05-12",
     "foreign": 1399000,
     "trust": 0
   },
   {
-    "code": "00951",
-    "date": "2026-05-12",
-    "foreign": -91000,
-    "trust": 0
-  },
-  {
-    "code": "00952",
-    "date": "2026-05-12",
-    "foreign": -551700,
-    "trust": 0
-  },
-  {
-    "code": "00953B",
-    "date": "2026-05-12",
-    "foreign": 3461000,
-    "trust": 0
-  },
-  {
-    "code": "00954",
-    "date": "2026-05-12",
-    "foreign": -147985,
-    "trust": 0
-  },
-  {
     "code": "00955",
     "date": "2026-05-12",
     "foreign": 4932270,
-    "trust": 0
-  },
-  {
-    "code": "00956",
-    "date": "2026-05-12",
-    "foreign": 122000,
     "trust": 0
   },
   {
@@ -1570,42 +1090,6 @@
     "date": "2026-05-12",
     "foreign": 713000,
     "trust": 0
-  },
-  {
-    "code": "00960",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
-    "code": "00961",
-    "date": "2026-05-12",
-    "foreign": -16660,
-    "trust": 0
-  },
-  {
-    "code": "00962",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00963",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "00964",
-    "date": "2026-05-12",
-    "foreign": -287000,
-    "trust": 0
-  },
-  {
-    "code": "00965",
-    "date": "2026-05-12",
-    "foreign": -356516,
-    "trust": -800000
   },
   {
     "code": "00966B",
@@ -1638,54 +1122,6 @@
     "trust": 0
   },
   {
-    "code": "00971",
-    "date": "2026-05-12",
-    "foreign": 847829,
-    "trust": 0
-  },
-  {
-    "code": "00972",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "009800",
-    "date": "2026-05-12",
-    "foreign": -15360,
-    "trust": 0
-  },
-  {
-    "code": "009801",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
-  },
-  {
-    "code": "009802",
-    "date": "2026-05-12",
-    "foreign": -718500,
-    "trust": 0
-  },
-  {
-    "code": "009803",
-    "date": "2026-05-12",
-    "foreign": -341000,
-    "trust": 0
-  },
-  {
-    "code": "009804",
-    "date": "2026-05-12",
-    "foreign": 71000,
-    "trust": 0
-  },
-  {
-    "code": "009805",
-    "date": "2026-05-12",
-    "foreign": 1479000,
-    "trust": 0
-  },
-  {
     "code": "009806",
     "date": "2026-05-12",
     "foreign": 0,
@@ -1695,24 +1131,6 @@
     "code": "009807",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "009808",
-    "date": "2026-05-12",
-    "foreign": 37000,
-    "trust": 0
-  },
-  {
-    "code": "009809",
-    "date": "2026-05-12",
-    "foreign": 18000,
-    "trust": 0
-  },
-  {
-    "code": "00980A",
-    "date": "2026-05-12",
-    "foreign": -362480,
     "trust": 0
   },
   {
@@ -1734,30 +1152,6 @@
     "trust": 0
   },
   {
-    "code": "009810",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "009811",
-    "date": "2026-05-12",
-    "foreign": 185000,
-    "trust": 0
-  },
-  {
-    "code": "009812",
-    "date": "2026-05-12",
-    "foreign": 710000,
-    "trust": 0
-  },
-  {
-    "code": "009813",
-    "date": "2026-05-12",
-    "foreign": 700000,
-    "trust": 0
-  },
-  {
     "code": "009814",
     "date": "2026-05-12",
     "foreign": 129000,
@@ -1767,36 +1161,6 @@
     "code": "009815",
     "date": "2026-05-12",
     "foreign": 1840700,
-    "trust": 0
-  },
-  {
-    "code": "009816",
-    "date": "2026-05-12",
-    "foreign": -6432094,
-    "trust": 0
-  },
-  {
-    "code": "009817",
-    "date": "2026-05-12",
-    "foreign": 131000,
-    "trust": 0
-  },
-  {
-    "code": "009818",
-    "date": "2026-05-12",
-    "foreign": -20736,
-    "trust": 0
-  },
-  {
-    "code": "009819",
-    "date": "2026-05-12",
-    "foreign": -3900,
-    "trust": 0
-  },
-  {
-    "code": "00981A",
-    "date": "2026-05-12",
-    "foreign": -38231965,
     "trust": 0
   },
   {
@@ -1812,45 +1176,9 @@
     "trust": 0
   },
   {
-    "code": "00981T",
-    "date": "2026-05-12",
-    "foreign": -45000,
-    "trust": 0
-  },
-  {
-    "code": "009820",
-    "date": "2026-05-12",
-    "foreign": 32589059,
-    "trust": 0
-  },
-  {
-    "code": "00982A",
-    "date": "2026-05-12",
-    "foreign": -11789118,
-    "trust": 0
-  },
-  {
     "code": "00982B",
     "date": "2026-05-12",
     "foreign": 22000,
-    "trust": 0
-  },
-  {
-    "code": "00982D",
-    "date": "2026-05-12",
-    "foreign": -19000,
-    "trust": 0
-  },
-  {
-    "code": "00982T",
-    "date": "2026-05-12",
-    "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "00983A",
-    "date": "2026-05-12",
-    "foreign": 2607000,
     "trust": 0
   },
   {
@@ -1860,49 +1188,13 @@
     "trust": 0
   },
   {
-    "code": "00983D",
-    "date": "2026-05-12",
-    "foreign": -155000,
-    "trust": 0
-  },
-  {
-    "code": "00984A",
-    "date": "2026-05-12",
-    "foreign": -2124000,
-    "trust": 0
-  },
-  {
     "code": "00984B",
     "date": "2026-05-12",
     "foreign": 1096000,
     "trust": 0
   },
   {
-    "code": "00984D",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "00985A",
-    "date": "2026-05-12",
-    "foreign": -2539938,
-    "trust": 0
-  },
-  {
-    "code": "00985B",
-    "date": "2026-05-12",
-    "foreign": 1112000,
-    "trust": 0
-  },
-  {
     "code": "00985D",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00986A",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
@@ -1920,33 +1212,15 @@
     "trust": 0
   },
   {
-    "code": "00987A",
-    "date": "2026-05-12",
-    "foreign": -532000,
-    "trust": 0
-  },
-  {
     "code": "00987B",
     "date": "2026-05-12",
     "foreign": 3000,
     "trust": 0
   },
   {
-    "code": "00988A",
-    "date": "2026-05-12",
-    "foreign": -25468950,
-    "trust": 26000
-  },
-  {
     "code": "00988B",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "00989A",
-    "date": "2026-05-12",
-    "foreign": -34000,
     "trust": 0
   },
   {
@@ -1956,115 +1230,43 @@
     "trust": 0
   },
   {
-    "code": "00990A",
-    "date": "2026-05-12",
-    "foreign": -5425880,
-    "trust": 0
-  },
-  {
-    "code": "00991A",
-    "date": "2026-05-12",
-    "foreign": -21539180,
-    "trust": 0
-  },
-  {
-    "code": "00992A",
-    "date": "2026-05-12",
-    "foreign": -47659000,
-    "trust": -1000000
-  },
-  {
-    "code": "00993A",
-    "date": "2026-05-12",
-    "foreign": -645000,
-    "trust": 0
-  },
-  {
-    "code": "00994A",
-    "date": "2026-05-12",
-    "foreign": -1331000,
-    "trust": 0
-  },
-  {
-    "code": "00995A",
-    "date": "2026-05-12",
-    "foreign": -2321000,
-    "trust": 0
-  },
-  {
-    "code": "00996A",
-    "date": "2026-05-12",
-    "foreign": 1068900,
-    "trust": 0
-  },
-  {
-    "code": "00997A",
-    "date": "2026-05-12",
-    "foreign": -2896000,
-    "trust": 0
-  },
-  {
     "code": "00998A",
     "date": "2026-05-12",
     "foreign": -647300,
     "trust": 0
   },
   {
-    "code": "00999A",
+    "code": "01001T",
     "date": "2026-05-12",
-    "foreign": -10296966,
+    "foreign": 0,
     "trust": 0
   },
   {
-    "code": "01001T",
+    "code": "01002T",
     "date": "2026-05-12",
-    "foreign": -4000,
+    "foreign": -22000,
+    "trust": 0
+  },
+  {
+    "code": "01003T",
+    "date": "2026-05-12",
+    "foreign": 162000,
     "trust": 0
   },
   {
     "code": "01004T",
     "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "01007T",
     "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
-    "code": "01009T",
-    "date": "2026-05-12",
-    "foreign": -68000,
-    "trust": 0
-  },
-  {
-    "code": "020000",
-    "date": "2026-05-12",
-    "foreign": 0,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "020001",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "02001L",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "02001R",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020020",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
@@ -2082,67 +1284,7 @@
     "trust": 0
   },
   {
-    "code": "020028",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020029",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020030",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020031",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020032",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
     "code": "020033",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020034",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020036",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020037",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020038",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "020039",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
@@ -2162,139 +1304,127 @@
   {
     "code": "1101",
     "date": "2026-05-12",
-    "foreign": -11364980,
-    "trust": 0
+    "foreign": -140000,
+    "trust": 144000
   },
   {
     "code": "1102",
     "date": "2026-05-12",
-    "foreign": -695595,
-    "trust": -841137
+    "foreign": -843000,
+    "trust": 0
   },
   {
     "code": "1103",
     "date": "2026-05-12",
-    "foreign": -187000,
+    "foreign": -11000,
     "trust": 0
   },
   {
     "code": "1104",
     "date": "2026-05-12",
-    "foreign": -178000,
+    "foreign": -56066,
     "trust": 0
   },
   {
     "code": "1108",
     "date": "2026-05-12",
-    "foreign": -237000,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "1109",
     "date": "2026-05-12",
-    "foreign": -20000,
+    "foreign": -1,
     "trust": 0
   },
   {
     "code": "1110",
     "date": "2026-05-12",
-    "foreign": -48000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "1201",
     "date": "2026-05-12",
-    "foreign": -55000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "1203",
     "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "1210",
     "date": "2026-05-12",
-    "foreign": -398200,
-    "trust": -116000
+    "foreign": -134000,
+    "trust": -75000
   },
   {
     "code": "1215",
     "date": "2026-05-12",
-    "foreign": -481760,
-    "trust": -2000
+    "foreign": -203000,
+    "trust": 93000
   },
   {
     "code": "1216",
     "date": "2026-05-12",
-    "foreign": 3691640,
-    "trust": -1014000
+    "foreign": -932694,
+    "trust": 580000
   },
   {
     "code": "1217",
     "date": "2026-05-12",
-    "foreign": -82000,
+    "foreign": 52000,
     "trust": 0
   },
   {
     "code": "1218",
     "date": "2026-05-12",
-    "foreign": -254000,
+    "foreign": 160000,
     "trust": 0
   },
   {
     "code": "1219",
     "date": "2026-05-12",
-    "foreign": -284000,
-    "trust": 0
-  },
-  {
-    "code": "1220",
-    "date": "2026-05-12",
-    "foreign": -27000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "1225",
     "date": "2026-05-12",
-    "foreign": -107000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "1227",
     "date": "2026-05-12",
-    "foreign": -214000,
-    "trust": 11000
+    "foreign": 26152,
+    "trust": 0
   },
   {
     "code": "1229",
     "date": "2026-05-12",
-    "foreign": -1395000,
-    "trust": 0
+    "foreign": 1982000,
+    "trust": 373000
   },
   {
     "code": "1231",
     "date": "2026-05-12",
-    "foreign": -30000,
-    "trust": 0
-  },
-  {
-    "code": "1232",
-    "date": "2026-05-12",
-    "foreign": -32000,
+    "foreign": 8000,
     "trust": 0
   },
   {
     "code": "1233",
     "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "1234",
     "date": "2026-05-12",
-    "foreign": -60000,
+    "foreign": 8000,
     "trust": 0
   },
   {
@@ -2304,27 +1434,21 @@
     "trust": 0
   },
   {
-    "code": "1236",
-    "date": "2026-05-12",
-    "foreign": -24000,
-    "trust": 0
-  },
-  {
     "code": "1240",
     "date": "2026-05-12",
     "foreign": -3000,
     "trust": 0
   },
   {
-    "code": "1256",
-    "date": "2026-05-12",
-    "foreign": 68000,
-    "trust": 0
-  },
-  {
     "code": "1259",
     "date": "2026-05-12",
     "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "1262",
+    "date": "2026-05-12",
+    "foreign": -1086000,
     "trust": 0
   },
   {
@@ -2354,116 +1478,98 @@
   {
     "code": "1301",
     "date": "2026-05-12",
-    "foreign": -14874376,
-    "trust": -46000
+    "foreign": 156925,
+    "trust": 389000
   },
   {
     "code": "1303",
     "date": "2026-05-12",
-    "foreign": -9120294,
-    "trust": -456000
+    "foreign": -308435,
+    "trust": 681000
   },
   {
     "code": "1304",
     "date": "2026-05-12",
-    "foreign": -244300,
+    "foreign": 253000,
     "trust": 0
   },
   {
     "code": "1305",
     "date": "2026-05-12",
-    "foreign": 193032,
-    "trust": 0
+    "foreign": -653000,
+    "trust": 310000
   },
   {
     "code": "1307",
     "date": "2026-05-12",
-    "foreign": 144000,
-    "trust": -24588
+    "foreign": 0,
+    "trust": 0
   },
   {
     "code": "1308",
     "date": "2026-05-12",
-    "foreign": 191775,
+    "foreign": 91000,
     "trust": 0
   },
   {
     "code": "1309",
     "date": "2026-05-12",
-    "foreign": 748000,
+    "foreign": 391000,
     "trust": 0
   },
   {
     "code": "1310",
     "date": "2026-05-12",
-    "foreign": -224889,
+    "foreign": 530000,
     "trust": 0
   },
   {
     "code": "1312",
     "date": "2026-05-12",
-    "foreign": -1784000,
+    "foreign": -338000,
     "trust": 0
   },
   {
     "code": "1313",
     "date": "2026-05-12",
-    "foreign": 688000,
+    "foreign": 195000,
     "trust": 0
   },
   {
     "code": "1314",
     "date": "2026-05-12",
-    "foreign": 4082355,
-    "trust": 0
-  },
-  {
-    "code": "1315",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
+    "foreign": 87000,
+    "trust": 40000
   },
   {
     "code": "1316",
     "date": "2026-05-12",
-    "foreign": -895000,
+    "foreign": -14000,
     "trust": 0
   },
   {
     "code": "1319",
     "date": "2026-05-12",
-    "foreign": -1519000,
-    "trust": -13083
+    "foreign": -364000,
+    "trust": -200000
   },
   {
     "code": "1321",
     "date": "2026-05-12",
-    "foreign": -35000,
+    "foreign": 10000,
     "trust": 0
   },
   {
     "code": "1323",
     "date": "2026-05-12",
-    "foreign": -30000,
-    "trust": 0
-  },
-  {
-    "code": "1324",
-    "date": "2026-05-12",
-    "foreign": -11000,
-    "trust": 0
-  },
-  {
-    "code": "1325",
-    "date": "2026-05-12",
-    "foreign": -88000,
+    "foreign": -7000,
     "trust": 0
   },
   {
     "code": "1326",
     "date": "2026-05-12",
-    "foreign": 611779,
-    "trust": 0
+    "foreign": 810551,
+    "trust": 875000
   },
   {
     "code": "1336",
@@ -2474,518 +1580,398 @@
   {
     "code": "1337",
     "date": "2026-05-12",
-    "foreign": 54000,
+    "foreign": 39000,
     "trust": 0
   },
   {
     "code": "1338",
     "date": "2026-05-12",
-    "foreign": 5000,
+    "foreign": 201000,
     "trust": 0
   },
   {
     "code": "1339",
     "date": "2026-05-12",
-    "foreign": -20000,
+    "foreign": 8000,
     "trust": 0
   },
   {
     "code": "1340",
     "date": "2026-05-12",
-    "foreign": -26000,
-    "trust": 0
-  },
-  {
-    "code": "1341",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "1342",
-    "date": "2026-05-12",
-    "foreign": 24021,
+    "foreign": -47000,
     "trust": 0
   },
   {
     "code": "1402",
     "date": "2026-05-12",
-    "foreign": 13866273,
-    "trust": -3397
+    "foreign": 409798,
+    "trust": 0
   },
   {
     "code": "1409",
     "date": "2026-05-12",
-    "foreign": -2303000,
-    "trust": 0
-  },
-  {
-    "code": "1410",
-    "date": "2026-05-12",
-    "foreign": -10000,
+    "foreign": 70000,
     "trust": 0
   },
   {
     "code": "1413",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "1414",
     "date": "2026-05-12",
-    "foreign": -82100,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "1416",
     "date": "2026-05-12",
-    "foreign": -22000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "1417",
     "date": "2026-05-12",
-    "foreign": -12000,
+    "foreign": 4000,
     "trust": 0
   },
   {
     "code": "1418",
     "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "1419",
     "date": "2026-05-12",
-    "foreign": -51000,
+    "foreign": -7000,
     "trust": 0
   },
   {
     "code": "1423",
     "date": "2026-05-12",
-    "foreign": -12000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "1432",
     "date": "2026-05-12",
-    "foreign": -63000,
+    "foreign": 8000,
     "trust": 0
   },
   {
     "code": "1434",
     "date": "2026-05-12",
-    "foreign": -1387000,
-    "trust": 19000
-  },
-  {
-    "code": "1436",
-    "date": "2026-05-12",
-    "foreign": 51000,
+    "foreign": 90000,
     "trust": 0
   },
   {
     "code": "1437",
     "date": "2026-05-12",
-    "foreign": -71000,
-    "trust": 0
-  },
-  {
-    "code": "1438",
-    "date": "2026-05-12",
-    "foreign": -33000,
+    "foreign": 21000,
     "trust": 0
   },
   {
     "code": "1439",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": 45000,
     "trust": 0
   },
   {
     "code": "1440",
     "date": "2026-05-12",
-    "foreign": -839000,
-    "trust": 0
-  },
-  {
-    "code": "1441",
-    "date": "2026-05-12",
-    "foreign": -2000,
+    "foreign": -70000,
     "trust": 0
   },
   {
     "code": "1442",
     "date": "2026-05-12",
-    "foreign": -144000,
-    "trust": 0
-  },
-  {
-    "code": "1443",
-    "date": "2026-05-12",
-    "foreign": -13000,
+    "foreign": 17510,
     "trust": 0
   },
   {
     "code": "1444",
     "date": "2026-05-12",
-    "foreign": 104004,
+    "foreign": -491000,
     "trust": 0
   },
   {
     "code": "1445",
     "date": "2026-05-12",
-    "foreign": 9000,
-    "trust": 0
-  },
-  {
-    "code": "1446",
-    "date": "2026-05-12",
-    "foreign": -30000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "1447",
     "date": "2026-05-12",
-    "foreign": -399666,
-    "trust": 0
-  },
-  {
-    "code": "1449",
-    "date": "2026-05-12",
-    "foreign": -425114,
+    "foreign": 90095,
     "trust": 0
   },
   {
     "code": "1451",
     "date": "2026-05-12",
-    "foreign": -32000,
+    "foreign": 18000,
     "trust": 0
   },
   {
     "code": "1452",
     "date": "2026-05-12",
-    "foreign": -6000,
+    "foreign": 46000,
     "trust": 0
   },
   {
     "code": "1453",
     "date": "2026-05-12",
-    "foreign": -11000,
-    "trust": 0
-  },
-  {
-    "code": "1454",
-    "date": "2026-05-12",
-    "foreign": -10000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "1455",
     "date": "2026-05-12",
-    "foreign": 35000,
-    "trust": 0
-  },
-  {
-    "code": "1456",
-    "date": "2026-05-12",
-    "foreign": -29000,
-    "trust": 0
+    "foreign": 414000,
+    "trust": 245000
   },
   {
     "code": "1457",
     "date": "2026-05-12",
-    "foreign": -7000,
+    "foreign": 56000,
     "trust": 0
   },
   {
     "code": "1459",
     "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": -43000,
     "trust": 0
   },
   {
     "code": "1460",
     "date": "2026-05-12",
-    "foreign": -360000,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "1463",
     "date": "2026-05-12",
-    "foreign": 17000,
+    "foreign": -47000,
     "trust": 0
   },
   {
     "code": "1464",
     "date": "2026-05-12",
-    "foreign": 110000,
+    "foreign": -10000,
     "trust": 0
   },
   {
     "code": "1465",
     "date": "2026-05-12",
-    "foreign": -5000,
-    "trust": 0
-  },
-  {
-    "code": "1466",
-    "date": "2026-05-12",
-    "foreign": -57000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "1467",
     "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "1468",
-    "date": "2026-05-12",
-    "foreign": -6000,
-    "trust": 0
-  },
-  {
-    "code": "1470",
-    "date": "2026-05-12",
-    "foreign": -6000,
+    "foreign": -16000,
     "trust": 0
   },
   {
     "code": "1471",
     "date": "2026-05-12",
-    "foreign": 78101,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "1472",
     "date": "2026-05-12",
-    "foreign": -5000,
+    "foreign": -1,
     "trust": 0
   },
   {
     "code": "1473",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": 11000,
     "trust": 0
   },
   {
     "code": "1474",
     "date": "2026-05-12",
-    "foreign": -9000,
-    "trust": 0
-  },
-  {
-    "code": "1475",
-    "date": "2026-05-12",
-    "foreign": -16000,
+    "foreign": -15000,
     "trust": 0
   },
   {
     "code": "1476",
     "date": "2026-05-12",
-    "foreign": -174590,
-    "trust": -156750
+    "foreign": -60060,
+    "trust": 3000
   },
   {
     "code": "1477",
     "date": "2026-05-12",
-    "foreign": -1783191,
-    "trust": -51769
+    "foreign": 19000,
+    "trust": 118000
   },
   {
     "code": "1503",
     "date": "2026-05-12",
-    "foreign": -161559,
-    "trust": -1000
+    "foreign": -1000,
+    "trust": 0
   },
   {
     "code": "1504",
     "date": "2026-05-12",
-    "foreign": -60686,
-    "trust": -6000
+    "foreign": -156000,
+    "trust": 0
   },
   {
     "code": "1506",
-    "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
-    "code": "1512",
-    "date": "2026-05-12",
-    "foreign": 6000,
-    "trust": 0
-  },
-  {
-    "code": "1513",
-    "date": "2026-05-12",
-    "foreign": -243834,
-    "trust": -15000
-  },
-  {
-    "code": "1514",
-    "date": "2026-05-12",
-    "foreign": -373178,
-    "trust": 0
-  },
-  {
-    "code": "1515",
-    "date": "2026-05-12",
-    "foreign": -387000,
-    "trust": 0
-  },
-  {
-    "code": "1516",
-    "date": "2026-05-12",
-    "foreign": -10000,
-    "trust": 0
-  },
-  {
-    "code": "1517",
-    "date": "2026-05-12",
-    "foreign": 9000,
-    "trust": 0
-  },
-  {
-    "code": "1519",
-    "date": "2026-05-12",
-    "foreign": 82204,
-    "trust": -1000
-  },
-  {
-    "code": "1521",
-    "date": "2026-05-12",
-    "foreign": -9000,
-    "trust": 0
-  },
-  {
-    "code": "1522",
-    "date": "2026-05-12",
-    "foreign": -547000,
-    "trust": -4063
-  },
-  {
-    "code": "1524",
-    "date": "2026-05-12",
-    "foreign": -5000,
-    "trust": 0
-  },
-  {
-    "code": "1525",
-    "date": "2026-05-12",
-    "foreign": -5000,
-    "trust": 0
-  },
-  {
-    "code": "1526",
-    "date": "2026-05-12",
-    "foreign": -42000,
-    "trust": 0
-  },
-  {
-    "code": "1527",
-    "date": "2026-05-12",
-    "foreign": -59000,
-    "trust": 0
-  },
-  {
-    "code": "1528",
-    "date": "2026-05-12",
-    "foreign": -22000,
-    "trust": -10000
-  },
-  {
-    "code": "1529",
-    "date": "2026-05-12",
-    "foreign": 89000,
-    "trust": 0
-  },
-  {
-    "code": "1530",
-    "date": "2026-05-12",
-    "foreign": -7000,
-    "trust": 0
-  },
-  {
-    "code": "1531",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
-    "code": "1532",
-    "date": "2026-05-12",
-    "foreign": -249000,
-    "trust": -4003
-  },
-  {
-    "code": "1533",
-    "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "1535",
-    "date": "2026-05-12",
-    "foreign": -71000,
-    "trust": 0
-  },
-  {
-    "code": "1536",
-    "date": "2026-05-12",
-    "foreign": -953000,
-    "trust": 0
-  },
-  {
-    "code": "1537",
-    "date": "2026-05-12",
-    "foreign": -14000,
-    "trust": 0
-  },
-  {
-    "code": "1538",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "1539",
     "date": "2026-05-12",
     "foreign": -4000,
     "trust": 0
   },
   {
-    "code": "1540",
+    "code": "1507",
     "date": "2026-05-12",
-    "foreign": 25000,
+    "foreign": 16000,
+    "trust": -251000
+  },
+  {
+    "code": "1512",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
+    "code": "1513",
+    "date": "2026-05-12",
+    "foreign": 100000,
+    "trust": 0
+  },
+  {
+    "code": "1514",
+    "date": "2026-05-12",
+    "foreign": 52000,
+    "trust": 0
+  },
+  {
+    "code": "1515",
+    "date": "2026-05-12",
+    "foreign": -148000,
+    "trust": 0
+  },
+  {
+    "code": "1517",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
+    "code": "1519",
+    "date": "2026-05-12",
+    "foreign": 3000,
+    "trust": 0
+  },
+  {
+    "code": "1521",
+    "date": "2026-05-12",
+    "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "1522",
+    "date": "2026-05-12",
+    "foreign": -184000,
+    "trust": 0
+  },
+  {
+    "code": "1524",
+    "date": "2026-05-12",
+    "foreign": 67000,
+    "trust": 0
+  },
+  {
+    "code": "1525",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": -13000
+  },
+  {
+    "code": "1526",
+    "date": "2026-05-12",
+    "foreign": 8000,
+    "trust": 0
+  },
+  {
+    "code": "1527",
+    "date": "2026-05-12",
+    "foreign": 3900,
+    "trust": 0
+  },
+  {
+    "code": "1528",
+    "date": "2026-05-12",
+    "foreign": 9000,
+    "trust": 0
+  },
+  {
+    "code": "1530",
+    "date": "2026-05-12",
+    "foreign": 2000,
+    "trust": 0
+  },
+  {
+    "code": "1531",
+    "date": "2026-05-12",
+    "foreign": 97000,
+    "trust": 0
+  },
+  {
+    "code": "1532",
+    "date": "2026-05-12",
+    "foreign": 29000,
+    "trust": 0
+  },
+  {
+    "code": "1533",
+    "date": "2026-05-12",
+    "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "1536",
+    "date": "2026-05-12",
+    "foreign": 123000,
+    "trust": 329000
+  },
+  {
+    "code": "1537",
+    "date": "2026-05-12",
+    "foreign": -46000,
+    "trust": 0
+  },
+  {
+    "code": "1539",
+    "date": "2026-05-12",
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "1541",
     "date": "2026-05-12",
-    "foreign": -13000,
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "1558",
     "date": "2026-05-12",
-    "foreign": -9000,
-    "trust": -575
+    "foreign": -19000,
+    "trust": 0
   },
   {
     "code": "1560",
     "date": "2026-05-12",
-    "foreign": 88500,
-    "trust": 0
-  },
-  {
-    "code": "1563",
-    "date": "2026-05-12",
-    "foreign": 215000,
-    "trust": 0
+    "foreign": -169000,
+    "trust": 30000
   },
   {
     "code": "1565",
@@ -2996,7 +1982,7 @@
   {
     "code": "1568",
     "date": "2026-05-12",
-    "foreign": 52057,
+    "foreign": -93000,
     "trust": 0
   },
   {
@@ -3020,13 +2006,13 @@
   {
     "code": "1582",
     "date": "2026-05-12",
-    "foreign": -99000,
-    "trust": -9000
+    "foreign": -317000,
+    "trust": 0
   },
   {
     "code": "1583",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": -2000,
     "trust": 0
   },
   {
@@ -3042,21 +2028,27 @@
     "trust": 0
   },
   {
-    "code": "1587",
+    "code": "1589",
     "date": "2026-05-12",
-    "foreign": 23000,
+    "foreign": -29000,
     "trust": 0
   },
   {
     "code": "1590",
     "date": "2026-05-12",
-    "foreign": 19847,
-    "trust": 0
+    "foreign": 147200,
+    "trust": 81000
   },
   {
     "code": "1591",
     "date": "2026-05-12",
     "foreign": -114000,
+    "trust": 0
+  },
+  {
+    "code": "1592",
+    "date": "2026-05-12",
+    "foreign": 4000,
     "trust": 0
   },
   {
@@ -3072,15 +2064,9 @@
     "trust": 0
   },
   {
-    "code": "1597",
-    "date": "2026-05-12",
-    "foreign": 123095,
-    "trust": 0
-  },
-  {
     "code": "1598",
     "date": "2026-05-12",
-    "foreign": -159000,
+    "foreign": 34000,
     "trust": 0
   },
   {
@@ -3092,241 +2078,223 @@
   {
     "code": "1603",
     "date": "2026-05-12",
-    "foreign": -145019,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "1604",
     "date": "2026-05-12",
-    "foreign": 11000,
+    "foreign": -238000,
     "trust": 0
   },
   {
     "code": "1605",
     "date": "2026-05-12",
-    "foreign": -1624667,
-    "trust": 1146754
+    "foreign": 5231257,
+    "trust": 0
   },
   {
     "code": "1608",
     "date": "2026-05-12",
-    "foreign": -106000,
-    "trust": -24285
+    "foreign": 47000,
+    "trust": 0
   },
   {
     "code": "1609",
     "date": "2026-05-12",
-    "foreign": -2077095,
-    "trust": -1000
+    "foreign": 863000,
+    "trust": 0
   },
   {
     "code": "1611",
     "date": "2026-05-12",
-    "foreign": -62000,
+    "foreign": 31000,
     "trust": 0
   },
   {
     "code": "1612",
     "date": "2026-05-12",
-    "foreign": -137000,
-    "trust": -22425
+    "foreign": 36000,
+    "trust": 0
   },
   {
     "code": "1614",
     "date": "2026-05-12",
-    "foreign": -8000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "1615",
     "date": "2026-05-12",
-    "foreign": -98928,
-    "trust": 0
-  },
-  {
-    "code": "1616",
-    "date": "2026-05-12",
-    "foreign": 62020,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "1617",
     "date": "2026-05-12",
-    "foreign": -21000,
+    "foreign": 4000,
     "trust": 0
   },
   {
     "code": "1618",
     "date": "2026-05-12",
-    "foreign": -110000,
-    "trust": 0
-  },
-  {
-    "code": "1623",
-    "date": "2026-05-12",
-    "foreign": -81980,
+    "foreign": 15000,
     "trust": 0
   },
   {
     "code": "1626",
     "date": "2026-05-12",
-    "foreign": 24000,
+    "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "1701",
+    "date": "2026-05-12",
+    "foreign": 59000,
     "trust": 0
   },
   {
     "code": "1702",
     "date": "2026-05-12",
-    "foreign": -248000,
-    "trust": 0
+    "foreign": -44000,
+    "trust": 244000
+  },
+  {
+    "code": "1704",
+    "date": "2026-05-12",
+    "foreign": 908000,
+    "trust": 255000
   },
   {
     "code": "1707",
     "date": "2026-05-12",
-    "foreign": -200000,
-    "trust": 0
+    "foreign": 87000,
+    "trust": 254000
   },
   {
     "code": "1708",
     "date": "2026-05-12",
-    "foreign": 1841000,
+    "foreign": 46250,
     "trust": 0
   },
   {
     "code": "1709",
     "date": "2026-05-12",
-    "foreign": -58000,
+    "foreign": -35000,
     "trust": 0
   },
   {
     "code": "1710",
     "date": "2026-05-12",
-    "foreign": 160000,
-    "trust": 0
+    "foreign": 2714000,
+    "trust": -591000
   },
   {
     "code": "1711",
     "date": "2026-05-12",
-    "foreign": -288140,
+    "foreign": 155000,
     "trust": 0
   },
   {
     "code": "1712",
     "date": "2026-05-12",
-    "foreign": -237000,
-    "trust": 0
-  },
-  {
-    "code": "1713",
-    "date": "2026-05-12",
-    "foreign": 30000,
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "1714",
     "date": "2026-05-12",
-    "foreign": 10620512,
+    "foreign": 387000,
     "trust": 0
   },
   {
     "code": "1717",
     "date": "2026-05-12",
-    "foreign": 4487019,
-    "trust": -300000
+    "foreign": -9000,
+    "trust": 0
   },
   {
     "code": "1718",
     "date": "2026-05-12",
-    "foreign": 529025,
+    "foreign": 938000,
     "trust": 0
   },
   {
     "code": "1720",
     "date": "2026-05-12",
-    "foreign": -54000,
+    "foreign": 5000,
     "trust": 0
   },
   {
     "code": "1721",
     "date": "2026-05-12",
-    "foreign": -2267000,
+    "foreign": 11000,
     "trust": 0
   },
   {
     "code": "1722",
     "date": "2026-05-12",
-    "foreign": 549346,
+    "foreign": -661000,
     "trust": 0
   },
   {
     "code": "1723",
     "date": "2026-05-12",
-    "foreign": 259000,
+    "foreign": 39000,
     "trust": 0
   },
   {
     "code": "1725",
     "date": "2026-05-12",
-    "foreign": -85000,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "1726",
     "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": 11000,
     "trust": 0
   },
   {
     "code": "1727",
     "date": "2026-05-12",
-    "foreign": -542200,
-    "trust": 0
-  },
-  {
-    "code": "1730",
-    "date": "2026-05-12",
-    "foreign": -7000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "1731",
     "date": "2026-05-12",
-    "foreign": -48000,
-    "trust": 0
-  },
-  {
-    "code": "1732",
-    "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "1733",
     "date": "2026-05-12",
-    "foreign": -24000,
+    "foreign": 25000,
     "trust": 0
   },
   {
     "code": "1734",
     "date": "2026-05-12",
-    "foreign": -222034,
+    "foreign": 12000,
     "trust": 0
   },
   {
     "code": "1735",
     "date": "2026-05-12",
-    "foreign": 184987,
-    "trust": -3000
+    "foreign": -19000,
+    "trust": 0
   },
   {
     "code": "1736",
     "date": "2026-05-12",
-    "foreign": -152373,
+    "foreign": 7000,
     "trust": 0
   },
   {
     "code": "1737",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": -13000,
     "trust": 0
   },
   {
@@ -3336,33 +2304,21 @@
     "trust": 0
   },
   {
-    "code": "1752",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "1760",
-    "date": "2026-05-12",
-    "foreign": -94000,
-    "trust": 0
-  },
-  {
     "code": "1762",
     "date": "2026-05-12",
-    "foreign": 24275,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "1773",
     "date": "2026-05-12",
-    "foreign": 343800,
-    "trust": 0
+    "foreign": -6000,
+    "trust": 3000
   },
   {
     "code": "1776",
     "date": "2026-05-12",
-    "foreign": -1000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -3375,12 +2331,6 @@
     "code": "1781",
     "date": "2026-05-12",
     "foreign": -6000,
-    "trust": 0
-  },
-  {
-    "code": "1783",
-    "date": "2026-05-12",
-    "foreign": -21000,
     "trust": 0
   },
   {
@@ -3398,7 +2348,7 @@
   {
     "code": "1786",
     "date": "2026-05-12",
-    "foreign": 73000,
+    "foreign": 7000,
     "trust": 0
   },
   {
@@ -3410,14 +2360,8 @@
   {
     "code": "1789",
     "date": "2026-05-12",
-    "foreign": 2039,
+    "foreign": 103160,
     "trust": 0
-  },
-  {
-    "code": "1795",
-    "date": "2026-05-12",
-    "foreign": -1750553,
-    "trust": -1000
   },
   {
     "code": "1796",
@@ -3434,37 +2378,31 @@
   {
     "code": "1802",
     "date": "2026-05-12",
-    "foreign": 12479904,
-    "trust": 0
-  },
-  {
-    "code": "1805",
-    "date": "2026-05-12",
-    "foreign": -7000,
-    "trust": 0
+    "foreign": 199000,
+    "trust": 190000
   },
   {
     "code": "1806",
     "date": "2026-05-12",
-    "foreign": -4000,
+    "foreign": 87000,
     "trust": 0
   },
   {
     "code": "1808",
     "date": "2026-05-12",
-    "foreign": -301000,
+    "foreign": -42000,
     "trust": 0
   },
   {
     "code": "1809",
     "date": "2026-05-12",
-    "foreign": 1316066,
+    "foreign": 15000,
     "trust": 0
   },
   {
     "code": "1810",
     "date": "2026-05-12",
-    "foreign": 46912,
+    "foreign": 22000,
     "trust": 0
   },
   {
@@ -3482,187 +2420,169 @@
   {
     "code": "1817",
     "date": "2026-05-12",
-    "foreign": -9948,
+    "foreign": 60000,
+    "trust": 0
+  },
+  {
+    "code": "1902",
+    "date": "2026-05-12",
+    "foreign": -31000,
     "trust": 0
   },
   {
     "code": "1903",
     "date": "2026-05-12",
-    "foreign": -201000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "1904",
     "date": "2026-05-12",
-    "foreign": -218992,
+    "foreign": 310000,
     "trust": 0
   },
   {
     "code": "1905",
     "date": "2026-05-12",
-    "foreign": -937000,
-    "trust": -35000
+    "foreign": 37000,
+    "trust": 0
   },
   {
     "code": "1906",
     "date": "2026-05-12",
-    "foreign": -30000,
+    "foreign": -7000,
     "trust": 0
   },
   {
     "code": "1907",
     "date": "2026-05-12",
-    "foreign": -103800,
+    "foreign": -77000,
     "trust": 0
   },
   {
     "code": "1909",
     "date": "2026-05-12",
-    "foreign": -315000,
-    "trust": 0
+    "foreign": 163845,
+    "trust": -1702000
   },
   {
     "code": "2002",
     "date": "2026-05-12",
-    "foreign": -21342531,
-    "trust": -122000
+    "foreign": -1238140,
+    "trust": 0
   },
   {
     "code": "2006",
     "date": "2026-05-12",
-    "foreign": -1442503,
-    "trust": -250102
+    "foreign": -57000,
+    "trust": 0
   },
   {
     "code": "2007",
     "date": "2026-05-12",
-    "foreign": -44000,
+    "foreign": 1,
     "trust": 0
   },
   {
     "code": "2008",
     "date": "2026-05-12",
-    "foreign": -18000,
+    "foreign": 43000,
     "trust": 0
   },
   {
     "code": "2009",
     "date": "2026-05-12",
-    "foreign": 817768,
+    "foreign": -17000,
     "trust": 0
   },
   {
     "code": "2010",
     "date": "2026-05-12",
-    "foreign": -392000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "2012",
     "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "2013",
-    "date": "2026-05-12",
-    "foreign": -61000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "2014",
     "date": "2026-05-12",
-    "foreign": -473138,
+    "foreign": 396000,
     "trust": 0
   },
   {
     "code": "2015",
     "date": "2026-05-12",
-    "foreign": 75000,
-    "trust": 0
+    "foreign": -10079,
+    "trust": -224000
   },
   {
     "code": "2017",
     "date": "2026-05-12",
-    "foreign": -331000,
+    "foreign": 127000,
     "trust": 0
   },
   {
     "code": "2020",
     "date": "2026-05-12",
-    "foreign": -117000,
+    "foreign": 26000,
     "trust": 0
   },
   {
     "code": "2022",
     "date": "2026-05-12",
-    "foreign": -69002,
+    "foreign": 75000,
     "trust": 0
   },
   {
     "code": "2023",
     "date": "2026-05-12",
-    "foreign": -1527480,
+    "foreign": 575280,
     "trust": 0
   },
   {
     "code": "2024",
     "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "2025",
-    "date": "2026-05-12",
-    "foreign": -20000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "2027",
     "date": "2026-05-12",
-    "foreign": 8865566,
-    "trust": -5216000
+    "foreign": 299000,
+    "trust": 0
   },
   {
     "code": "2028",
     "date": "2026-05-12",
-    "foreign": 25000,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "2029",
     "date": "2026-05-12",
-    "foreign": 54000,
-    "trust": 0
+    "foreign": 64000,
+    "trust": -30000
   },
   {
     "code": "2030",
     "date": "2026-05-12",
-    "foreign": 1025466,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "2031",
     "date": "2026-05-12",
-    "foreign": -254450,
-    "trust": -19163
-  },
-  {
-    "code": "2032",
-    "date": "2026-05-12",
-    "foreign": -20885,
-    "trust": 0
-  },
-  {
-    "code": "2033",
-    "date": "2026-05-12",
-    "foreign": -29000,
+    "foreign": -58000,
     "trust": 0
   },
   {
     "code": "2034",
     "date": "2026-05-12",
-    "foreign": -744000,
+    "foreign": 62000,
     "trust": 0
   },
   {
@@ -3674,20 +2594,20 @@
   {
     "code": "2038",
     "date": "2026-05-12",
-    "foreign": -121000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "2049",
     "date": "2026-05-12",
-    "foreign": 1274969,
-    "trust": 576000
+    "foreign": 135564,
+    "trust": -10000
   },
   {
     "code": "2059",
     "date": "2026-05-12",
-    "foreign": -122286,
-    "trust": 99679
+    "foreign": -44000,
+    "trust": 0
   },
   {
     "code": "2061",
@@ -3698,8 +2618,8 @@
   {
     "code": "2062",
     "date": "2026-05-12",
-    "foreign": -36903,
-    "trust": -110000
+    "foreign": 104000,
+    "trust": 0
   },
   {
     "code": "2063",
@@ -3728,7 +2648,7 @@
   {
     "code": "2069",
     "date": "2026-05-12",
-    "foreign": -73976,
+    "foreign": -7000,
     "trust": 0
   },
   {
@@ -3738,112 +2658,100 @@
     "trust": 0
   },
   {
-    "code": "2072",
-    "date": "2026-05-12",
-    "foreign": 61010,
-    "trust": 0
-  },
-  {
     "code": "2101",
     "date": "2026-05-12",
-    "foreign": 10350,
+    "foreign": 21000,
     "trust": 0
   },
   {
     "code": "2102",
     "date": "2026-05-12",
-    "foreign": -168000,
+    "foreign": 17000,
     "trust": 0
   },
   {
     "code": "2103",
     "date": "2026-05-12",
-    "foreign": 1683000,
-    "trust": -4000
+    "foreign": 397395,
+    "trust": 0
   },
   {
     "code": "2104",
     "date": "2026-05-12",
-    "foreign": -51896,
-    "trust": 0
+    "foreign": 746000,
+    "trust": -393000
   },
   {
     "code": "2105",
     "date": "2026-05-12",
-    "foreign": -2677790,
-    "trust": -574360
+    "foreign": -268000,
+    "trust": 0
   },
   {
     "code": "2106",
     "date": "2026-05-12",
-    "foreign": -279781,
+    "foreign": 24000,
     "trust": 0
   },
   {
     "code": "2107",
     "date": "2026-05-12",
-    "foreign": -52682,
+    "foreign": -5000,
     "trust": 0
   },
   {
     "code": "2108",
     "date": "2026-05-12",
-    "foreign": -439742,
+    "foreign": -26000,
     "trust": 0
   },
   {
     "code": "2109",
     "date": "2026-05-12",
-    "foreign": 55000,
+    "foreign": 11000,
     "trust": 0
   },
   {
     "code": "2114",
     "date": "2026-05-12",
-    "foreign": -7000,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "2115",
     "date": "2026-05-12",
-    "foreign": -15000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "2201",
     "date": "2026-05-12",
-    "foreign": -69041,
-    "trust": -6000
+    "foreign": -1597000,
+    "trust": 0
   },
   {
     "code": "2204",
     "date": "2026-05-12",
-    "foreign": -217666,
-    "trust": 15649
+    "foreign": -116000,
+    "trust": -451000
   },
   {
     "code": "2206",
     "date": "2026-05-12",
-    "foreign": -458970,
-    "trust": -51000
+    "foreign": 46000,
+    "trust": 0
   },
   {
     "code": "2207",
     "date": "2026-05-12",
-    "foreign": -258446,
-    "trust": -25000
+    "foreign": -17000,
+    "trust": 0
   },
   {
     "code": "2208",
     "date": "2026-05-12",
-    "foreign": -1443308,
-    "trust": -8000
-  },
-  {
-    "code": "2211",
-    "date": "2026-05-12",
-    "foreign": -548000,
-    "trust": -11929
+    "foreign": -407000,
+    "trust": 0
   },
   {
     "code": "2221",
@@ -3854,14 +2762,14 @@
   {
     "code": "2227",
     "date": "2026-05-12",
-    "foreign": -13000,
+    "foreign": -23000,
     "trust": 0
   },
   {
     "code": "2228",
     "date": "2026-05-12",
-    "foreign": -76000,
-    "trust": 0
+    "foreign": 34000,
+    "trust": -106000
   },
   {
     "code": "2230",
@@ -3872,1034 +2780,938 @@
   {
     "code": "2231",
     "date": "2026-05-12",
-    "foreign": 169556,
-    "trust": 0
-  },
-  {
-    "code": "2233",
-    "date": "2026-05-12",
-    "foreign": -7000,
-    "trust": 0
-  },
-  {
-    "code": "2236",
-    "date": "2026-05-12",
-    "foreign": 22000,
-    "trust": 0
+    "foreign": -225898,
+    "trust": -20000
   },
   {
     "code": "2239",
-    "date": "2026-05-12",
-    "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "2241",
-    "date": "2026-05-12",
-    "foreign": 409935,
-    "trust": 0
-  },
-  {
-    "code": "2243",
-    "date": "2026-05-12",
-    "foreign": 29081,
-    "trust": -3000
-  },
-  {
-    "code": "2247",
-    "date": "2026-05-12",
-    "foreign": -72819,
-    "trust": 0
-  },
-  {
-    "code": "2248",
-    "date": "2026-05-12",
-    "foreign": -15000,
-    "trust": 0
-  },
-  {
-    "code": "2250",
-    "date": "2026-05-12",
-    "foreign": 7000,
-    "trust": 0
-  },
-  {
-    "code": "2254",
-    "date": "2026-05-12",
-    "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "2258",
-    "date": "2026-05-12",
-    "foreign": 208000,
-    "trust": 0
-  },
-  {
-    "code": "2301",
-    "date": "2026-05-12",
-    "foreign": 27226454,
-    "trust": -4394598
-  },
-  {
-    "code": "2302",
-    "date": "2026-05-12",
-    "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "2303",
-    "date": "2026-05-12",
-    "foreign": 35286536,
-    "trust": 9426907
-  },
-  {
-    "code": "2305",
-    "date": "2026-05-12",
-    "foreign": 762200,
-    "trust": -3000
-  },
-  {
-    "code": "2308",
-    "date": "2026-05-12",
-    "foreign": -4268042,
-    "trust": 256861
-  },
-  {
-    "code": "2312",
-    "date": "2026-05-12",
-    "foreign": -7865330,
-    "trust": -294000
-  },
-  {
-    "code": "2313",
-    "date": "2026-05-12",
-    "foreign": 29975073,
-    "trust": 2857880
-  },
-  {
-    "code": "2314",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "2316",
-    "date": "2026-05-12",
-    "foreign": 868990,
-    "trust": 0
-  },
-  {
-    "code": "2317",
-    "date": "2026-05-12",
-    "foreign": 31682455,
-    "trust": -10780167
-  },
-  {
-    "code": "2323",
-    "date": "2026-05-12",
-    "foreign": -533000,
-    "trust": 0
-  },
-  {
-    "code": "2324",
-    "date": "2026-05-12",
-    "foreign": -15008728,
-    "trust": -1506559
-  },
-  {
-    "code": "2327",
-    "date": "2026-05-12",
-    "foreign": -1289003,
-    "trust": 1699634
-  },
-  {
-    "code": "2328",
-    "date": "2026-05-12",
-    "foreign": -310931,
-    "trust": 0
-  },
-  {
-    "code": "2329",
-    "date": "2026-05-12",
-    "foreign": 935170,
-    "trust": 0
-  },
-  {
-    "code": "2330",
-    "date": "2026-05-12",
-    "foreign": -9237265,
-    "trust": 8879689
-  },
-  {
-    "code": "2331",
-    "date": "2026-05-12",
-    "foreign": -129000,
-    "trust": -13000
-  },
-  {
-    "code": "2332",
-    "date": "2026-05-12",
-    "foreign": 737500,
-    "trust": 0
-  },
-  {
-    "code": "2337",
-    "date": "2026-05-12",
-    "foreign": -13007468,
-    "trust": -6090000
-  },
-  {
-    "code": "2338",
-    "date": "2026-05-12",
-    "foreign": 222000,
-    "trust": 0
-  },
-  {
-    "code": "2340",
-    "date": "2026-05-12",
-    "foreign": 942005,
-    "trust": 0
-  },
-  {
-    "code": "2342",
-    "date": "2026-05-12",
-    "foreign": 1895057,
-    "trust": 0
-  },
-  {
-    "code": "2344",
-    "date": "2026-05-12",
-    "foreign": 27421962,
-    "trust": 7659438
-  },
-  {
-    "code": "2345",
-    "date": "2026-05-12",
-    "foreign": -1153370,
-    "trust": 461107
-  },
-  {
-    "code": "2347",
-    "date": "2026-05-12",
-    "foreign": -1111339,
-    "trust": -506640
-  },
-  {
-    "code": "2348",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
-  },
-  {
-    "code": "2349",
-    "date": "2026-05-12",
-    "foreign": -1340000,
-    "trust": 0
-  },
-  {
-    "code": "2351",
-    "date": "2026-05-12",
-    "foreign": -49802,
-    "trust": -11000
-  },
-  {
-    "code": "2352",
-    "date": "2026-05-12",
-    "foreign": 2897125,
-    "trust": -6000
-  },
-  {
-    "code": "2353",
-    "date": "2026-05-12",
-    "foreign": -4083800,
-    "trust": -1493289
-  },
-  {
-    "code": "2354",
-    "date": "2026-05-12",
-    "foreign": -2538671,
-    "trust": -1000
-  },
-  {
-    "code": "2355",
-    "date": "2026-05-12",
-    "foreign": -2054000,
-    "trust": -28000
-  },
-  {
-    "code": "2356",
-    "date": "2026-05-12",
-    "foreign": -6968722,
-    "trust": -78076
-  },
-  {
-    "code": "2357",
-    "date": "2026-05-12",
-    "foreign": -694812,
-    "trust": 492279
-  },
-  {
-    "code": "2359",
-    "date": "2026-05-12",
-    "foreign": 334147,
-    "trust": 0
-  },
-  {
-    "code": "2360",
-    "date": "2026-05-12",
-    "foreign": 232437,
-    "trust": 412308
-  },
-  {
-    "code": "2362",
-    "date": "2026-05-12",
-    "foreign": -372000,
-    "trust": -1000
-  },
-  {
-    "code": "2363",
-    "date": "2026-05-12",
-    "foreign": -35700,
-    "trust": 20000
-  },
-  {
-    "code": "2364",
-    "date": "2026-05-12",
-    "foreign": -37905,
-    "trust": 0
-  },
-  {
-    "code": "2365",
-    "date": "2026-05-12",
-    "foreign": -987000,
-    "trust": 0
-  },
-  {
-    "code": "2367",
-    "date": "2026-05-12",
-    "foreign": 4178275,
-    "trust": 0
-  },
-  {
-    "code": "2368",
-    "date": "2026-05-12",
-    "foreign": -658273,
-    "trust": 727645
-  },
-  {
-    "code": "2369",
-    "date": "2026-05-12",
-    "foreign": 1339000,
-    "trust": 0
-  },
-  {
-    "code": "2371",
-    "date": "2026-05-12",
-    "foreign": -5936815,
-    "trust": 36200
-  },
-  {
-    "code": "2373",
-    "date": "2026-05-12",
-    "foreign": -25000,
-    "trust": 0
-  },
-  {
-    "code": "2374",
-    "date": "2026-05-12",
-    "foreign": 3976028,
-    "trust": 0
-  },
-  {
-    "code": "2375",
-    "date": "2026-05-12",
-    "foreign": 379970,
-    "trust": -350
-  },
-  {
-    "code": "2376",
-    "date": "2026-05-12",
-    "foreign": 3123124,
-    "trust": 43107
-  },
-  {
-    "code": "2377",
-    "date": "2026-05-12",
-    "foreign": -9305085,
-    "trust": -97000
-  },
-  {
-    "code": "2379",
-    "date": "2026-05-12",
-    "foreign": 277659,
-    "trust": -94827
-  },
-  {
-    "code": "2382",
-    "date": "2026-05-12",
-    "foreign": 2490667,
-    "trust": 91221
-  },
-  {
-    "code": "2383",
-    "date": "2026-05-12",
-    "foreign": 395606,
-    "trust": 277715
-  },
-  {
-    "code": "2385",
-    "date": "2026-05-12",
-    "foreign": -1698024,
-    "trust": -15725
-  },
-  {
-    "code": "2387",
-    "date": "2026-05-12",
-    "foreign": -563000,
-    "trust": 0
-  },
-  {
-    "code": "2388",
-    "date": "2026-05-12",
-    "foreign": -250982,
-    "trust": -38000
-  },
-  {
-    "code": "2390",
-    "date": "2026-05-12",
-    "foreign": 85000,
-    "trust": 0
-  },
-  {
-    "code": "2392",
-    "date": "2026-05-12",
-    "foreign": -673100,
-    "trust": 0
-  },
-  {
-    "code": "2393",
-    "date": "2026-05-12",
-    "foreign": -347086,
-    "trust": 382
-  },
-  {
-    "code": "2395",
-    "date": "2026-05-12",
-    "foreign": 529821,
-    "trust": -8384
-  },
-  {
-    "code": "2397",
-    "date": "2026-05-12",
-    "foreign": 117000,
-    "trust": 0
-  },
-  {
-    "code": "2399",
-    "date": "2026-05-12",
-    "foreign": 1614050,
-    "trust": -12000
-  },
-  {
-    "code": "2401",
-    "date": "2026-05-12",
-    "foreign": 933000,
-    "trust": 5000
-  },
-  {
-    "code": "2402",
-    "date": "2026-05-12",
-    "foreign": 1065300,
-    "trust": 0
-  },
-  {
-    "code": "2404",
-    "date": "2026-05-12",
-    "foreign": -884752,
-    "trust": -480865
-  },
-  {
-    "code": "2405",
-    "date": "2026-05-12",
-    "foreign": 175000,
-    "trust": 0
-  },
-  {
-    "code": "2406",
-    "date": "2026-05-12",
-    "foreign": -573606,
-    "trust": 0
-  },
-  {
-    "code": "2408",
-    "date": "2026-05-12",
-    "foreign": 25571885,
-    "trust": 2842432
-  },
-  {
-    "code": "2409",
-    "date": "2026-05-12",
-    "foreign": 110947176,
-    "trust": -8255
-  },
-  {
-    "code": "2412",
-    "date": "2026-05-12",
-    "foreign": -1807829,
-    "trust": -68307
-  },
-  {
-    "code": "2413",
-    "date": "2026-05-12",
-    "foreign": -20000,
-    "trust": 0
-  },
-  {
-    "code": "2414",
-    "date": "2026-05-12",
-    "foreign": -38000,
-    "trust": 0
-  },
-  {
-    "code": "2415",
-    "date": "2026-05-12",
-    "foreign": -25000,
-    "trust": 0
-  },
-  {
-    "code": "2417",
-    "date": "2026-05-12",
-    "foreign": 376000,
-    "trust": 0
-  },
-  {
-    "code": "2419",
-    "date": "2026-05-12",
-    "foreign": 132000,
-    "trust": -9000
-  },
-  {
-    "code": "2420",
-    "date": "2026-05-12",
-    "foreign": 130010,
-    "trust": 0
-  },
-  {
-    "code": "2421",
-    "date": "2026-05-12",
-    "foreign": -1233720,
-    "trust": 0
-  },
-  {
-    "code": "2423",
-    "date": "2026-05-12",
-    "foreign": -10965,
-    "trust": 0
-  },
-  {
-    "code": "2424",
-    "date": "2026-05-12",
-    "foreign": -103000,
-    "trust": 0
-  },
-  {
-    "code": "2425",
-    "date": "2026-05-12",
-    "foreign": 34000,
-    "trust": 0
-  },
-  {
-    "code": "2426",
-    "date": "2026-05-12",
-    "foreign": 197000,
-    "trust": 0
-  },
-  {
-    "code": "2427",
-    "date": "2026-05-12",
-    "foreign": -260000,
-    "trust": 0
-  },
-  {
-    "code": "2428",
-    "date": "2026-05-12",
-    "foreign": 889975,
-    "trust": 0
-  },
-  {
-    "code": "2429",
-    "date": "2026-05-12",
-    "foreign": -32025,
-    "trust": 0
-  },
-  {
-    "code": "2430",
-    "date": "2026-05-12",
-    "foreign": -20000,
-    "trust": 0
-  },
-  {
-    "code": "2431",
-    "date": "2026-05-12",
-    "foreign": 271000,
-    "trust": 0
-  },
-  {
-    "code": "2432",
-    "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
-    "code": "2433",
-    "date": "2026-05-12",
-    "foreign": -15000,
-    "trust": 0
-  },
-  {
-    "code": "2434",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
-    "code": "2436",
-    "date": "2026-05-12",
-    "foreign": -2854210,
-    "trust": 0
-  },
-  {
-    "code": "2438",
-    "date": "2026-05-12",
-    "foreign": 10000,
-    "trust": 0
-  },
-  {
-    "code": "2439",
-    "date": "2026-05-12",
-    "foreign": -188000,
-    "trust": -7970
-  },
-  {
-    "code": "2440",
-    "date": "2026-05-12",
-    "foreign": 64000,
-    "trust": 0
-  },
-  {
-    "code": "2441",
-    "date": "2026-05-12",
-    "foreign": 257150,
-    "trust": -162000
-  },
-  {
-    "code": "2442",
-    "date": "2026-05-12",
-    "foreign": -69783,
-    "trust": 0
-  },
-  {
-    "code": "2444",
-    "date": "2026-05-12",
-    "foreign": 62000,
-    "trust": 0
-  },
-  {
-    "code": "2449",
-    "date": "2026-05-12",
-    "foreign": -12063933,
-    "trust": -1790287
-  },
-  {
-    "code": "2450",
-    "date": "2026-05-12",
-    "foreign": -21000,
-    "trust": 0
-  },
-  {
-    "code": "2451",
-    "date": "2026-05-12",
-    "foreign": -247999,
-    "trust": -208034
-  },
-  {
-    "code": "2453",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "2454",
-    "date": "2026-05-12",
-    "foreign": -1730262,
-    "trust": -98649
-  },
-  {
-    "code": "2455",
-    "date": "2026-05-12",
-    "foreign": 1834721,
-    "trust": 0
-  },
-  {
-    "code": "2457",
-    "date": "2026-05-12",
-    "foreign": 215007,
-    "trust": 0
-  },
-  {
-    "code": "2458",
-    "date": "2026-05-12",
-    "foreign": 310417,
-    "trust": -380022
-  },
-  {
-    "code": "2459",
     "date": "2026-05-12",
     "foreign": -6000,
     "trust": 0
   },
   {
-    "code": "2460",
+    "code": "2243",
     "date": "2026-05-12",
-    "foreign": 97700,
+    "foreign": -1000,
     "trust": 0
   },
   {
-    "code": "2461",
+    "code": "2301",
     "date": "2026-05-12",
-    "foreign": 20000,
-    "trust": 0
+    "foreign": 2968000,
+    "trust": 155000
   },
   {
-    "code": "2462",
-    "date": "2026-05-12",
-    "foreign": -198000,
-    "trust": 0
-  },
-  {
-    "code": "2464",
-    "date": "2026-05-12",
-    "foreign": 689420,
-    "trust": 0
-  },
-  {
-    "code": "2465",
-    "date": "2026-05-12",
-    "foreign": 128007,
-    "trust": 0
-  },
-  {
-    "code": "2466",
-    "date": "2026-05-12",
-    "foreign": -17000,
-    "trust": 0
-  },
-  {
-    "code": "2467",
-    "date": "2026-05-12",
-    "foreign": 1628399,
-    "trust": -18000
-  },
-  {
-    "code": "2468",
-    "date": "2026-05-12",
-    "foreign": 7000,
-    "trust": 0
-  },
-  {
-    "code": "2471",
-    "date": "2026-05-12",
-    "foreign": -67000,
-    "trust": 0
-  },
-  {
-    "code": "2472",
-    "date": "2026-05-12",
-    "foreign": -2192000,
-    "trust": -9354
-  },
-  {
-    "code": "2474",
-    "date": "2026-05-12",
-    "foreign": 72025,
-    "trust": -141864
-  },
-  {
-    "code": "2476",
-    "date": "2026-05-12",
-    "foreign": -2091000,
-    "trust": 0
-  },
-  {
-    "code": "2477",
-    "date": "2026-05-12",
-    "foreign": -24000,
-    "trust": 0
-  },
-  {
-    "code": "2478",
-    "date": "2026-05-12",
-    "foreign": 1005149,
-    "trust": 0
-  },
-  {
-    "code": "2480",
-    "date": "2026-05-12",
-    "foreign": 41000,
-    "trust": -5708
-  },
-  {
-    "code": "2481",
-    "date": "2026-05-12",
-    "foreign": 13481614,
-    "trust": 897321
-  },
-  {
-    "code": "2482",
-    "date": "2026-05-12",
-    "foreign": -37000,
-    "trust": 0
-  },
-  {
-    "code": "2483",
-    "date": "2026-05-12",
-    "foreign": 311414,
-    "trust": 0
-  },
-  {
-    "code": "2484",
-    "date": "2026-05-12",
-    "foreign": 784218,
-    "trust": 0
-  },
-  {
-    "code": "2485",
-    "date": "2026-05-12",
-    "foreign": 248950,
-    "trust": -21000
-  },
-  {
-    "code": "2486",
-    "date": "2026-05-12",
-    "foreign": 409000,
-    "trust": -1596
-  },
-  {
-    "code": "2488",
-    "date": "2026-05-12",
-    "foreign": -11000,
-    "trust": 0
-  },
-  {
-    "code": "2489",
-    "date": "2026-05-12",
-    "foreign": -2466920,
-    "trust": 0
-  },
-  {
-    "code": "2491",
-    "date": "2026-05-12",
-    "foreign": -140000,
-    "trust": 0
-  },
-  {
-    "code": "2492",
-    "date": "2026-05-12",
-    "foreign": -2137031,
-    "trust": 2248000
-  },
-  {
-    "code": "2493",
-    "date": "2026-05-12",
-    "foreign": 194778,
-    "trust": 0
-  },
-  {
-    "code": "2495",
-    "date": "2026-05-12",
-    "foreign": -389855,
-    "trust": -1000
-  },
-  {
-    "code": "2496",
-    "date": "2026-05-12",
-    "foreign": -4000,
-    "trust": 0
-  },
-  {
-    "code": "2497",
-    "date": "2026-05-12",
-    "foreign": 114000,
-    "trust": 0
-  },
-  {
-    "code": "2498",
-    "date": "2026-05-12",
-    "foreign": 3145379,
-    "trust": 25000
-  },
-  {
-    "code": "2501",
-    "date": "2026-05-12",
-    "foreign": -2089000,
-    "trust": 10000
-  },
-  {
-    "code": "2504",
-    "date": "2026-05-12",
-    "foreign": -1368000,
-    "trust": -39062
-  },
-  {
-    "code": "2505",
-    "date": "2026-05-12",
-    "foreign": -174000,
-    "trust": 0
-  },
-  {
-    "code": "2506",
-    "date": "2026-05-12",
-    "foreign": -49000,
-    "trust": 0
-  },
-  {
-    "code": "2509",
-    "date": "2026-05-12",
-    "foreign": 14000,
-    "trust": 0
-  },
-  {
-    "code": "2511",
-    "date": "2026-05-12",
-    "foreign": -1390000,
-    "trust": 0
-  },
-  {
-    "code": "2514",
-    "date": "2026-05-12",
-    "foreign": -53000,
-    "trust": 0
-  },
-  {
-    "code": "2515",
-    "date": "2026-05-12",
-    "foreign": -2644000,
-    "trust": -6000
-  },
-  {
-    "code": "2516",
-    "date": "2026-05-12",
-    "foreign": -32000,
-    "trust": 0
-  },
-  {
-    "code": "2520",
-    "date": "2026-05-12",
-    "foreign": 131000,
-    "trust": 0
-  },
-  {
-    "code": "2524",
-    "date": "2026-05-12",
-    "foreign": -20000,
-    "trust": 0
-  },
-  {
-    "code": "2527",
-    "date": "2026-05-12",
-    "foreign": -136000,
-    "trust": -970
-  },
-  {
-    "code": "2528",
-    "date": "2026-05-12",
-    "foreign": -343400,
-    "trust": 0
-  },
-  {
-    "code": "2530",
-    "date": "2026-05-12",
-    "foreign": -1081600,
-    "trust": 0
-  },
-  {
-    "code": "2534",
-    "date": "2026-05-12",
-    "foreign": -352980,
-    "trust": 0
-  },
-  {
-    "code": "2535",
-    "date": "2026-05-12",
-    "foreign": -159030,
-    "trust": 0
-  },
-  {
-    "code": "2536",
-    "date": "2026-05-12",
-    "foreign": -188000,
-    "trust": 0
-  },
-  {
-    "code": "2537",
-    "date": "2026-05-12",
-    "foreign": -619000,
-    "trust": 0
-  },
-  {
-    "code": "2538",
-    "date": "2026-05-12",
-    "foreign": -29000,
-    "trust": 0
-  },
-  {
-    "code": "2539",
-    "date": "2026-05-12",
-    "foreign": -468974,
-    "trust": 0
-  },
-  {
-    "code": "2540",
-    "date": "2026-05-12",
-    "foreign": -61000,
-    "trust": 0
-  },
-  {
-    "code": "2542",
-    "date": "2026-05-12",
-    "foreign": -628935,
-    "trust": 23000
-  },
-  {
-    "code": "2543",
-    "date": "2026-05-12",
-    "foreign": -350867,
-    "trust": 0
-  },
-  {
-    "code": "2545",
-    "date": "2026-05-12",
-    "foreign": -114886,
-    "trust": 0
-  },
-  {
-    "code": "2546",
+    "code": "2302",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
   },
   {
+    "code": "2303",
+    "date": "2026-05-12",
+    "foreign": -8342000,
+    "trust": 0
+  },
+  {
+    "code": "2305",
+    "date": "2026-05-12",
+    "foreign": 70000,
+    "trust": 0
+  },
+  {
+    "code": "2308",
+    "date": "2026-05-12",
+    "foreign": -1207259,
+    "trust": 0
+  },
+  {
+    "code": "2311",
+    "date": "2026-05-12",
+    "foreign": -1455960,
+    "trust": -481000
+  },
+  {
+    "code": "2312",
+    "date": "2026-05-12",
+    "foreign": -552000,
+    "trust": 0
+  },
+  {
+    "code": "2313",
+    "date": "2026-05-12",
+    "foreign": 1367000,
+    "trust": 179000
+  },
+  {
+    "code": "2314",
+    "date": "2026-05-12",
+    "foreign": -26000,
+    "trust": -46000
+  },
+  {
+    "code": "2316",
+    "date": "2026-05-12",
+    "foreign": -17000,
+    "trust": 0
+  },
+  {
+    "code": "2317",
+    "date": "2026-05-12",
+    "foreign": -1914792,
+    "trust": -376000
+  },
+  {
+    "code": "2323",
+    "date": "2026-05-12",
+    "foreign": 494000,
+    "trust": 0
+  },
+  {
+    "code": "2324",
+    "date": "2026-05-12",
+    "foreign": -93000,
+    "trust": 245000
+  },
+  {
+    "code": "2325",
+    "date": "2026-05-12",
+    "foreign": 1506949,
+    "trust": 82000
+  },
+  {
+    "code": "2327",
+    "date": "2026-05-12",
+    "foreign": 376068,
+    "trust": 1350000
+  },
+  {
+    "code": "2328",
+    "date": "2026-05-12",
+    "foreign": 130000,
+    "trust": 0
+  },
+  {
+    "code": "2329",
+    "date": "2026-05-12",
+    "foreign": 63000,
+    "trust": 0
+  },
+  {
+    "code": "2330",
+    "date": "2026-05-12",
+    "foreign": -5003302,
+    "trust": -559000
+  },
+  {
+    "code": "2331",
+    "date": "2026-05-12",
+    "foreign": -39000,
+    "trust": 0
+  },
+  {
+    "code": "2332",
+    "date": "2026-05-12",
+    "foreign": -27000,
+    "trust": 0
+  },
+  {
+    "code": "2337",
+    "date": "2026-05-12",
+    "foreign": 1723000,
+    "trust": 0
+  },
+  {
+    "code": "2338",
+    "date": "2026-05-12",
+    "foreign": -124000,
+    "trust": 0
+  },
+  {
+    "code": "2340",
+    "date": "2026-05-12",
+    "foreign": -380007,
+    "trust": 0
+  },
+  {
+    "code": "2342",
+    "date": "2026-05-12",
+    "foreign": -15000,
+    "trust": 0
+  },
+  {
+    "code": "2344",
+    "date": "2026-05-12",
+    "foreign": 883001,
+    "trust": -200000
+  },
+  {
+    "code": "2345",
+    "date": "2026-05-12",
+    "foreign": 423199,
+    "trust": 123000
+  },
+  {
+    "code": "2347",
+    "date": "2026-05-12",
+    "foreign": 726000,
+    "trust": 147000
+  },
+  {
+    "code": "2349",
+    "date": "2026-05-12",
+    "foreign": 189000,
+    "trust": 0
+  },
+  {
+    "code": "2351",
+    "date": "2026-05-12",
+    "foreign": -111000,
+    "trust": 146000
+  },
+  {
+    "code": "2352",
+    "date": "2026-05-12",
+    "foreign": -1467000,
+    "trust": 546000
+  },
+  {
+    "code": "2353",
+    "date": "2026-05-12",
+    "foreign": 216799,
+    "trust": 0
+  },
+  {
+    "code": "2354",
+    "date": "2026-05-12",
+    "foreign": 437000,
+    "trust": 0
+  },
+  {
+    "code": "2355",
+    "date": "2026-05-12",
+    "foreign": -89000,
+    "trust": 0
+  },
+  {
+    "code": "2356",
+    "date": "2026-05-12",
+    "foreign": 10164000,
+    "trust": 302000
+  },
+  {
+    "code": "2357",
+    "date": "2026-05-12",
+    "foreign": -121000,
+    "trust": 193000
+  },
+  {
+    "code": "2358",
+    "date": "2026-05-12",
+    "foreign": -76000,
+    "trust": 0
+  },
+  {
+    "code": "2359",
+    "date": "2026-05-12",
+    "foreign": 790000,
+    "trust": 0
+  },
+  {
+    "code": "2360",
+    "date": "2026-05-12",
+    "foreign": -58000,
+    "trust": 14000
+  },
+  {
+    "code": "2362",
+    "date": "2026-05-12",
+    "foreign": 37000,
+    "trust": 0
+  },
+  {
+    "code": "2363",
+    "date": "2026-05-12",
+    "foreign": 450000,
+    "trust": 0
+  },
+  {
+    "code": "2365",
+    "date": "2026-05-12",
+    "foreign": -18000,
+    "trust": 0
+  },
+  {
+    "code": "2367",
+    "date": "2026-05-12",
+    "foreign": -943097,
+    "trust": 3830000
+  },
+  {
+    "code": "2368",
+    "date": "2026-05-12",
+    "foreign": -29000,
+    "trust": 0
+  },
+  {
+    "code": "2369",
+    "date": "2026-05-12",
+    "foreign": 53000,
+    "trust": 0
+  },
+  {
+    "code": "2371",
+    "date": "2026-05-12",
+    "foreign": 691000,
+    "trust": 0
+  },
+  {
+    "code": "2373",
+    "date": "2026-05-12",
+    "foreign": 11000,
+    "trust": 104000
+  },
+  {
+    "code": "2374",
+    "date": "2026-05-12",
+    "foreign": -44000,
+    "trust": 0
+  },
+  {
+    "code": "2375",
+    "date": "2026-05-12",
+    "foreign": -129000,
+    "trust": 0
+  },
+  {
+    "code": "2376",
+    "date": "2026-05-12",
+    "foreign": -49721,
+    "trust": 109000
+  },
+  {
+    "code": "2377",
+    "date": "2026-05-12",
+    "foreign": -41000,
+    "trust": -225000
+  },
+  {
+    "code": "2379",
+    "date": "2026-05-12",
+    "foreign": -19000,
+    "trust": 0
+  },
+  {
+    "code": "2380",
+    "date": "2026-05-12",
+    "foreign": 5000,
+    "trust": 0
+  },
+  {
+    "code": "2382",
+    "date": "2026-05-12",
+    "foreign": -566000,
+    "trust": 75000
+  },
+  {
+    "code": "2383",
+    "date": "2026-05-12",
+    "foreign": -1039947,
+    "trust": 61000
+  },
+  {
+    "code": "2385",
+    "date": "2026-05-12",
+    "foreign": -160000,
+    "trust": 199000
+  },
+  {
+    "code": "2387",
+    "date": "2026-05-12",
+    "foreign": -33000,
+    "trust": 0
+  },
+  {
+    "code": "2388",
+    "date": "2026-05-12",
+    "foreign": -59000,
+    "trust": 0
+  },
+  {
+    "code": "2390",
+    "date": "2026-05-12",
+    "foreign": 65000,
+    "trust": 0
+  },
+  {
+    "code": "2392",
+    "date": "2026-05-12",
+    "foreign": -205000,
+    "trust": 0
+  },
+  {
+    "code": "2393",
+    "date": "2026-05-12",
+    "foreign": 475000,
+    "trust": 0
+  },
+  {
+    "code": "2395",
+    "date": "2026-05-12",
+    "foreign": 382245,
+    "trust": 0
+  },
+  {
+    "code": "2397",
+    "date": "2026-05-12",
+    "foreign": -4000,
+    "trust": 0
+  },
+  {
+    "code": "2399",
+    "date": "2026-05-12",
+    "foreign": 215000,
+    "trust": 0
+  },
+  {
+    "code": "2401",
+    "date": "2026-05-12",
+    "foreign": 329000,
+    "trust": 0
+  },
+  {
+    "code": "2402",
+    "date": "2026-05-12",
+    "foreign": 228000,
+    "trust": 0
+  },
+  {
+    "code": "2404",
+    "date": "2026-05-12",
+    "foreign": -84000,
+    "trust": -126000
+  },
+  {
+    "code": "2405",
+    "date": "2026-05-12",
+    "foreign": -4580000,
+    "trust": 0
+  },
+  {
+    "code": "2406",
+    "date": "2026-05-12",
+    "foreign": 204000,
+    "trust": 0
+  },
+  {
+    "code": "2408",
+    "date": "2026-05-12",
+    "foreign": -499000,
+    "trust": -150000
+  },
+  {
+    "code": "2409",
+    "date": "2026-05-12",
+    "foreign": -6347203,
+    "trust": 754000
+  },
+  {
+    "code": "2412",
+    "date": "2026-05-12",
+    "foreign": 2342931,
+    "trust": -30000
+  },
+  {
+    "code": "2413",
+    "date": "2026-05-12",
+    "foreign": 119000,
+    "trust": 0
+  },
+  {
+    "code": "2414",
+    "date": "2026-05-12",
+    "foreign": 29000,
+    "trust": 0
+  },
+  {
+    "code": "2415",
+    "date": "2026-05-12",
+    "foreign": 11000,
+    "trust": 0
+  },
+  {
+    "code": "2417",
+    "date": "2026-05-12",
+    "foreign": 893000,
+    "trust": 0
+  },
+  {
+    "code": "2419",
+    "date": "2026-05-12",
+    "foreign": -189000,
+    "trust": 0
+  },
+  {
+    "code": "2420",
+    "date": "2026-05-12",
+    "foreign": -8000,
+    "trust": 0
+  },
+  {
+    "code": "2421",
+    "date": "2026-05-12",
+    "foreign": 143000,
+    "trust": -203000
+  },
+  {
+    "code": "2423",
+    "date": "2026-05-12",
+    "foreign": -4000,
+    "trust": 0
+  },
+  {
+    "code": "2425",
+    "date": "2026-05-12",
+    "foreign": 13000,
+    "trust": 0
+  },
+  {
+    "code": "2426",
+    "date": "2026-05-12",
+    "foreign": -518000,
+    "trust": 0
+  },
+  {
+    "code": "2427",
+    "date": "2026-05-12",
+    "foreign": -5000,
+    "trust": 0
+  },
+  {
+    "code": "2428",
+    "date": "2026-05-12",
+    "foreign": -16000,
+    "trust": 0
+  },
+  {
+    "code": "2430",
+    "date": "2026-05-12",
+    "foreign": 43000,
+    "trust": 0
+  },
+  {
+    "code": "2431",
+    "date": "2026-05-12",
+    "foreign": 14000,
+    "trust": 0
+  },
+  {
+    "code": "2434",
+    "date": "2026-05-12",
+    "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "2436",
+    "date": "2026-05-12",
+    "foreign": -12000,
+    "trust": 0
+  },
+  {
+    "code": "2439",
+    "date": "2026-05-12",
+    "foreign": 117000,
+    "trust": -53000
+  },
+  {
+    "code": "2441",
+    "date": "2026-05-12",
+    "foreign": 258000,
+    "trust": 121000
+  },
+  {
+    "code": "2442",
+    "date": "2026-05-12",
+    "foreign": 6999,
+    "trust": 0
+  },
+  {
+    "code": "2444",
+    "date": "2026-05-12",
+    "foreign": -231000,
+    "trust": 0
+  },
+  {
+    "code": "2448",
+    "date": "2026-05-12",
+    "foreign": 746000,
+    "trust": 562000
+  },
+  {
+    "code": "2449",
+    "date": "2026-05-12",
+    "foreign": 894000,
+    "trust": -505000
+  },
+  {
+    "code": "2450",
+    "date": "2026-05-12",
+    "foreign": 14000,
+    "trust": 0
+  },
+  {
+    "code": "2451",
+    "date": "2026-05-12",
+    "foreign": -191000,
+    "trust": 0
+  },
+  {
+    "code": "2453",
+    "date": "2026-05-12",
+    "foreign": -7000,
+    "trust": 0
+  },
+  {
+    "code": "2454",
+    "date": "2026-05-12",
+    "foreign": 162052,
+    "trust": -129000
+  },
+  {
+    "code": "2455",
+    "date": "2026-05-12",
+    "foreign": 1270000,
+    "trust": -132000
+  },
+  {
+    "code": "2456",
+    "date": "2026-05-12",
+    "foreign": -384155,
+    "trust": -827000
+  },
+  {
+    "code": "2457",
+    "date": "2026-05-12",
+    "foreign": 236000,
+    "trust": 0
+  },
+  {
+    "code": "2458",
+    "date": "2026-05-12",
+    "foreign": 213000,
+    "trust": 0
+  },
+  {
+    "code": "2459",
+    "date": "2026-05-12",
+    "foreign": 2000,
+    "trust": 0
+  },
+  {
+    "code": "2460",
+    "date": "2026-05-12",
+    "foreign": 23000,
+    "trust": 0
+  },
+  {
+    "code": "2461",
+    "date": "2026-05-12",
+    "foreign": -131000,
+    "trust": 0
+  },
+  {
+    "code": "2462",
+    "date": "2026-05-12",
+    "foreign": -14000,
+    "trust": 0
+  },
+  {
+    "code": "2464",
+    "date": "2026-05-12",
+    "foreign": 251000,
+    "trust": 0
+  },
+  {
+    "code": "2466",
+    "date": "2026-05-12",
+    "foreign": -11000,
+    "trust": 0
+  },
+  {
+    "code": "2467",
+    "date": "2026-05-12",
+    "foreign": -68000,
+    "trust": 0
+  },
+  {
+    "code": "2472",
+    "date": "2026-05-12",
+    "foreign": 151000,
+    "trust": 170000
+  },
+  {
+    "code": "2474",
+    "date": "2026-05-12",
+    "foreign": 684000,
+    "trust": 4000
+  },
+  {
+    "code": "2475",
+    "date": "2026-05-12",
+    "foreign": -444000,
+    "trust": 0
+  },
+  {
+    "code": "2476",
+    "date": "2026-05-12",
+    "foreign": 32000,
+    "trust": 0
+  },
+  {
+    "code": "2477",
+    "date": "2026-05-12",
+    "foreign": -60000,
+    "trust": 0
+  },
+  {
+    "code": "2478",
+    "date": "2026-05-12",
+    "foreign": 167000,
+    "trust": 0
+  },
+  {
+    "code": "2480",
+    "date": "2026-05-12",
+    "foreign": 1200,
+    "trust": 0
+  },
+  {
+    "code": "2481",
+    "date": "2026-05-12",
+    "foreign": -998000,
+    "trust": 0
+  },
+  {
+    "code": "2483",
+    "date": "2026-05-12",
+    "foreign": 17000,
+    "trust": 0
+  },
+  {
+    "code": "2484",
+    "date": "2026-05-12",
+    "foreign": 246000,
+    "trust": 0
+  },
+  {
+    "code": "2485",
+    "date": "2026-05-12",
+    "foreign": 166000,
+    "trust": 0
+  },
+  {
+    "code": "2486",
+    "date": "2026-05-12",
+    "foreign": 28000,
+    "trust": 0
+  },
+  {
+    "code": "2488",
+    "date": "2026-05-12",
+    "foreign": 8000,
+    "trust": 0
+  },
+  {
+    "code": "2489",
+    "date": "2026-05-12",
+    "foreign": -617000,
+    "trust": 0
+  },
+  {
+    "code": "2492",
+    "date": "2026-05-12",
+    "foreign": 586000,
+    "trust": 2155000
+  },
+  {
+    "code": "2493",
+    "date": "2026-05-12",
+    "foreign": -9000,
+    "trust": 0
+  },
+  {
+    "code": "2495",
+    "date": "2026-05-12",
+    "foreign": 5000,
+    "trust": 0
+  },
+  {
+    "code": "2496",
+    "date": "2026-05-12",
+    "foreign": -32000,
+    "trust": 0
+  },
+  {
+    "code": "2497",
+    "date": "2026-05-12",
+    "foreign": 31000,
+    "trust": 0
+  },
+  {
+    "code": "2498",
+    "date": "2026-05-12",
+    "foreign": 5359000,
+    "trust": 0
+  },
+  {
+    "code": "2499",
+    "date": "2026-05-12",
+    "foreign": 382000,
+    "trust": 0
+  },
+  {
+    "code": "2501",
+    "date": "2026-05-12",
+    "foreign": 99000,
+    "trust": -294000
+  },
+  {
+    "code": "2504",
+    "date": "2026-05-12",
+    "foreign": -270000,
+    "trust": 0
+  },
+  {
+    "code": "2505",
+    "date": "2026-05-12",
+    "foreign": -36000,
+    "trust": 0
+  },
+  {
+    "code": "2506",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "2509",
+    "date": "2026-05-12",
+    "foreign": 3000,
+    "trust": 0
+  },
+  {
+    "code": "2511",
+    "date": "2026-05-12",
+    "foreign": -24000,
+    "trust": 0
+  },
+  {
+    "code": "2514",
+    "date": "2026-05-12",
+    "foreign": 85000,
+    "trust": 0
+  },
+  {
+    "code": "2515",
+    "date": "2026-05-12",
+    "foreign": 536000,
+    "trust": 2500000
+  },
+  {
+    "code": "2516",
+    "date": "2026-05-12",
+    "foreign": 20000,
+    "trust": 0
+  },
+  {
+    "code": "2520",
+    "date": "2026-05-12",
+    "foreign": 39000,
+    "trust": 0
+  },
+  {
+    "code": "2524",
+    "date": "2026-05-12",
+    "foreign": -1000,
+    "trust": 0
+  },
+  {
+    "code": "2527",
+    "date": "2026-05-12",
+    "foreign": 10000,
+    "trust": 0
+  },
+  {
+    "code": "2528",
+    "date": "2026-05-12",
+    "foreign": 2000,
+    "trust": 0
+  },
+  {
+    "code": "2530",
+    "date": "2026-05-12",
+    "foreign": 1000,
+    "trust": 0
+  },
+  {
+    "code": "2534",
+    "date": "2026-05-12",
+    "foreign": -167000,
+    "trust": 0
+  },
+  {
+    "code": "2535",
+    "date": "2026-05-12",
+    "foreign": 23000,
+    "trust": 0
+  },
+  {
+    "code": "2536",
+    "date": "2026-05-12",
+    "foreign": -8000,
+    "trust": 0
+  },
+  {
+    "code": "2538",
+    "date": "2026-05-12",
+    "foreign": -21000,
+    "trust": 0
+  },
+  {
+    "code": "2539",
+    "date": "2026-05-12",
+    "foreign": -6000,
+    "trust": 0
+  },
+  {
+    "code": "2542",
+    "date": "2026-05-12",
+    "foreign": 131000,
+    "trust": 287000
+  },
+  {
+    "code": "2545",
+    "date": "2026-05-12",
+    "foreign": -13000,
+    "trust": 0
+  },
+  {
+    "code": "2546",
+    "date": "2026-05-12",
+    "foreign": -13000,
+    "trust": 0
+  },
+  {
     "code": "2547",
     "date": "2026-05-12",
-    "foreign": -1035000,
+    "foreign": 85000,
     "trust": 0
   },
   {
     "code": "2548",
     "date": "2026-05-12",
-    "foreign": -1772525,
-    "trust": 36000
+    "foreign": -85000,
+    "trust": 0
   },
   {
     "code": "2596",
@@ -4910,134 +3722,122 @@
   {
     "code": "2597",
     "date": "2026-05-12",
-    "foreign": 324350,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "2601",
     "date": "2026-05-12",
-    "foreign": -648000,
+    "foreign": -497000,
     "trust": 0
   },
   {
     "code": "2603",
     "date": "2026-05-12",
-    "foreign": 929128,
-    "trust": -273452
+    "foreign": 641987,
+    "trust": -715000
   },
   {
     "code": "2605",
     "date": "2026-05-12",
-    "foreign": -8915,
+    "foreign": 31000,
     "trust": 0
   },
   {
     "code": "2606",
     "date": "2026-05-12",
-    "foreign": 3520978,
-    "trust": -3675000
+    "foreign": 495000,
+    "trust": 0
   },
   {
     "code": "2607",
     "date": "2026-05-12",
-    "foreign": -367000,
-    "trust": -4000
+    "foreign": 48000,
+    "trust": 0
   },
   {
     "code": "2608",
-    "date": "2026-05-12",
-    "foreign": -123880,
-    "trust": 0
-  },
-  {
-    "code": "2609",
-    "date": "2026-05-12",
-    "foreign": -2863471,
-    "trust": 16014
-  },
-  {
-    "code": "2610",
-    "date": "2026-05-12",
-    "foreign": -5235157,
-    "trust": -7608000
-  },
-  {
-    "code": "2611",
-    "date": "2026-05-12",
-    "foreign": -163000,
-    "trust": 0
-  },
-  {
-    "code": "2612",
-    "date": "2026-05-12",
-    "foreign": -197000,
-    "trust": 0
-  },
-  {
-    "code": "2613",
-    "date": "2026-05-12",
-    "foreign": -109000,
-    "trust": 0
-  },
-  {
-    "code": "2614",
-    "date": "2026-05-12",
-    "foreign": -291575,
-    "trust": 0
-  },
-  {
-    "code": "2615",
-    "date": "2026-05-12",
-    "foreign": -1393688,
-    "trust": -22659
-  },
-  {
-    "code": "2616",
-    "date": "2026-05-12",
-    "foreign": 55984,
-    "trust": 0
-  },
-  {
-    "code": "2617",
-    "date": "2026-05-12",
-    "foreign": -238000,
-    "trust": 0
-  },
-  {
-    "code": "2618",
-    "date": "2026-05-12",
-    "foreign": -9296871,
-    "trust": -4797873
-  },
-  {
-    "code": "2630",
-    "date": "2026-05-12",
-    "foreign": -441187,
-    "trust": 0
-  },
-  {
-    "code": "2633",
-    "date": "2026-05-12",
-    "foreign": -329925,
-    "trust": -105000
-  },
-  {
-    "code": "2634",
-    "date": "2026-05-12",
-    "foreign": -108972,
-    "trust": -7000
-  },
-  {
-    "code": "2636",
     "date": "2026-05-12",
     "foreign": 25000,
     "trust": 0
   },
   {
+    "code": "2609",
+    "date": "2026-05-12",
+    "foreign": -482000,
+    "trust": 0
+  },
+  {
+    "code": "2610",
+    "date": "2026-05-12",
+    "foreign": 2075000,
+    "trust": 0
+  },
+  {
+    "code": "2611",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "2612",
+    "date": "2026-05-12",
+    "foreign": -4000,
+    "trust": 0
+  },
+  {
+    "code": "2614",
+    "date": "2026-05-12",
+    "foreign": 603000,
+    "trust": 0
+  },
+  {
+    "code": "2615",
+    "date": "2026-05-12",
+    "foreign": -57000,
+    "trust": 0
+  },
+  {
+    "code": "2616",
+    "date": "2026-05-12",
+    "foreign": -24000,
+    "trust": 0
+  },
+  {
+    "code": "2617",
+    "date": "2026-05-12",
+    "foreign": 30000,
+    "trust": 0
+  },
+  {
+    "code": "2618",
+    "date": "2026-05-12",
+    "foreign": 2065000,
+    "trust": -59000
+  },
+  {
+    "code": "2633",
+    "date": "2026-05-12",
+    "foreign": 520000,
+    "trust": 0
+  },
+  {
+    "code": "2634",
+    "date": "2026-05-12",
+    "foreign": 230000,
+    "trust": 232000
+  },
+  {
+    "code": "2636",
+    "date": "2026-05-12",
+    "foreign": 10000,
+    "trust": 0
+  },
+  {
     "code": "2637",
     "date": "2026-05-12",
-    "foreign": -873500,
-    "trust": -10413
+    "foreign": 292000,
+    "trust": 0
   },
   {
     "code": "2640",
@@ -5054,7 +3854,7 @@
   {
     "code": "2642",
     "date": "2026-05-12",
-    "foreign": -9000,
+    "foreign": -4000,
     "trust": 0
   },
   {
@@ -5064,57 +3864,33 @@
     "trust": 0
   },
   {
-    "code": "2645",
-    "date": "2026-05-12",
-    "foreign": 210257,
-    "trust": -3000
-  },
-  {
-    "code": "2646",
-    "date": "2026-05-12",
-    "foreign": 1330383,
-    "trust": 0
-  },
-  {
     "code": "2701",
     "date": "2026-05-12",
-    "foreign": -19000,
-    "trust": 0
-  },
-  {
-    "code": "2702",
-    "date": "2026-05-12",
-    "foreign": -16000,
+    "foreign": -10000,
     "trust": 0
   },
   {
     "code": "2704",
     "date": "2026-05-12",
-    "foreign": 18000,
+    "foreign": -9000,
     "trust": 0
   },
   {
     "code": "2705",
     "date": "2026-05-12",
-    "foreign": -77020,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "2706",
     "date": "2026-05-12",
-    "foreign": -12000,
+    "foreign": -6000,
     "trust": 0
   },
   {
     "code": "2707",
     "date": "2026-05-12",
-    "foreign": -87000,
-    "trust": 0
-  },
-  {
-    "code": "2712",
-    "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": -6000,
     "trust": 0
   },
   {
@@ -5130,16 +3906,10 @@
     "trust": 0
   },
   {
-    "code": "2722",
-    "date": "2026-05-12",
-    "foreign": -9000,
-    "trust": 0
-  },
-  {
     "code": "2723",
     "date": "2026-05-12",
-    "foreign": -62000,
-    "trust": 0
+    "foreign": -31000,
+    "trust": 75000
   },
   {
     "code": "2726",
@@ -5150,8 +3920,8 @@
   {
     "code": "2727",
     "date": "2026-05-12",
-    "foreign": 116030,
-    "trust": 9000
+    "foreign": -8000,
+    "trust": 0
   },
   {
     "code": "2729",
@@ -5162,8 +3932,8 @@
   {
     "code": "2731",
     "date": "2026-05-12",
-    "foreign": -630687,
-    "trust": 21000
+    "foreign": -10000,
+    "trust": 0
   },
   {
     "code": "2732",
@@ -5186,7 +3956,7 @@
   {
     "code": "2739",
     "date": "2026-05-12",
-    "foreign": -30000,
+    "foreign": 3000,
     "trust": 0
   },
   {
@@ -5204,7 +3974,7 @@
   {
     "code": "2748",
     "date": "2026-05-12",
-    "foreign": 4000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -5212,12 +3982,6 @@
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
-  },
-  {
-    "code": "2753",
-    "date": "2026-05-12",
-    "foreign": -96000,
-    "trust": -4331
   },
   {
     "code": "2754",
@@ -5238,139 +4002,151 @@
     "trust": 0
   },
   {
-    "code": "2762",
+    "code": "2801",
     "date": "2026-05-12",
-    "foreign": -27000,
+    "foreign": -884306,
     "trust": 0
   },
   {
-    "code": "2801",
+    "code": "2809",
     "date": "2026-05-12",
-    "foreign": -22780863,
-    "trust": -633000
+    "foreign": 9000,
+    "trust": 90000
   },
   {
     "code": "2812",
     "date": "2026-05-12",
-    "foreign": -6529801,
-    "trust": -15000
+    "foreign": 345000,
+    "trust": 991000
   },
   {
     "code": "2816",
     "date": "2026-05-12",
-    "foreign": -135000,
+    "foreign": 71000,
     "trust": 0
   },
   {
     "code": "2820",
     "date": "2026-05-12",
-    "foreign": -437000,
-    "trust": 5000
+    "foreign": -71000,
+    "trust": 0
+  },
+  {
+    "code": "2823",
+    "date": "2026-05-12",
+    "foreign": -2191000,
+    "trust": 190000
   },
   {
     "code": "2832",
     "date": "2026-05-12",
-    "foreign": 54000,
+    "foreign": 29000,
     "trust": 0
   },
   {
     "code": "2834",
     "date": "2026-05-12",
-    "foreign": -20867124,
-    "trust": -55000
+    "foreign": -2132000,
+    "trust": 0
   },
   {
     "code": "2836",
     "date": "2026-05-12",
-    "foreign": -479150,
+    "foreign": 7000,
     "trust": 0
   },
   {
     "code": "2838",
     "date": "2026-05-12",
-    "foreign": -256000,
-    "trust": -9000
+    "foreign": -97000,
+    "trust": 0
+  },
+  {
+    "code": "2838A",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
+    "code": "2841",
+    "date": "2026-05-12",
+    "foreign": 223000,
+    "trust": 0
   },
   {
     "code": "2845",
     "date": "2026-05-12",
-    "foreign": -2251472,
-    "trust": -26000
+    "foreign": -377000,
+    "trust": -1042000
   },
   {
     "code": "2849",
     "date": "2026-05-12",
-    "foreign": -63000,
+    "foreign": -11000,
     "trust": 0
   },
   {
     "code": "2850",
     "date": "2026-05-12",
-    "foreign": -61972,
-    "trust": -27000
+    "foreign": 15000,
+    "trust": 0
   },
   {
     "code": "2851",
     "date": "2026-05-12",
-    "foreign": 4281000,
-    "trust": 10000
+    "foreign": 16000,
+    "trust": 0
   },
   {
     "code": "2852",
     "date": "2026-05-12",
-    "foreign": 73000,
-    "trust": -3379
+    "foreign": -29000,
+    "trust": 0
   },
   {
     "code": "2855",
     "date": "2026-05-12",
-    "foreign": -6550956,
-    "trust": 438500
+    "foreign": -368000,
+    "trust": 0
+  },
+  {
+    "code": "2856",
+    "date": "2026-05-12",
+    "foreign": -179000,
+    "trust": 0
   },
   {
     "code": "2867",
     "date": "2026-05-12",
-    "foreign": 256000,
+    "foreign": -22000,
     "trust": 0
   },
   {
     "code": "2880",
     "date": "2026-05-12",
-    "foreign": -7671570,
-    "trust": -690000
+    "foreign": -519184,
+    "trust": 0
   },
   {
     "code": "2881",
     "date": "2026-05-12",
-    "foreign": -1610542,
-    "trust": -6072843
-  },
-  {
-    "code": "2881B",
-    "date": "2026-05-12",
-    "foreign": -5000,
+    "foreign": 1879000,
     "trust": 0
   },
   {
-    "code": "2881C",
+    "code": "2881A",
     "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "2882",
     "date": "2026-05-12",
-    "foreign": -8338133,
-    "trust": -3319807
+    "foreign": -1882000,
+    "trust": 146000
   },
   {
     "code": "2882A",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "2882B",
     "date": "2026-05-12",
     "foreign": -9000,
     "trust": 0
@@ -5378,157 +4154,127 @@
   {
     "code": "2883",
     "date": "2026-05-12",
-    "foreign": -21932494,
-    "trust": -6866482
-  },
-  {
-    "code": "2883B",
-    "date": "2026-05-12",
-    "foreign": 99000,
-    "trust": 0
+    "foreign": 5660887,
+    "trust": 537000
   },
   {
     "code": "2884",
     "date": "2026-05-12",
-    "foreign": -10937667,
-    "trust": -5374847
+    "foreign": -2174149,
+    "trust": 100000
   },
   {
     "code": "2885",
     "date": "2026-05-12",
-    "foreign": -8398235,
-    "trust": -3908713
+    "foreign": -3427000,
+    "trust": 0
   },
   {
     "code": "2886",
     "date": "2026-05-12",
-    "foreign": -7427375,
-    "trust": -485803
+    "foreign": -625089,
+    "trust": 231000
   },
   {
     "code": "2887",
     "date": "2026-05-12",
-    "foreign": 43324909,
-    "trust": -76326320
-  },
-  {
-    "code": "2887E",
-    "date": "2026-05-12",
-    "foreign": -9000,
+    "foreign": -196223,
     "trust": 0
   },
   {
-    "code": "2887F",
+    "code": "2888",
     "date": "2026-05-12",
-    "foreign": 6661,
-    "trust": 0
-  },
-  {
-    "code": "2887I",
-    "date": "2026-05-12",
-    "foreign": -1157000,
+    "foreign": 8438000,
     "trust": 0
   },
   {
     "code": "2889",
     "date": "2026-05-12",
-    "foreign": -1219000,
-    "trust": -11000
+    "foreign": -110000,
+    "trust": 0
   },
   {
     "code": "2890",
     "date": "2026-05-12",
-    "foreign": 2098143,
-    "trust": -1039428
+    "foreign": 240735,
+    "trust": 0
   },
   {
     "code": "2891",
     "date": "2026-05-12",
-    "foreign": -25961121,
-    "trust": -15292662
-  },
-  {
-    "code": "2891B",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "2891C",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 80000
+    "foreign": 4849000,
+    "trust": 4422000
   },
   {
     "code": "2892",
     "date": "2026-05-12",
-    "foreign": 10374585,
-    "trust": -363825
+    "foreign": 65408,
+    "trust": 0
   },
   {
     "code": "2897",
     "date": "2026-05-12",
-    "foreign": 288000,
-    "trust": 9000
+    "foreign": -34000,
+    "trust": 0
   },
   {
     "code": "2901",
     "date": "2026-05-12",
-    "foreign": -5990,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "2903",
     "date": "2026-05-12",
-    "foreign": -1065000,
-    "trust": -77000
-  },
-  {
-    "code": "2904",
-    "date": "2026-05-12",
-    "foreign": -7000,
+    "foreign": 174000,
     "trust": 0
   },
   {
     "code": "2905",
     "date": "2026-05-12",
-    "foreign": -88000,
+    "foreign": -48000,
     "trust": 0
   },
   {
     "code": "2906",
     "date": "2026-05-12",
-    "foreign": -8000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "2908",
     "date": "2026-05-12",
-    "foreign": -115000,
+    "foreign": 147000,
     "trust": 0
   },
   {
     "code": "2910",
     "date": "2026-05-12",
-    "foreign": -10000,
+    "foreign": -4000,
+    "trust": 0
+  },
+  {
+    "code": "2911",
+    "date": "2026-05-12",
+    "foreign": 10000,
     "trust": 0
   },
   {
     "code": "2912",
     "date": "2026-05-12",
-    "foreign": 86299,
-    "trust": -38000
+    "foreign": 239389,
+    "trust": 0
   },
   {
     "code": "2913",
     "date": "2026-05-12",
-    "foreign": -80000,
+    "foreign": 92000,
     "trust": 0
   },
   {
     "code": "2915",
     "date": "2026-05-12",
-    "foreign": -69000,
+    "foreign": -81000,
     "trust": 0
   },
   {
@@ -5540,7 +4286,7 @@
   {
     "code": "2923",
     "date": "2026-05-12",
-    "foreign": -23000,
+    "foreign": -11000,
     "trust": 0
   },
   {
@@ -5552,7 +4298,13 @@
   {
     "code": "2929",
     "date": "2026-05-12",
-    "foreign": -109000,
+    "foreign": 164000,
+    "trust": 0
+  },
+  {
+    "code": "2936",
+    "date": "2026-05-12",
+    "foreign": -6000,
     "trust": 0
   },
   {
@@ -5562,21 +4314,9 @@
     "trust": 0
   },
   {
-    "code": "2939",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
     "code": "2941",
     "date": "2026-05-12",
     "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "2945",
-    "date": "2026-05-12",
-    "foreign": -3000,
     "trust": 0
   },
   {
@@ -5594,313 +4334,307 @@
   {
     "code": "3003",
     "date": "2026-05-12",
-    "foreign": -253205,
+    "foreign": -177000,
     "trust": 0
   },
   {
     "code": "3004",
     "date": "2026-05-12",
-    "foreign": -71000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "3005",
     "date": "2026-05-12",
-    "foreign": -1154000,
-    "trust": -26025
+    "foreign": 936200,
+    "trust": 175000
   },
   {
     "code": "3006",
     "date": "2026-05-12",
-    "foreign": 2286345,
-    "trust": 14000
+    "foreign": 346000,
+    "trust": -258000
   },
   {
     "code": "3008",
     "date": "2026-05-12",
-    "foreign": 228006,
-    "trust": 154000
+    "foreign": 186563,
+    "trust": -31600
   },
   {
     "code": "3010",
     "date": "2026-05-12",
-    "foreign": 20860,
-    "trust": -55000
+    "foreign": -13000,
+    "trust": 0
   },
   {
     "code": "3011",
     "date": "2026-05-12",
-    "foreign": -125000,
+    "foreign": 8000,
     "trust": 0
   },
   {
     "code": "3013",
     "date": "2026-05-12",
-    "foreign": -143910,
+    "foreign": -407000,
     "trust": 0
   },
   {
     "code": "3014",
     "date": "2026-05-12",
-    "foreign": 36660,
-    "trust": -7783
+    "foreign": 232000,
+    "trust": 150000
   },
   {
     "code": "3015",
     "date": "2026-05-12",
-    "foreign": -2000,
+    "foreign": 30000,
     "trust": 0
   },
   {
     "code": "3016",
     "date": "2026-05-12",
-    "foreign": -375846,
+    "foreign": -73000,
     "trust": 0
   },
   {
     "code": "3017",
     "date": "2026-05-12",
-    "foreign": -1080776,
-    "trust": 785224
+    "foreign": -110000,
+    "trust": 0
+  },
+  {
+    "code": "3018",
+    "date": "2026-05-12",
+    "foreign": 28999,
+    "trust": 0
   },
   {
     "code": "3019",
     "date": "2026-05-12",
-    "foreign": -288000,
-    "trust": -491
+    "foreign": -531000,
+    "trust": 0
   },
   {
     "code": "3021",
     "date": "2026-05-12",
-    "foreign": -9000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "3022",
     "date": "2026-05-12",
-    "foreign": 220648,
-    "trust": 0
+    "foreign": -93000,
+    "trust": -234000
   },
   {
     "code": "3023",
     "date": "2026-05-12",
-    "foreign": 137300,
-    "trust": -1000
+    "foreign": 216876,
+    "trust": -54000
   },
   {
     "code": "3024",
     "date": "2026-05-12",
-    "foreign": 457000,
+    "foreign": -29000,
     "trust": 0
   },
   {
     "code": "3025",
     "date": "2026-05-12",
-    "foreign": 47000,
+    "foreign": 5000,
     "trust": 0
   },
   {
     "code": "3026",
     "date": "2026-05-12",
-    "foreign": 367311,
-    "trust": -12000
+    "foreign": 755000,
+    "trust": 344000
   },
   {
     "code": "3027",
     "date": "2026-05-12",
-    "foreign": 129000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "3028",
     "date": "2026-05-12",
-    "foreign": 645609,
+    "foreign": 15000,
     "trust": 0
   },
   {
     "code": "3029",
     "date": "2026-05-12",
-    "foreign": -16000,
+    "foreign": 68000,
     "trust": 0
   },
   {
     "code": "3030",
     "date": "2026-05-12",
-    "foreign": 76015,
-    "trust": 0
+    "foreign": 7400,
+    "trust": 50000
   },
   {
     "code": "3031",
     "date": "2026-05-12",
-    "foreign": 359036,
-    "trust": -6000
+    "foreign": 50000,
+    "trust": 0
   },
   {
     "code": "3032",
-    "date": "2026-05-12",
-    "foreign": -737000,
-    "trust": 0
-  },
-  {
-    "code": "3033",
-    "date": "2026-05-12",
-    "foreign": 5852000,
-    "trust": -31392
-  },
-  {
-    "code": "3034",
-    "date": "2026-05-12",
-    "foreign": 3403369,
-    "trust": -198845
-  },
-  {
-    "code": "3035",
-    "date": "2026-05-12",
-    "foreign": -2047991,
-    "trust": 0
-  },
-  {
-    "code": "3036",
-    "date": "2026-05-12",
-    "foreign": -8350724,
-    "trust": 7615961
-  },
-  {
-    "code": "3037",
-    "date": "2026-05-12",
-    "foreign": 1088780,
-    "trust": 2464104
-  },
-  {
-    "code": "3038",
-    "date": "2026-05-12",
-    "foreign": 71000,
-    "trust": -1437
-  },
-  {
-    "code": "3040",
-    "date": "2026-05-12",
-    "foreign": 8000,
-    "trust": -3000
-  },
-  {
-    "code": "3041",
-    "date": "2026-05-12",
-    "foreign": 3000,
-    "trust": 0
-  },
-  {
-    "code": "3042",
-    "date": "2026-05-12",
-    "foreign": 1277636,
-    "trust": -59000
-  },
-  {
-    "code": "3043",
     "date": "2026-05-12",
     "foreign": -21000,
     "trust": 0
   },
   {
-    "code": "3044",
+    "code": "3033",
     "date": "2026-05-12",
-    "foreign": 33926,
-    "trust": 171864
-  },
-  {
-    "code": "3045",
-    "date": "2026-05-12",
-    "foreign": 587089,
-    "trust": -739006
-  },
-  {
-    "code": "3046",
-    "date": "2026-05-12",
-    "foreign": -18000,
+    "foreign": -17000,
     "trust": 0
   },
   {
-    "code": "3047",
+    "code": "3034",
     "date": "2026-05-12",
-    "foreign": 518000,
+    "foreign": -58000,
+    "trust": -2000
+  },
+  {
+    "code": "3035",
+    "date": "2026-05-12",
+    "foreign": 494000,
+    "trust": 257000
+  },
+  {
+    "code": "3036",
+    "date": "2026-05-12",
+    "foreign": -111000,
+    "trust": 532000
+  },
+  {
+    "code": "3037",
+    "date": "2026-05-12",
+    "foreign": -3327000,
     "trust": 0
   },
   {
-    "code": "3048",
+    "code": "3038",
     "date": "2026-05-12",
-    "foreign": 3959713,
+    "foreign": 9000,
     "trust": 0
   },
   {
-    "code": "3049",
-    "date": "2026-05-12",
-    "foreign": -1397958,
-    "trust": 0
-  },
-  {
-    "code": "3050",
+    "code": "3040",
     "date": "2026-05-12",
     "foreign": 0,
     "trust": 0
   },
   {
+    "code": "3041",
+    "date": "2026-05-12",
+    "foreign": 236000,
+    "trust": 233000
+  },
+  {
+    "code": "3042",
+    "date": "2026-05-12",
+    "foreign": -31000,
+    "trust": -145000
+  },
+  {
+    "code": "3044",
+    "date": "2026-05-12",
+    "foreign": -215000,
+    "trust": -138000
+  },
+  {
+    "code": "3045",
+    "date": "2026-05-12",
+    "foreign": -1002000,
+    "trust": 415000
+  },
+  {
+    "code": "3047",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
+    "code": "3048",
+    "date": "2026-05-12",
+    "foreign": 400000,
+    "trust": 0
+  },
+  {
+    "code": "3049",
+    "date": "2026-05-12",
+    "foreign": -113000,
+    "trust": 0
+  },
+  {
+    "code": "3050",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
     "code": "3051",
     "date": "2026-05-12",
-    "foreign": 294519,
+    "foreign": -71000,
     "trust": 0
   },
   {
     "code": "3052",
     "date": "2026-05-12",
-    "foreign": -63000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "3054",
     "date": "2026-05-12",
-    "foreign": -47000,
+    "foreign": 1000,
     "trust": 0
   },
   {
     "code": "3055",
     "date": "2026-05-12",
-    "foreign": 1169962,
+    "foreign": -17000,
     "trust": 0
   },
   {
     "code": "3056",
     "date": "2026-05-12",
-    "foreign": -152000,
+    "foreign": 48000,
     "trust": 0
   },
   {
     "code": "3057",
     "date": "2026-05-12",
-    "foreign": -166000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "3058",
     "date": "2026-05-12",
-    "foreign": -138000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "3059",
     "date": "2026-05-12",
-    "foreign": -103482,
-    "trust": -1000
+    "foreign": -235000,
+    "trust": 0
   },
   {
     "code": "3060",
     "date": "2026-05-12",
-    "foreign": 197000,
+    "foreign": -20400,
     "trust": 0
   },
   {
     "code": "3062",
     "date": "2026-05-12",
-    "foreign": -1594068,
+    "foreign": 12000,
     "trust": 0
   },
   {
@@ -5966,13 +4700,7 @@
   {
     "code": "3090",
     "date": "2026-05-12",
-    "foreign": -2232200,
-    "trust": 0
-  },
-  {
-    "code": "3092",
-    "date": "2026-05-12",
-    "foreign": -11000,
+    "foreign": 703000,
     "trust": 0
   },
   {
@@ -5984,7 +4712,7 @@
   {
     "code": "3094",
     "date": "2026-05-12",
-    "foreign": 87000,
+    "foreign": 28000,
     "trust": 0
   },
   {
@@ -6026,7 +4754,7 @@
   {
     "code": "3130",
     "date": "2026-05-12",
-    "foreign": -3000,
+    "foreign": 3000,
     "trust": 0
   },
   {
@@ -6034,18 +4762,6 @@
     "date": "2026-05-12",
     "foreign": 108975,
     "trust": -104773
-  },
-  {
-    "code": "3135",
-    "date": "2026-05-12",
-    "foreign": 1668900,
-    "trust": 0
-  },
-  {
-    "code": "3138",
-    "date": "2026-05-12",
-    "foreign": 91000,
-    "trust": 0
   },
   {
     "code": "3141",
@@ -6062,13 +4778,7 @@
   {
     "code": "3149",
     "date": "2026-05-12",
-    "foreign": 1551976,
-    "trust": 0
-  },
-  {
-    "code": "3150",
-    "date": "2026-05-12",
-    "foreign": 12000,
+    "foreign": 14000,
     "trust": 0
   },
   {
@@ -6098,19 +4808,13 @@
   {
     "code": "3164",
     "date": "2026-05-12",
-    "foreign": -22000,
+    "foreign": -9000,
     "trust": 0
   },
   {
     "code": "3167",
     "date": "2026-05-12",
-    "foreign": 203528,
-    "trust": -29000
-  },
-  {
-    "code": "3168",
-    "date": "2026-05-12",
-    "foreign": -13000,
+    "foreign": 24000,
     "trust": 0
   },
   {
@@ -6146,8 +4850,8 @@
   {
     "code": "3189",
     "date": "2026-05-12",
-    "foreign": -1011550,
-    "trust": -1166269
+    "foreign": -441000,
+    "trust": 128000
   },
   {
     "code": "3205",
@@ -6170,8 +4874,8 @@
   {
     "code": "3209",
     "date": "2026-05-12",
-    "foreign": 958365,
-    "trust": 130560
+    "foreign": -12000,
+    "trust": 0
   },
   {
     "code": "3211",
@@ -6230,7 +4934,7 @@
   {
     "code": "3229",
     "date": "2026-05-12",
-    "foreign": -153000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -6242,8 +4946,8 @@
   {
     "code": "3231",
     "date": "2026-05-12",
-    "foreign": 20508129,
-    "trust": -112177
+    "foreign": -1396345,
+    "trust": 182000
   },
   {
     "code": "3232",
@@ -6272,7 +4976,7 @@
   {
     "code": "3257",
     "date": "2026-05-12",
-    "foreign": -41000,
+    "foreign": -6000,
     "trust": 0
   },
   {
@@ -6297,12 +5001,6 @@
     "code": "3265",
     "date": "2026-05-12",
     "foreign": 33346,
-    "trust": 0
-  },
-  {
-    "code": "3266",
-    "date": "2026-05-12",
-    "foreign": 4000,
     "trust": 0
   },
   {
@@ -6368,7 +5066,7 @@
   {
     "code": "3296",
     "date": "2026-05-12",
-    "foreign": -53000,
+    "foreign": -31000,
     "trust": 0
   },
   {
@@ -6386,7 +5084,7 @@
   {
     "code": "3305",
     "date": "2026-05-12",
-    "foreign": 5093890,
+    "foreign": 17000,
     "trust": 0
   },
   {
@@ -6398,7 +5096,7 @@
   {
     "code": "3308",
     "date": "2026-05-12",
-    "foreign": 57000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -6410,13 +5108,13 @@
   {
     "code": "3311",
     "date": "2026-05-12",
-    "foreign": 98088,
+    "foreign": 116000,
     "trust": 0
   },
   {
     "code": "3312",
     "date": "2026-05-12",
-    "foreign": 484113,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -6434,7 +5132,7 @@
   {
     "code": "3321",
     "date": "2026-05-12",
-    "foreign": 86000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -6470,7 +5168,7 @@
   {
     "code": "3338",
     "date": "2026-05-12",
-    "foreign": -341013,
+    "foreign": -6000,
     "trust": 0
   },
   {
@@ -6482,7 +5180,7 @@
   {
     "code": "3346",
     "date": "2026-05-12",
-    "foreign": -62000,
+    "foreign": 13000,
     "trust": 0
   },
   {
@@ -6500,7 +5198,7 @@
   {
     "code": "3356",
     "date": "2026-05-12",
-    "foreign": -123199,
+    "foreign": 40106,
     "trust": 0
   },
   {
@@ -6548,8 +5246,8 @@
   {
     "code": "3376",
     "date": "2026-05-12",
-    "foreign": -293000,
-    "trust": -17976
+    "foreign": 16000,
+    "trust": 0
   },
   {
     "code": "3379",
@@ -6560,7 +5258,7 @@
   {
     "code": "3380",
     "date": "2026-05-12",
-    "foreign": -167000,
+    "foreign": -33000,
     "trust": 0
   },
   {
@@ -6584,37 +5282,31 @@
   {
     "code": "3406",
     "date": "2026-05-12",
-    "foreign": -37636,
-    "trust": -49000
+    "foreign": -498000,
+    "trust": 0
   },
   {
     "code": "3413",
     "date": "2026-05-12",
-    "foreign": 170900,
-    "trust": -2000
+    "foreign": -171000,
+    "trust": 0
   },
   {
     "code": "3416",
     "date": "2026-05-12",
-    "foreign": 193000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "3419",
     "date": "2026-05-12",
-    "foreign": -4000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "3430",
     "date": "2026-05-12",
     "foreign": -543889,
-    "trust": 0
-  },
-  {
-    "code": "3432",
-    "date": "2026-05-12",
-    "foreign": 14000,
     "trust": 0
   },
   {
@@ -6626,7 +5318,7 @@
   {
     "code": "3437",
     "date": "2026-05-12",
-    "foreign": 613000,
+    "foreign": -121000,
     "trust": 0
   },
   {
@@ -6644,8 +5336,8 @@
   {
     "code": "3443",
     "date": "2026-05-12",
-    "foreign": -256050,
-    "trust": 278256
+    "foreign": -652000,
+    "trust": -125000
   },
   {
     "code": "3444",
@@ -6654,16 +5346,16 @@
     "trust": 0
   },
   {
-    "code": "3447",
-    "date": "2026-05-12",
-    "foreign": 81000,
-    "trust": 0
-  },
-  {
     "code": "3450",
     "date": "2026-05-12",
-    "foreign": 5718310,
-    "trust": 50000
+    "foreign": -273000,
+    "trust": 100000
+  },
+  {
+    "code": "3454",
+    "date": "2026-05-12",
+    "foreign": -47000,
+    "trust": 0
   },
   {
     "code": "3455",
@@ -6698,8 +5390,8 @@
   {
     "code": "3481",
     "date": "2026-05-12",
-    "foreign": 81994802,
-    "trust": -74905
+    "foreign": -5330089,
+    "trust": 424000
   },
   {
     "code": "3483",
@@ -6746,7 +5438,7 @@
   {
     "code": "3494",
     "date": "2026-05-12",
-    "foreign": -5000,
+    "foreign": 34000,
     "trust": 0
   },
   {
@@ -6764,13 +5456,13 @@
   {
     "code": "3501",
     "date": "2026-05-12",
-    "foreign": -221000,
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "3504",
     "date": "2026-05-12",
-    "foreign": 10996,
+    "foreign": 25000,
     "trust": 0
   },
   {
@@ -6792,10 +5484,16 @@
     "trust": 0
   },
   {
+    "code": "3514",
+    "date": "2026-05-12",
+    "foreign": 49000,
+    "trust": 0
+  },
+  {
     "code": "3515",
     "date": "2026-05-12",
-    "foreign": -90981,
-    "trust": -2000
+    "foreign": -33000,
+    "trust": 0
   },
   {
     "code": "3516",
@@ -6806,7 +5504,13 @@
   {
     "code": "3518",
     "date": "2026-05-12",
-    "foreign": 583000,
+    "foreign": -31000,
+    "trust": 0
+  },
+  {
+    "code": "3519",
+    "date": "2026-05-12",
+    "foreign": 104000,
     "trust": 0
   },
   {
@@ -6842,7 +5546,7 @@
   {
     "code": "3528",
     "date": "2026-05-12",
-    "foreign": 167000,
+    "foreign": -13000,
     "trust": 0
   },
   {
@@ -6852,27 +5556,27 @@
     "trust": 78291
   },
   {
-    "code": "3530",
-    "date": "2026-05-12",
-    "foreign": -267000,
-    "trust": 0
-  },
-  {
     "code": "3532",
     "date": "2026-05-12",
-    "foreign": -7271,
+    "foreign": -11000,
     "trust": 0
   },
   {
     "code": "3533",
     "date": "2026-05-12",
-    "foreign": -161705,
-    "trust": 78098
+    "foreign": 5262,
+    "trust": 391000
   },
   {
     "code": "3535",
     "date": "2026-05-12",
-    "foreign": 64250,
+    "foreign": 6000,
+    "trust": 0
+  },
+  {
+    "code": "3536",
+    "date": "2026-05-12",
+    "foreign": -619000,
     "trust": 0
   },
   {
@@ -6894,16 +5598,10 @@
     "trust": 0
   },
   {
-    "code": "3543",
-    "date": "2026-05-12",
-    "foreign": 201023,
-    "trust": 0
-  },
-  {
     "code": "3545",
     "date": "2026-05-12",
-    "foreign": -232800,
-    "trust": -1000
+    "foreign": -485365,
+    "trust": 0
   },
   {
     "code": "3546",
@@ -6920,7 +5618,7 @@
   {
     "code": "3550",
     "date": "2026-05-12",
-    "foreign": -75000,
+    "foreign": 61000,
     "trust": 0
   },
   {
@@ -6948,22 +5646,16 @@
     "trust": 0
   },
   {
-    "code": "3557",
-    "date": "2026-05-12",
-    "foreign": 21000,
-    "trust": 0
-  },
-  {
     "code": "3558",
     "date": "2026-05-12",
     "foreign": 65000,
     "trust": 0
   },
   {
-    "code": "3563",
+    "code": "3561",
     "date": "2026-05-12",
-    "foreign": 106119,
-    "trust": -152000
+    "foreign": 1000,
+    "trust": 0
   },
   {
     "code": "3564",
@@ -6986,13 +5678,19 @@
   {
     "code": "3576",
     "date": "2026-05-12",
-    "foreign": -436000,
+    "foreign": -206000,
     "trust": 0
   },
   {
     "code": "3577",
     "date": "2026-05-12",
     "foreign": -1956,
+    "trust": 0
+  },
+  {
+    "code": "3579",
+    "date": "2026-05-12",
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -7010,8 +5708,8 @@
   {
     "code": "3583",
     "date": "2026-05-12",
-    "foreign": -561833,
-    "trust": 93517
+    "foreign": -77000,
+    "trust": 10000
   },
   {
     "code": "3587",
@@ -7022,25 +5720,19 @@
   {
     "code": "3588",
     "date": "2026-05-12",
-    "foreign": 26429,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "3591",
     "date": "2026-05-12",
-    "foreign": 219000,
+    "foreign": -2000,
     "trust": 0
-  },
-  {
-    "code": "3592",
-    "date": "2026-05-12",
-    "foreign": 206945,
-    "trust": 14732
   },
   {
     "code": "3593",
     "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": 3000,
     "trust": 0
   },
   {
@@ -7052,8 +5744,8 @@
   {
     "code": "3596",
     "date": "2026-05-12",
-    "foreign": 221008,
-    "trust": 1000
+    "foreign": 1295000,
+    "trust": 0
   },
   {
     "code": "3597",
@@ -7064,13 +5756,13 @@
   {
     "code": "3605",
     "date": "2026-05-12",
-    "foreign": 642010,
+    "foreign": 59000,
     "trust": 0
   },
   {
     "code": "3607",
     "date": "2026-05-12",
-    "foreign": -381000,
+    "foreign": 18000,
     "trust": 0
   },
   {
@@ -7094,13 +5786,13 @@
   {
     "code": "3617",
     "date": "2026-05-12",
-    "foreign": -157000,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "3622",
     "date": "2026-05-12",
-    "foreign": -103000,
+    "foreign": 89000,
     "trust": 0
   },
   {
@@ -7142,8 +5834,8 @@
   {
     "code": "3645",
     "date": "2026-05-12",
-    "foreign": -1478394,
-    "trust": -8000
+    "foreign": 249000,
+    "trust": -55000
   },
   {
     "code": "3646",
@@ -7152,22 +5844,16 @@
     "trust": 0
   },
   {
-    "code": "3652",
-    "date": "2026-05-12",
-    "foreign": -33000,
-    "trust": 0
-  },
-  {
     "code": "3653",
     "date": "2026-05-12",
-    "foreign": -419869,
-    "trust": 424885
+    "foreign": 7000,
+    "trust": 0
   },
   {
     "code": "3661",
     "date": "2026-05-12",
-    "foreign": 77741,
-    "trust": 82846
+    "foreign": -344000,
+    "trust": 0
   },
   {
     "code": "3663",
@@ -7184,19 +5870,13 @@
   {
     "code": "3665",
     "date": "2026-05-12",
-    "foreign": 396961,
-    "trust": -201000
+    "foreign": 175000,
+    "trust": 55000
   },
   {
     "code": "3666",
     "date": "2026-05-12",
     "foreign": 54000,
-    "trust": 0
-  },
-  {
-    "code": "3669",
-    "date": "2026-05-12",
-    "foreign": 185000,
     "trust": 0
   },
   {
@@ -7208,7 +5888,7 @@
   {
     "code": "3673",
     "date": "2026-05-12",
-    "foreign": -2023514,
+    "foreign": -1798000,
     "trust": 0
   },
   {
@@ -7220,7 +5900,7 @@
   {
     "code": "3679",
     "date": "2026-05-12",
-    "foreign": -15033,
+    "foreign": -9000,
     "trust": 0
   },
   {
@@ -7228,6 +5908,12 @@
     "date": "2026-05-12",
     "foreign": -305629,
     "trust": 34385
+  },
+  {
+    "code": "3682",
+    "date": "2026-05-12",
+    "foreign": 689000,
+    "trust": 0
   },
   {
     "code": "3684",
@@ -7244,7 +5930,7 @@
   {
     "code": "3686",
     "date": "2026-05-12",
-    "foreign": -46000,
+    "foreign": -13000,
     "trust": 0
   },
   {
@@ -7274,44 +5960,44 @@
   {
     "code": "3694",
     "date": "2026-05-12",
-    "foreign": -287002,
+    "foreign": 37000,
     "trust": 0
   },
   {
-    "code": "3701",
+    "code": "3698",
     "date": "2026-05-12",
-    "foreign": -137887,
+    "foreign": -1230000,
     "trust": 0
   },
   {
     "code": "3702",
     "date": "2026-05-12",
-    "foreign": 2537083,
-    "trust": -3033000
+    "foreign": -3569115,
+    "trust": -998000
   },
   {
     "code": "3703",
     "date": "2026-05-12",
-    "foreign": -1477000,
+    "foreign": -71000,
     "trust": 0
   },
   {
     "code": "3704",
     "date": "2026-05-12",
-    "foreign": 1871329,
+    "foreign": -11000,
     "trust": 0
   },
   {
     "code": "3705",
     "date": "2026-05-12",
-    "foreign": -39985,
+    "foreign": 9000,
     "trust": 0
   },
   {
     "code": "3706",
     "date": "2026-05-12",
-    "foreign": 1300995,
-    "trust": 29121
+    "foreign": 379298,
+    "trust": 1801000
   },
   {
     "code": "3707",
@@ -7322,7 +6008,7 @@
   {
     "code": "3708",
     "date": "2026-05-12",
-    "foreign": 349020,
+    "foreign": 9000,
     "trust": 0
   },
   {
@@ -7338,45 +6024,9 @@
     "trust": 0
   },
   {
-    "code": "3711",
-    "date": "2026-05-12",
-    "foreign": -2401410,
-    "trust": 5151224
-  },
-  {
-    "code": "3712",
-    "date": "2026-05-12",
-    "foreign": 10095,
-    "trust": 0
-  },
-  {
     "code": "3713",
     "date": "2026-05-12",
     "foreign": -7000,
-    "trust": 0
-  },
-  {
-    "code": "3714",
-    "date": "2026-05-12",
-    "foreign": 8061011,
-    "trust": 0
-  },
-  {
-    "code": "3715",
-    "date": "2026-05-12",
-    "foreign": -1230894,
-    "trust": 30241
-  },
-  {
-    "code": "3716",
-    "date": "2026-05-12",
-    "foreign": -70815,
-    "trust": 0
-  },
-  {
-    "code": "3717",
-    "date": "2026-05-12",
-    "foreign": 290444,
     "trust": 0
   },
   {
@@ -7388,7 +6038,7 @@
   {
     "code": "4104",
     "date": "2026-05-12",
-    "foreign": -131000,
+    "foreign": -15000,
     "trust": 0
   },
   {
@@ -7400,7 +6050,7 @@
   {
     "code": "4106",
     "date": "2026-05-12",
-    "foreign": -20000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -7412,7 +6062,7 @@
   {
     "code": "4108",
     "date": "2026-05-12",
-    "foreign": -60000,
+    "foreign": 9000,
     "trust": 0
   },
   {
@@ -7448,7 +6098,7 @@
   {
     "code": "4119",
     "date": "2026-05-12",
-    "foreign": 26000,
+    "foreign": 2000,
     "trust": 0
   },
   {
@@ -7508,13 +6158,13 @@
   {
     "code": "4133",
     "date": "2026-05-12",
-    "foreign": -52990,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "4137",
     "date": "2026-05-12",
-    "foreign": 50000,
+    "foreign": -67000,
     "trust": 0
   },
   {
@@ -7530,9 +6180,21 @@
     "trust": 0
   },
   {
+    "code": "4141",
+    "date": "2026-05-12",
+    "foreign": 0,
+    "trust": 0
+  },
+  {
     "code": "4142",
     "date": "2026-05-12",
-    "foreign": -267000,
+    "foreign": -56000,
+    "trust": 0
+  },
+  {
+    "code": "4144",
+    "date": "2026-05-12",
+    "foreign": 4000,
     "trust": 0
   },
   {
@@ -7544,7 +6206,7 @@
   {
     "code": "4148",
     "date": "2026-05-12",
-    "foreign": -45000,
+    "foreign": -35000,
     "trust": 0
   },
   {
@@ -7556,7 +6218,7 @@
   {
     "code": "4155",
     "date": "2026-05-12",
-    "foreign": -13980,
+    "foreign": 91000,
     "trust": 0
   },
   {
@@ -7592,7 +6254,7 @@
   {
     "code": "4164",
     "date": "2026-05-12",
-    "foreign": -436990,
+    "foreign": -7000,
     "trust": 0
   },
   {
@@ -7611,12 +6273,6 @@
     "code": "4168",
     "date": "2026-05-12",
     "foreign": 3000,
-    "trust": 0
-  },
-  {
-    "code": "4169",
-    "date": "2026-05-12",
-    "foreign": 16000,
     "trust": 0
   },
   {
@@ -7644,21 +6300,9 @@
     "trust": 0
   },
   {
-    "code": "4178",
-    "date": "2026-05-12",
-    "foreign": 69000,
-    "trust": 0
-  },
-  {
     "code": "4190",
     "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "4195",
-    "date": "2026-05-12",
-    "foreign": -11800,
+    "foreign": -2000,
     "trust": 0
   },
   {
@@ -7694,7 +6338,7 @@
   {
     "code": "4306",
     "date": "2026-05-12",
-    "foreign": -153000,
+    "foreign": -29000,
     "trust": 0
   },
   {
@@ -7712,7 +6356,7 @@
   {
     "code": "4414",
     "date": "2026-05-12",
-    "foreign": -175000,
+    "foreign": 131000,
     "trust": 0
   },
   {
@@ -7736,7 +6380,7 @@
   {
     "code": "4426",
     "date": "2026-05-12",
-    "foreign": 34000,
+    "foreign": -7000,
     "trust": 0
   },
   {
@@ -7754,26 +6398,8 @@
   {
     "code": "4438",
     "date": "2026-05-12",
-    "foreign": -58000,
-    "trust": 0
-  },
-  {
-    "code": "4439",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "4440",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "4441",
-    "date": "2026-05-12",
-    "foreign": -9801,
-    "trust": 0
+    "foreign": -5000,
+    "trust": -47000
   },
   {
     "code": "4442",
@@ -7820,7 +6446,7 @@
   {
     "code": "4526",
     "date": "2026-05-12",
-    "foreign": -1186000,
+    "foreign": 19000,
     "trust": 0
   },
   {
@@ -7844,8 +6470,8 @@
   {
     "code": "4532",
     "date": "2026-05-12",
-    "foreign": 280000,
-    "trust": -32265
+    "foreign": 111000,
+    "trust": -442000
   },
   {
     "code": "4533",
@@ -7868,19 +6494,13 @@
   {
     "code": "4536",
     "date": "2026-05-12",
-    "foreign": 52000,
-    "trust": 0
+    "foreign": -2000,
+    "trust": -4000
   },
   {
     "code": "4538",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "4540",
-    "date": "2026-05-12",
-    "foreign": 928000,
     "trust": 0
   },
   {
@@ -7904,7 +6524,7 @@
   {
     "code": "4545",
     "date": "2026-05-12",
-    "foreign": -35000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -7922,14 +6542,14 @@
   {
     "code": "4551",
     "date": "2026-05-12",
-    "foreign": 576799,
-    "trust": 0
+    "foreign": 47000,
+    "trust": -40000
   },
   {
     "code": "4552",
     "date": "2026-05-12",
-    "foreign": -6000,
-    "trust": 0
+    "foreign": -2000,
+    "trust": 60000
   },
   {
     "code": "4554",
@@ -7940,19 +6560,13 @@
   {
     "code": "4555",
     "date": "2026-05-12",
-    "foreign": 39027,
+    "foreign": -4000,
     "trust": 0
   },
   {
     "code": "4556",
     "date": "2026-05-12",
     "foreign": -109000,
-    "trust": 0
-  },
-  {
-    "code": "4557",
-    "date": "2026-05-12",
-    "foreign": -14179,
     "trust": 0
   },
   {
@@ -7964,7 +6578,7 @@
   {
     "code": "4560",
     "date": "2026-05-12",
-    "foreign": 54000,
+    "foreign": -7000,
     "trust": 0
   },
   {
@@ -7976,7 +6590,7 @@
   {
     "code": "4562",
     "date": "2026-05-12",
-    "foreign": 139000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -7986,45 +6600,9 @@
     "trust": 0
   },
   {
-    "code": "4564",
-    "date": "2026-05-12",
-    "foreign": -167000,
-    "trust": 0
-  },
-  {
-    "code": "4566",
-    "date": "2026-05-12",
-    "foreign": -379217,
-    "trust": 0
-  },
-  {
     "code": "4568",
     "date": "2026-05-12",
     "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "4569",
-    "date": "2026-05-12",
-    "foreign": -15983,
-    "trust": 0
-  },
-  {
-    "code": "4571",
-    "date": "2026-05-12",
-    "foreign": 180958,
-    "trust": 0
-  },
-  {
-    "code": "4572",
-    "date": "2026-05-12",
-    "foreign": 9000,
-    "trust": 0
-  },
-  {
-    "code": "4576",
-    "date": "2026-05-12",
-    "foreign": 686076,
     "trust": 0
   },
   {
@@ -8037,36 +6615,6 @@
     "code": "4580",
     "date": "2026-05-12",
     "foreign": 29000,
-    "trust": 0
-  },
-  {
-    "code": "4581",
-    "date": "2026-05-12",
-    "foreign": -4000,
-    "trust": 0
-  },
-  {
-    "code": "4583",
-    "date": "2026-05-12",
-    "foreign": 41541,
-    "trust": 0
-  },
-  {
-    "code": "4585",
-    "date": "2026-05-12",
-    "foreign": 37100,
-    "trust": 0
-  },
-  {
-    "code": "4588",
-    "date": "2026-05-12",
-    "foreign": -108000,
-    "trust": 0
-  },
-  {
-    "code": "4590",
-    "date": "2026-05-12",
-    "foreign": 54000,
     "trust": 0
   },
   {
@@ -8106,12 +6654,6 @@
     "trust": 0
   },
   {
-    "code": "4720",
-    "date": "2026-05-12",
-    "foreign": 1442000,
-    "trust": -7504
-  },
-  {
     "code": "4721",
     "date": "2026-05-12",
     "foreign": -738000,
@@ -8120,7 +6662,13 @@
   {
     "code": "4722",
     "date": "2026-05-12",
-    "foreign": 733669,
+    "foreign": 6000,
+    "trust": 0
+  },
+  {
+    "code": "4725",
+    "date": "2026-05-12",
+    "foreign": -24000,
     "trust": 0
   },
   {
@@ -8148,22 +6696,16 @@
     "trust": 0
   },
   {
-    "code": "4736",
-    "date": "2026-05-12",
-    "foreign": -112000,
-    "trust": 0
-  },
-  {
     "code": "4737",
     "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "4739",
     "date": "2026-05-12",
-    "foreign": 2934527,
-    "trust": 0
+    "foreign": -551000,
+    "trust": 10000
   },
   {
     "code": "4741",
@@ -8192,8 +6734,8 @@
   {
     "code": "4746",
     "date": "2026-05-12",
-    "foreign": -296165,
-    "trust": 30000
+    "foreign": 53000,
+    "trust": 0
   },
   {
     "code": "4747",
@@ -8216,7 +6758,7 @@
   {
     "code": "4755",
     "date": "2026-05-12",
-    "foreign": -77000,
+    "foreign": 11000,
     "trust": 0
   },
   {
@@ -8228,20 +6770,8 @@
   {
     "code": "4763",
     "date": "2026-05-12",
-    "foreign": 549241,
+    "foreign": 4000,
     "trust": 0
-  },
-  {
-    "code": "4764",
-    "date": "2026-05-12",
-    "foreign": 22000,
-    "trust": 0
-  },
-  {
-    "code": "4766",
-    "date": "2026-05-12",
-    "foreign": 273214,
-    "trust": -62000
   },
   {
     "code": "4767",
@@ -8253,18 +6783,6 @@
     "code": "4768",
     "date": "2026-05-12",
     "foreign": -145282,
-    "trust": 0
-  },
-  {
-    "code": "4770",
-    "date": "2026-05-12",
-    "foreign": -159000,
-    "trust": 0
-  },
-  {
-    "code": "4771",
-    "date": "2026-05-12",
-    "foreign": -194000,
     "trust": 0
   },
   {
@@ -8282,7 +6800,7 @@
   {
     "code": "4807",
     "date": "2026-05-12",
-    "foreign": -91000,
+    "foreign": 2000,
     "trust": 0
   },
   {
@@ -8294,8 +6812,8 @@
   {
     "code": "4904",
     "date": "2026-05-12",
-    "foreign": 134972,
-    "trust": -442430
+    "foreign": 661964,
+    "trust": 0
   },
   {
     "code": "4905",
@@ -8306,8 +6824,8 @@
   {
     "code": "4906",
     "date": "2026-05-12",
-    "foreign": -4562425,
-    "trust": -31000
+    "foreign": -327000,
+    "trust": 0
   },
   {
     "code": "4907",
@@ -8336,26 +6854,26 @@
   {
     "code": "4912",
     "date": "2026-05-12",
-    "foreign": -32000,
+    "foreign": -14000,
     "trust": 0
   },
   {
     "code": "4915",
     "date": "2026-05-12",
-    "foreign": -2689051,
-    "trust": -183740
+    "foreign": -423630,
+    "trust": -306000
   },
   {
     "code": "4916",
     "date": "2026-05-12",
-    "foreign": 1936851,
+    "foreign": 9000,
     "trust": 0
   },
   {
     "code": "4919",
     "date": "2026-05-12",
-    "foreign": -6374706,
-    "trust": 3000
+    "foreign": 293000,
+    "trust": -751000
   },
   {
     "code": "4923",
@@ -8372,13 +6890,13 @@
   {
     "code": "4927",
     "date": "2026-05-12",
-    "foreign": -158497,
+    "foreign": 40000,
     "trust": 0
   },
   {
     "code": "4930",
     "date": "2026-05-12",
-    "foreign": 5000,
+    "foreign": -5000,
     "trust": 0
   },
   {
@@ -8396,20 +6914,20 @@
   {
     "code": "4934",
     "date": "2026-05-12",
-    "foreign": 524150,
+    "foreign": 19000,
     "trust": 0
   },
   {
     "code": "4935",
     "date": "2026-05-12",
-    "foreign": -64000,
+    "foreign": 19000,
     "trust": 0
   },
   {
     "code": "4938",
     "date": "2026-05-12",
-    "foreign": -4908660,
-    "trust": -308134
+    "foreign": 961710,
+    "trust": 89000
   },
   {
     "code": "4939",
@@ -8420,20 +6938,20 @@
   {
     "code": "4942",
     "date": "2026-05-12",
-    "foreign": -27000,
+    "foreign": -1000,
     "trust": 0
+  },
+  {
+    "code": "4943",
+    "date": "2026-05-12",
+    "foreign": -355000,
+    "trust": 37000
   },
   {
     "code": "4946",
     "date": "2026-05-12",
     "foreign": -3000,
     "trust": 0
-  },
-  {
-    "code": "4949",
-    "date": "2026-05-12",
-    "foreign": 281020,
-    "trust": -4000
   },
   {
     "code": "4951",
@@ -8444,7 +6962,7 @@
   {
     "code": "4952",
     "date": "2026-05-12",
-    "foreign": 123000,
+    "foreign": 5000,
     "trust": 0
   },
   {
@@ -8456,26 +6974,20 @@
   {
     "code": "4956",
     "date": "2026-05-12",
-    "foreign": -133000,
-    "trust": -6000
+    "foreign": -76000,
+    "trust": 0
   },
   {
     "code": "4958",
     "date": "2026-05-12",
-    "foreign": -4374030,
-    "trust": 821172
+    "foreign": -280000,
+    "trust": 0
   },
   {
     "code": "4960",
     "date": "2026-05-12",
-    "foreign": -2800479,
+    "foreign": -291000,
     "trust": 0
-  },
-  {
-    "code": "4961",
-    "date": "2026-05-12",
-    "foreign": 96912,
-    "trust": -1000
   },
   {
     "code": "4966",
@@ -8484,16 +6996,10 @@
     "trust": 2454000
   },
   {
-    "code": "4967",
-    "date": "2026-05-12",
-    "foreign": 120889,
-    "trust": 0
-  },
-  {
     "code": "4968",
     "date": "2026-05-12",
-    "foreign": 126751,
-    "trust": 0
+    "foreign": -77000,
+    "trust": 45000
   },
   {
     "code": "4971",
@@ -8516,14 +7022,14 @@
   {
     "code": "4976",
     "date": "2026-05-12",
-    "foreign": 180428,
+    "foreign": 37000,
     "trust": 0
   },
   {
     "code": "4977",
     "date": "2026-05-12",
-    "foreign": 414886,
-    "trust": -6000
+    "foreign": 152000,
+    "trust": 0
   },
   {
     "code": "4979",
@@ -8532,15 +7038,15 @@
     "trust": -680000
   },
   {
-    "code": "4987",
+    "code": "4984",
     "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": -32000,
     "trust": 0
   },
   {
-    "code": "4989",
+    "code": "4987",
     "date": "2026-05-12",
-    "foreign": -2717970,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -8552,7 +7058,7 @@
   {
     "code": "4994",
     "date": "2026-05-12",
-    "foreign": -5000,
+    "foreign": 0,
     "trust": 0
   },
   {
@@ -8564,14 +7070,14 @@
   {
     "code": "4999",
     "date": "2026-05-12",
-    "foreign": -22000,
+    "foreign": -3000,
     "trust": 0
   },
   {
     "code": "5007",
     "date": "2026-05-12",
     "foreign": -26000,
-    "trust": 0
+    "trust": -210000
   },
   {
     "code": "5009",
@@ -8624,7 +7130,7 @@
   {
     "code": "5203",
     "date": "2026-05-12",
-    "foreign": 17000,
+    "foreign": 6000,
     "trust": 0
   },
   {
@@ -8676,21 +7182,9 @@
     "trust": 0
   },
   {
-    "code": "5222",
-    "date": "2026-05-12",
-    "foreign": -27225,
-    "trust": -1000
-  },
-  {
     "code": "5223",
     "date": "2026-05-12",
     "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "5225",
-    "date": "2026-05-12",
-    "foreign": 142000,
     "trust": 0
   },
   {
@@ -8714,8 +7208,8 @@
   {
     "code": "5234",
     "date": "2026-05-12",
-    "foreign": 324051,
-    "trust": 0
+    "foreign": 39000,
+    "trust": 18000
   },
   {
     "code": "5236",
@@ -8726,14 +7220,8 @@
   {
     "code": "5243",
     "date": "2026-05-12",
-    "foreign": 429976,
-    "trust": 0
-  },
-  {
-    "code": "5244",
-    "date": "2026-05-12",
-    "foreign": -35000,
-    "trust": 0
+    "foreign": -63000,
+    "trust": -217000
   },
   {
     "code": "5245",
@@ -8750,7 +7238,7 @@
   {
     "code": "5258",
     "date": "2026-05-12",
-    "foreign": 75000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -8760,10 +7248,16 @@
     "trust": 0
   },
   {
+    "code": "5264",
+    "date": "2026-05-12",
+    "foreign": -1173000,
+    "trust": -85000
+  },
+  {
     "code": "5269",
     "date": "2026-05-12",
-    "foreign": 241243,
-    "trust": 158000
+    "foreign": 49000,
+    "trust": 59000
   },
   {
     "code": "5272",
@@ -8790,21 +7284,15 @@
     "trust": 0
   },
   {
-    "code": "5283",
-    "date": "2026-05-12",
-    "foreign": -64018,
-    "trust": 0
-  },
-  {
     "code": "5284",
     "date": "2026-05-12",
-    "foreign": 347890,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "5285",
     "date": "2026-05-12",
-    "foreign": 641009,
+    "foreign": -97826,
     "trust": 0
   },
   {
@@ -8816,7 +7304,7 @@
   {
     "code": "5288",
     "date": "2026-05-12",
-    "foreign": 54058,
+    "foreign": -26000,
     "trust": 0
   },
   {
@@ -8832,12 +7320,6 @@
     "trust": 0
   },
   {
-    "code": "5292",
-    "date": "2026-05-12",
-    "foreign": -21000,
-    "trust": -2000
-  },
-  {
     "code": "5299",
     "date": "2026-05-12",
     "foreign": -76000,
@@ -8850,10 +7332,10 @@
     "trust": 0
   },
   {
-    "code": "5306",
+    "code": "5305",
     "date": "2026-05-12",
-    "foreign": 252119,
-    "trust": 0
+    "foreign": -93189,
+    "trust": -154000
   },
   {
     "code": "5309",
@@ -8966,8 +7448,8 @@
   {
     "code": "5388",
     "date": "2026-05-12",
-    "foreign": 1307000,
-    "trust": -186000
+    "foreign": 60467,
+    "trust": 245000
   },
   {
     "code": "5392",
@@ -9014,8 +7496,8 @@
   {
     "code": "5434",
     "date": "2026-05-12",
-    "foreign": -251862,
-    "trust": -10000
+    "foreign": -112010,
+    "trust": 51000
   },
   {
     "code": "5438",
@@ -9086,13 +7568,13 @@
   {
     "code": "5469",
     "date": "2026-05-12",
-    "foreign": -1655950,
-    "trust": 0
+    "foreign": 4722000,
+    "trust": 1158000
   },
   {
     "code": "5471",
     "date": "2026-05-12",
-    "foreign": -93437,
+    "foreign": -203000,
     "trust": 0
   },
   {
@@ -9124,12 +7606,6 @@
     "date": "2026-05-12",
     "foreign": -6571848,
     "trust": 1555485
-  },
-  {
-    "code": "5484",
-    "date": "2026-05-12",
-    "foreign": 103011,
-    "trust": -4000
   },
   {
     "code": "5487",
@@ -9194,19 +7670,13 @@
   {
     "code": "5515",
     "date": "2026-05-12",
-    "foreign": -73000,
-    "trust": -5000
+    "foreign": -25000,
+    "trust": 0
   },
   {
     "code": "5516",
     "date": "2026-05-12",
     "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "5519",
-    "date": "2026-05-12",
-    "foreign": -230976,
     "trust": 0
   },
   {
@@ -9218,25 +7688,19 @@
   {
     "code": "5521",
     "date": "2026-05-12",
-    "foreign": -3320880,
+    "foreign": -525000,
     "trust": 0
   },
   {
     "code": "5522",
     "date": "2026-05-12",
-    "foreign": -378000,
-    "trust": -1000
+    "foreign": -61000,
+    "trust": 0
   },
   {
     "code": "5523",
     "date": "2026-05-12",
     "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "5525",
-    "date": "2026-05-12",
-    "foreign": -35000,
     "trust": 0
   },
   {
@@ -9254,20 +7718,20 @@
   {
     "code": "5531",
     "date": "2026-05-12",
-    "foreign": -298970,
+    "foreign": 25000,
     "trust": 0
   },
   {
     "code": "5533",
     "date": "2026-05-12",
-    "foreign": -33000,
+    "foreign": 13000,
     "trust": 0
   },
   {
     "code": "5534",
     "date": "2026-05-12",
-    "foreign": -337000,
-    "trust": 326000
+    "foreign": -294000,
+    "trust": 0
   },
   {
     "code": "5536",
@@ -9278,13 +7742,7 @@
   {
     "code": "5538",
     "date": "2026-05-12",
-    "foreign": -6000,
-    "trust": 0
-  },
-  {
-    "code": "5546",
-    "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": -2000,
     "trust": 0
   },
   {
@@ -9320,13 +7778,13 @@
   {
     "code": "5607",
     "date": "2026-05-12",
-    "foreign": 91201,
+    "foreign": -8000,
     "trust": 0
   },
   {
     "code": "5608",
     "date": "2026-05-12",
-    "foreign": 47000,
+    "foreign": 23000,
     "trust": 0
   },
   {
@@ -9350,7 +7808,7 @@
   {
     "code": "5706",
     "date": "2026-05-12",
-    "foreign": -149000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -9362,14 +7820,8 @@
   {
     "code": "5871",
     "date": "2026-05-12",
-    "foreign": -3825266,
-    "trust": -31186
-  },
-  {
-    "code": "5876",
-    "date": "2026-05-12",
-    "foreign": 7273419,
-    "trust": -399000
+    "foreign": -255000,
+    "trust": -251000
   },
   {
     "code": "5878",
@@ -9380,8 +7832,8 @@
   {
     "code": "5880",
     "date": "2026-05-12",
-    "foreign": -14036678,
-    "trust": -194000
+    "foreign": 363815,
+    "trust": 0
   },
   {
     "code": "5903",
@@ -9404,14 +7856,14 @@
   {
     "code": "5907",
     "date": "2026-05-12",
-    "foreign": 12000,
+    "foreign": 3000,
     "trust": 0
   },
   {
     "code": "6005",
     "date": "2026-05-12",
-    "foreign": 1094926,
-    "trust": -2456109
+    "foreign": -61000,
+    "trust": 839000
   },
   {
     "code": "6015",
@@ -9446,8 +7898,8 @@
   {
     "code": "6024",
     "date": "2026-05-12",
-    "foreign": 168050,
-    "trust": -195000
+    "foreign": -11000,
+    "trust": 0
   },
   {
     "code": "6026",
@@ -9470,7 +7922,7 @@
   {
     "code": "6108",
     "date": "2026-05-12",
-    "foreign": -452000,
+    "foreign": 39000,
     "trust": 0
   },
   {
@@ -9488,7 +7940,7 @@
   {
     "code": "6112",
     "date": "2026-05-12",
-    "foreign": -245000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -9506,19 +7958,13 @@
   {
     "code": "6115",
     "date": "2026-05-12",
-    "foreign": -67000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "6116",
     "date": "2026-05-12",
-    "foreign": 15276060,
-    "trust": 0
-  },
-  {
-    "code": "6117",
-    "date": "2026-05-12",
-    "foreign": 97000,
+    "foreign": -2489000,
     "trust": 0
   },
   {
@@ -9530,7 +7976,7 @@
   {
     "code": "6120",
     "date": "2026-05-12",
-    "foreign": 1094517,
+    "foreign": -510038,
     "trust": 0
   },
   {
@@ -9576,12 +8022,6 @@
     "trust": 0
   },
   {
-    "code": "6128",
-    "date": "2026-05-12",
-    "foreign": -43000,
-    "trust": 0
-  },
-  {
     "code": "6129",
     "date": "2026-05-12",
     "foreign": 163000,
@@ -9594,9 +8034,9 @@
     "trust": 0
   },
   {
-    "code": "6133",
+    "code": "6131",
     "date": "2026-05-12",
-    "foreign": 267017,
+    "foreign": -88000,
     "trust": 0
   },
   {
@@ -9608,7 +8048,7 @@
   {
     "code": "6136",
     "date": "2026-05-12",
-    "foreign": 93000,
+    "foreign": 2000,
     "trust": 0
   },
   {
@@ -9620,8 +8060,8 @@
   {
     "code": "6139",
     "date": "2026-05-12",
-    "foreign": 331156,
-    "trust": -690129
+    "foreign": 11000,
+    "trust": 0
   },
   {
     "code": "6140",
@@ -9632,13 +8072,13 @@
   {
     "code": "6141",
     "date": "2026-05-12",
-    "foreign": -264000,
+    "foreign": 22000,
     "trust": 0
   },
   {
     "code": "6142",
     "date": "2026-05-12",
-    "foreign": 259044,
+    "foreign": 19000,
     "trust": 0
   },
   {
@@ -9651,6 +8091,12 @@
     "code": "6144",
     "date": "2026-05-12",
     "foreign": -6000,
+    "trust": 0
+  },
+  {
+    "code": "6145",
+    "date": "2026-05-12",
+    "foreign": 47000,
     "trust": 0
   },
   {
@@ -9686,14 +8132,14 @@
   {
     "code": "6152",
     "date": "2026-05-12",
-    "foreign": -2128000,
+    "foreign": 12000,
     "trust": 0
   },
   {
     "code": "6153",
     "date": "2026-05-12",
-    "foreign": 1069000,
-    "trust": 0
+    "foreign": -2522000,
+    "trust": -100000
   },
   {
     "code": "6154",
@@ -9704,7 +8150,7 @@
   {
     "code": "6155",
     "date": "2026-05-12",
-    "foreign": -492399,
+    "foreign": -5000,
     "trust": 0
   },
   {
@@ -9740,19 +8186,19 @@
   {
     "code": "6164",
     "date": "2026-05-12",
-    "foreign": 103000,
+    "foreign": -7000,
     "trust": 0
   },
   {
     "code": "6165",
     "date": "2026-05-12",
-    "foreign": -350000,
+    "foreign": -36000,
     "trust": 0
   },
   {
     "code": "6166",
     "date": "2026-05-12",
-    "foreign": 682962,
+    "foreign": -28000,
     "trust": 0
   },
   {
@@ -9764,7 +8210,7 @@
   {
     "code": "6168",
     "date": "2026-05-12",
-    "foreign": 723000,
+    "foreign": 11000,
     "trust": 0
   },
   {
@@ -9806,14 +8252,14 @@
   {
     "code": "6176",
     "date": "2026-05-12",
-    "foreign": 1286250,
-    "trust": -53684
+    "foreign": -3191000,
+    "trust": 128000
   },
   {
     "code": "6177",
     "date": "2026-05-12",
-    "foreign": -131019,
-    "trust": 502000
+    "foreign": -32000,
+    "trust": 0
   },
   {
     "code": "6179",
@@ -9836,13 +8282,13 @@
   {
     "code": "6183",
     "date": "2026-05-12",
-    "foreign": -12000,
+    "foreign": 36000,
     "trust": 0
   },
   {
     "code": "6184",
     "date": "2026-05-12",
-    "foreign": -20000,
+    "foreign": -4000,
     "trust": 0
   },
   {
@@ -9872,8 +8318,8 @@
   {
     "code": "6189",
     "date": "2026-05-12",
-    "foreign": 222000,
-    "trust": -16891
+    "foreign": 1000,
+    "trust": 0
   },
   {
     "code": "6190",
@@ -9884,13 +8330,13 @@
   {
     "code": "6191",
     "date": "2026-05-12",
-    "foreign": -444980,
+    "foreign": 715000,
     "trust": 0
   },
   {
     "code": "6192",
     "date": "2026-05-12",
-    "foreign": 211000,
+    "foreign": 26000,
     "trust": 0
   },
   {
@@ -9902,14 +8348,14 @@
   {
     "code": "6196",
     "date": "2026-05-12",
-    "foreign": 152004,
-    "trust": -556
+    "foreign": -45000,
+    "trust": -191000
   },
   {
     "code": "6197",
     "date": "2026-05-12",
-    "foreign": -467960,
-    "trust": -107000
+    "foreign": 27000,
+    "trust": 0
   },
   {
     "code": "6198",
@@ -9924,15 +8370,9 @@
     "trust": 0
   },
   {
-    "code": "6201",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
     "code": "6202",
     "date": "2026-05-12",
-    "foreign": -1027215,
+    "foreign": 108000,
     "trust": 0
   },
   {
@@ -9950,14 +8390,14 @@
   {
     "code": "6205",
     "date": "2026-05-12",
-    "foreign": -45890,
+    "foreign": 52000,
     "trust": 0
   },
   {
     "code": "6206",
     "date": "2026-05-12",
-    "foreign": 3337129,
-    "trust": -7350
+    "foreign": 1000,
+    "trust": -42000
   },
   {
     "code": "6207",
@@ -9974,7 +8414,7 @@
   {
     "code": "6209",
     "date": "2026-05-12",
-    "foreign": -418760,
+    "foreign": -141000,
     "trust": 0
   },
   {
@@ -9986,25 +8426,19 @@
   {
     "code": "6213",
     "date": "2026-05-12",
-    "foreign": -5242245,
-    "trust": -212000
+    "foreign": 515000,
+    "trust": 0
   },
   {
     "code": "6214",
     "date": "2026-05-12",
-    "foreign": -344259,
-    "trust": -2000
+    "foreign": -66000,
+    "trust": 0
   },
   {
     "code": "6215",
     "date": "2026-05-12",
-    "foreign": 785800,
-    "trust": 0
-  },
-  {
-    "code": "6216",
-    "date": "2026-05-12",
-    "foreign": -70000,
+    "foreign": -28000,
     "trust": 0
   },
   {
@@ -10052,19 +8486,13 @@
   {
     "code": "6224",
     "date": "2026-05-12",
-    "foreign": -111000,
-    "trust": 0
-  },
-  {
-    "code": "6225",
-    "date": "2026-05-12",
-    "foreign": 2000,
+    "foreign": 0,
     "trust": 0
   },
   {
     "code": "6226",
     "date": "2026-05-12",
-    "foreign": 367000,
+    "foreign": 22000,
     "trust": 0
   },
   {
@@ -10088,7 +8516,7 @@
   {
     "code": "6230",
     "date": "2026-05-12",
-    "foreign": -12791,
+    "foreign": 85000,
     "trust": 0
   },
   {
@@ -10112,7 +8540,7 @@
   {
     "code": "6235",
     "date": "2026-05-12",
-    "foreign": -325559,
+    "foreign": 308000,
     "trust": 0
   },
   {
@@ -10124,8 +8552,8 @@
   {
     "code": "6239",
     "date": "2026-05-12",
-    "foreign": -736884,
-    "trust": -1188000
+    "foreign": -873853,
+    "trust": 89000
   },
   {
     "code": "6240",
@@ -10148,7 +8576,7 @@
   {
     "code": "6243",
     "date": "2026-05-12",
-    "foreign": 68000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -10176,10 +8604,16 @@
     "trust": 0
   },
   {
+    "code": "6251",
+    "date": "2026-05-12",
+    "foreign": 78000,
+    "trust": 0
+  },
+  {
     "code": "6257",
     "date": "2026-05-12",
-    "foreign": -1232090,
-    "trust": 450000
+    "foreign": -268000,
+    "trust": 0
   },
   {
     "code": "6259",
@@ -10220,7 +8654,7 @@
   {
     "code": "6269",
     "date": "2026-05-12",
-    "foreign": -1330184,
+    "foreign": -76000,
     "trust": 0
   },
   {
@@ -10232,14 +8666,8 @@
   {
     "code": "6271",
     "date": "2026-05-12",
-    "foreign": 431294,
-    "trust": 0
-  },
-  {
-    "code": "6272",
-    "date": "2026-05-12",
-    "foreign": 62000,
-    "trust": 0
+    "foreign": 89000,
+    "trust": -19000
   },
   {
     "code": "6274",
@@ -10262,14 +8690,14 @@
   {
     "code": "6277",
     "date": "2026-05-12",
-    "foreign": 22000,
-    "trust": 0
+    "foreign": 32000,
+    "trust": 10000
   },
   {
     "code": "6278",
     "date": "2026-05-12",
-    "foreign": -3785055,
-    "trust": -73000
+    "foreign": 1076000,
+    "trust": 134000
   },
   {
     "code": "6279",
@@ -10280,20 +8708,20 @@
   {
     "code": "6281",
     "date": "2026-05-12",
-    "foreign": -31000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "6282",
     "date": "2026-05-12",
-    "foreign": 1577928,
+    "foreign": -1000,
     "trust": 0
   },
   {
     "code": "6283",
     "date": "2026-05-12",
-    "foreign": 50000,
-    "trust": 0
+    "foreign": 306000,
+    "trust": 230000
   },
   {
     "code": "6284",
@@ -10304,8 +8732,8 @@
   {
     "code": "6285",
     "date": "2026-05-12",
-    "foreign": 6668470,
-    "trust": 539000
+    "foreign": -199000,
+    "trust": -66000
   },
   {
     "code": "6290",
@@ -10334,14 +8762,14 @@
   {
     "code": "6405",
     "date": "2026-05-12",
-    "foreign": -5800,
+    "foreign": -13000,
     "trust": 0
   },
   {
     "code": "6409",
     "date": "2026-05-12",
-    "foreign": -97703,
-    "trust": -15153
+    "foreign": -4000,
+    "trust": 1000
   },
   {
     "code": "6411",
@@ -10352,26 +8780,20 @@
   {
     "code": "6412",
     "date": "2026-05-12",
-    "foreign": -1667075,
+    "foreign": -450000,
     "trust": 0
   },
   {
     "code": "6414",
     "date": "2026-05-12",
-    "foreign": 629030,
+    "foreign": 32000,
     "trust": 0
   },
   {
     "code": "6415",
     "date": "2026-05-12",
-    "foreign": -281656,
-    "trust": 355238
-  },
-  {
-    "code": "6416",
-    "date": "2026-05-12",
-    "foreign": 65000,
-    "trust": 0
+    "foreign": 14400,
+    "trust": -15600
   },
   {
     "code": "6417",
@@ -10392,6 +8814,12 @@
     "trust": 0
   },
   {
+    "code": "6422",
+    "date": "2026-05-12",
+    "foreign": -98000,
+    "trust": 0
+  },
+  {
     "code": "6423",
     "date": "2026-05-12",
     "foreign": -120000,
@@ -10404,15 +8832,9 @@
     "trust": 0
   },
   {
-    "code": "6426",
-    "date": "2026-05-12",
-    "foreign": -724885,
-    "trust": 0
-  },
-  {
     "code": "6431",
     "date": "2026-05-12",
-    "foreign": 56000,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -10428,12 +8850,6 @@
     "trust": 0
   },
   {
-    "code": "6438",
-    "date": "2026-05-12",
-    "foreign": 485557,
-    "trust": 0
-  },
-  {
     "code": "6441",
     "date": "2026-05-12",
     "foreign": -54000,
@@ -10442,38 +8858,38 @@
   {
     "code": "6442",
     "date": "2026-05-12",
-    "foreign": -650159,
-    "trust": -389439
+    "foreign": 16000,
+    "trust": 0
   },
   {
     "code": "6443",
     "date": "2026-05-12",
-    "foreign": 486580,
+    "foreign": 252000,
     "trust": 0
-  },
-  {
-    "code": "6446",
-    "date": "2026-05-12",
-    "foreign": 145440,
-    "trust": -3300
   },
   {
     "code": "6449",
     "date": "2026-05-12",
-    "foreign": 660861,
-    "trust": -177
+    "foreign": 14000,
+    "trust": 0
   },
   {
     "code": "6451",
     "date": "2026-05-12",
-    "foreign": -623378,
-    "trust": -4702
+    "foreign": 298000,
+    "trust": 0
+  },
+  {
+    "code": "6452",
+    "date": "2026-05-12",
+    "foreign": 127670,
+    "trust": 0
   },
   {
     "code": "6456",
     "date": "2026-05-12",
-    "foreign": -432900,
-    "trust": 0
+    "foreign": 16000,
+    "trust": -61000
   },
   {
     "code": "6461",
@@ -10485,12 +8901,6 @@
     "code": "6462",
     "date": "2026-05-12",
     "foreign": 283000,
-    "trust": 0
-  },
-  {
-    "code": "6464",
-    "date": "2026-05-12",
-    "foreign": -15000,
     "trust": 0
   },
   {
@@ -10512,12 +8922,6 @@
     "trust": 0
   },
   {
-    "code": "6472",
-    "date": "2026-05-12",
-    "foreign": 42167,
-    "trust": 2000
-  },
-  {
     "code": "6474",
     "date": "2026-05-12",
     "foreign": -3000,
@@ -10526,7 +8930,7 @@
   {
     "code": "6477",
     "date": "2026-05-12",
-    "foreign": 18000,
+    "foreign": 22000,
     "trust": 0
   },
   {
@@ -10552,12 +8956,6 @@
     "date": "2026-05-12",
     "foreign": -273153,
     "trust": -12267
-  },
-  {
-    "code": "6491",
-    "date": "2026-05-12",
-    "foreign": 58000,
-    "trust": 0
   },
   {
     "code": "6492",
@@ -10592,14 +8990,14 @@
   {
     "code": "6504",
     "date": "2026-05-12",
-    "foreign": -6000,
-    "trust": 0
+    "foreign": 1000,
+    "trust": -6000
   },
   {
     "code": "6505",
     "date": "2026-05-12",
-    "foreign": 980711,
-    "trust": -824000
+    "foreign": 746000,
+    "trust": 108000
   },
   {
     "code": "6506",
@@ -10626,12 +9024,6 @@
     "trust": 134100
   },
   {
-    "code": "6515",
-    "date": "2026-05-12",
-    "foreign": 34015,
-    "trust": -2076
-  },
-  {
     "code": "6516",
     "date": "2026-05-12",
     "foreign": -4000,
@@ -10652,14 +9044,8 @@
   {
     "code": "6525",
     "date": "2026-05-12",
-    "foreign": -75784,
-    "trust": -9278
-  },
-  {
-    "code": "6526",
-    "date": "2026-05-12",
-    "foreign": 77879,
-    "trust": -619
+    "foreign": -1000,
+    "trust": 15000
   },
   {
     "code": "6527",
@@ -10676,8 +9062,8 @@
   {
     "code": "6531",
     "date": "2026-05-12",
-    "foreign": -1027971,
-    "trust": -33000
+    "foreign": 95000,
+    "trust": 63000
   },
   {
     "code": "6532",
@@ -10688,13 +9074,7 @@
   {
     "code": "6533",
     "date": "2026-05-12",
-    "foreign": -143500,
-    "trust": 0
-  },
-  {
-    "code": "6534",
-    "date": "2026-05-12",
-    "foreign": -8000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -10712,8 +9092,8 @@
   {
     "code": "6541",
     "date": "2026-05-12",
-    "foreign": -123735,
-    "trust": 0
+    "foreign": 0,
+    "trust": -10000
   },
   {
     "code": "6542",
@@ -10740,21 +9120,9 @@
     "trust": -5000
   },
   {
-    "code": "6550",
-    "date": "2026-05-12",
-    "foreign": 97000,
-    "trust": 0
-  },
-  {
     "code": "6552",
     "date": "2026-05-12",
-    "foreign": 8000,
-    "trust": 0
-  },
-  {
-    "code": "6558",
-    "date": "2026-05-12",
-    "foreign": -323000,
+    "foreign": 420000,
     "trust": 0
   },
   {
@@ -10788,12 +9156,6 @@
     "trust": 0
   },
   {
-    "code": "6573",
-    "date": "2026-05-12",
-    "foreign": 218000,
-    "trust": 0
-  },
-  {
     "code": "6574",
     "date": "2026-05-12",
     "foreign": -17000,
@@ -10820,19 +9182,13 @@
   {
     "code": "6579",
     "date": "2026-05-12",
-    "foreign": 168000,
-    "trust": 0
-  },
-  {
-    "code": "6581",
-    "date": "2026-05-12",
     "foreign": -5000,
     "trust": 0
   },
   {
     "code": "6582",
     "date": "2026-05-12",
-    "foreign": -8990,
+    "foreign": -1000,
     "trust": 0
   },
   {
@@ -10842,21 +9198,9 @@
     "trust": -186000
   },
   {
-    "code": "6585",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
     "code": "6588",
     "date": "2026-05-12",
     "foreign": -246000,
-    "trust": 0
-  },
-  {
-    "code": "6589",
-    "date": "2026-05-12",
-    "foreign": -344000,
     "trust": 0
   },
   {
@@ -10864,18 +9208,6 @@
     "date": "2026-05-12",
     "foreign": 2000,
     "trust": 0
-  },
-  {
-    "code": "6591",
-    "date": "2026-05-12",
-    "foreign": -116000,
-    "trust": 0
-  },
-  {
-    "code": "6592",
-    "date": "2026-05-12",
-    "foreign": 20522,
-    "trust": -2000
   },
   {
     "code": "6593",
@@ -10896,12 +9228,6 @@
     "trust": 0
   },
   {
-    "code": "6598",
-    "date": "2026-05-12",
-    "foreign": 60000,
-    "trust": 0
-  },
-  {
     "code": "6603",
     "date": "2026-05-12",
     "foreign": -128000,
@@ -10910,14 +9236,8 @@
   {
     "code": "6605",
     "date": "2026-05-12",
-    "foreign": -138000,
-    "trust": 0
-  },
-  {
-    "code": "6606",
-    "date": "2026-05-12",
-    "foreign": -21000,
-    "trust": 0
+    "foreign": -28000,
+    "trust": 2000
   },
   {
     "code": "6609",
@@ -10936,12 +9256,6 @@
     "date": "2026-05-12",
     "foreign": -51867,
     "trust": -72674
-  },
-  {
-    "code": "6614",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
   },
   {
     "code": "6615",
@@ -10974,12 +9288,6 @@
     "trust": 0
   },
   {
-    "code": "6625",
-    "date": "2026-05-12",
-    "foreign": -53000,
-    "trust": 0
-  },
-  {
     "code": "6629",
     "date": "2026-05-12",
     "foreign": 11000,
@@ -10998,12 +9306,6 @@
     "trust": 18000
   },
   {
-    "code": "6641",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
-  },
-  {
     "code": "6642",
     "date": "2026-05-12",
     "foreign": -9000,
@@ -11014,12 +9316,6 @@
     "date": "2026-05-12",
     "foreign": -65950,
     "trust": 5000
-  },
-  {
-    "code": "6645",
-    "date": "2026-05-12",
-    "foreign": -4000,
-    "trust": 0
   },
   {
     "code": "6649",
@@ -11040,24 +9336,6 @@
     "trust": 0
   },
   {
-    "code": "6655",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "6657",
-    "date": "2026-05-12",
-    "foreign": 2982,
-    "trust": 0
-  },
-  {
-    "code": "6658",
-    "date": "2026-05-12",
-    "foreign": 66839,
-    "trust": -2000
-  },
-  {
     "code": "6662",
     "date": "2026-05-12",
     "foreign": -2000,
@@ -11070,51 +9348,9 @@
     "trust": 0
   },
   {
-    "code": "6666",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
     "code": "6667",
     "date": "2026-05-12",
     "foreign": -394010,
-    "trust": 0
-  },
-  {
-    "code": "6668",
-    "date": "2026-05-12",
-    "foreign": 73000,
-    "trust": 0
-  },
-  {
-    "code": "6669",
-    "date": "2026-05-12",
-    "foreign": -1385281,
-    "trust": 1024258
-  },
-  {
-    "code": "6670",
-    "date": "2026-05-12",
-    "foreign": 82000,
-    "trust": 1696
-  },
-  {
-    "code": "6671",
-    "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
-    "code": "6672",
-    "date": "2026-05-12",
-    "foreign": -111475,
-    "trust": -5000
-  },
-  {
-    "code": "6674",
-    "date": "2026-05-12",
-    "foreign": -5000,
     "trust": 0
   },
   {
@@ -11142,21 +9378,9 @@
     "trust": 0
   },
   {
-    "code": "6689",
-    "date": "2026-05-12",
-    "foreign": -69000,
-    "trust": 0
-  },
-  {
     "code": "6690",
     "date": "2026-05-12",
     "foreign": -8974,
-    "trust": 0
-  },
-  {
-    "code": "6691",
-    "date": "2026-05-12",
-    "foreign": -135776,
     "trust": 0
   },
   {
@@ -11172,33 +9396,15 @@
     "trust": 0
   },
   {
-    "code": "6695",
-    "date": "2026-05-12",
-    "foreign": 61972,
-    "trust": 0
-  },
-  {
     "code": "6697",
     "date": "2026-05-12",
     "foreign": -1000,
     "trust": 0
   },
   {
-    "code": "6698",
-    "date": "2026-05-12",
-    "foreign": -114990,
-    "trust": 0
-  },
-  {
     "code": "6703",
     "date": "2026-05-12",
     "foreign": 4000,
-    "trust": 0
-  },
-  {
-    "code": "6706",
-    "date": "2026-05-12",
-    "foreign": 422974,
     "trust": 0
   },
   {
@@ -11214,21 +9420,9 @@
     "trust": 0
   },
   {
-    "code": "6715",
-    "date": "2026-05-12",
-    "foreign": -56597,
-    "trust": -2000
-  },
-  {
     "code": "6716",
     "date": "2026-05-12",
     "foreign": 180000,
-    "trust": 0
-  },
-  {
-    "code": "6719",
-    "date": "2026-05-12",
-    "foreign": 43500,
     "trust": 0
   },
   {
@@ -11241,12 +9435,6 @@
     "code": "6721",
     "date": "2026-05-12",
     "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "6722",
-    "date": "2026-05-12",
-    "foreign": -23000,
     "trust": 0
   },
   {
@@ -11304,18 +9492,6 @@
     "trust": 0
   },
   {
-    "code": "6742",
-    "date": "2026-05-12",
-    "foreign": 72910,
-    "trust": 0
-  },
-  {
-    "code": "6743",
-    "date": "2026-05-12",
-    "foreign": -26000,
-    "trust": 0
-  },
-  {
     "code": "6751",
     "date": "2026-05-12",
     "foreign": 1100,
@@ -11325,30 +9501,6 @@
     "code": "6752",
     "date": "2026-05-12",
     "foreign": -8067,
-    "trust": 0
-  },
-  {
-    "code": "6753",
-    "date": "2026-05-12",
-    "foreign": -71999,
-    "trust": 0
-  },
-  {
-    "code": "6754",
-    "date": "2026-05-12",
-    "foreign": -5000,
-    "trust": -208
-  },
-  {
-    "code": "6756",
-    "date": "2026-05-12",
-    "foreign": 157062,
-    "trust": 0
-  },
-  {
-    "code": "6757",
-    "date": "2026-05-12",
-    "foreign": -261035,
     "trust": 0
   },
   {
@@ -11364,42 +9516,6 @@
     "trust": -1000
   },
   {
-    "code": "6768",
-    "date": "2026-05-12",
-    "foreign": -309132,
-    "trust": 14253
-  },
-  {
-    "code": "6770",
-    "date": "2026-05-12",
-    "foreign": 2725759,
-    "trust": 14000
-  },
-  {
-    "code": "6771",
-    "date": "2026-05-12",
-    "foreign": -1000,
-    "trust": 0
-  },
-  {
-    "code": "6776",
-    "date": "2026-05-12",
-    "foreign": 11000,
-    "trust": 0
-  },
-  {
-    "code": "6781",
-    "date": "2026-05-12",
-    "foreign": -5403,
-    "trust": 15077
-  },
-  {
-    "code": "6782",
-    "date": "2026-05-12",
-    "foreign": -278104,
-    "trust": 0
-  },
-  {
     "code": "6785",
     "date": "2026-05-12",
     "foreign": 21129,
@@ -11412,45 +9528,9 @@
     "trust": 0
   },
   {
-    "code": "6789",
-    "date": "2026-05-12",
-    "foreign": -658062,
-    "trust": -26488
-  },
-  {
-    "code": "6790",
-    "date": "2026-05-12",
-    "foreign": -82000,
-    "trust": 0
-  },
-  {
     "code": "6791",
     "date": "2026-05-12",
     "foreign": -8000,
-    "trust": 0
-  },
-  {
-    "code": "6792",
-    "date": "2026-05-12",
-    "foreign": -36000,
-    "trust": 0
-  },
-  {
-    "code": "6794",
-    "date": "2026-05-12",
-    "foreign": -9000,
-    "trust": 0
-  },
-  {
-    "code": "6796",
-    "date": "2026-05-12",
-    "foreign": 17000,
-    "trust": 0
-  },
-  {
-    "code": "6799",
-    "date": "2026-05-12",
-    "foreign": 104000,
     "trust": 0
   },
   {
@@ -11463,24 +9543,6 @@
     "code": "6804",
     "date": "2026-05-12",
     "foreign": 3000,
-    "trust": 0
-  },
-  {
-    "code": "6805",
-    "date": "2026-05-12",
-    "foreign": -279657,
-    "trust": -820095
-  },
-  {
-    "code": "6806",
-    "date": "2026-05-12",
-    "foreign": 304855,
-    "trust": 0
-  },
-  {
-    "code": "6807",
-    "date": "2026-05-12",
-    "foreign": -18000,
     "trust": 0
   },
   {
@@ -11508,36 +9570,6 @@
     "trust": 0
   },
   {
-    "code": "6830",
-    "date": "2026-05-12",
-    "foreign": -82738,
-    "trust": -29000
-  },
-  {
-    "code": "6831",
-    "date": "2026-05-12",
-    "foreign": 96560,
-    "trust": 0
-  },
-  {
-    "code": "6834",
-    "date": "2026-05-12",
-    "foreign": -342940,
-    "trust": 0
-  },
-  {
-    "code": "6835",
-    "date": "2026-05-12",
-    "foreign": 25000,
-    "trust": 0
-  },
-  {
-    "code": "6838",
-    "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
     "code": "6840",
     "date": "2026-05-12",
     "foreign": 2000,
@@ -11562,12 +9594,6 @@
     "trust": 0
   },
   {
-    "code": "6854",
-    "date": "2026-05-12",
-    "foreign": -66735,
-    "trust": 0
-  },
-  {
     "code": "6855",
     "date": "2026-05-12",
     "foreign": 1000,
@@ -11580,33 +9606,9 @@
     "trust": 0
   },
   {
-    "code": "6861",
-    "date": "2026-05-12",
-    "foreign": 20000,
-    "trust": 0
-  },
-  {
-    "code": "6862",
-    "date": "2026-05-12",
-    "foreign": -110870,
-    "trust": 0
-  },
-  {
-    "code": "6863",
-    "date": "2026-05-12",
-    "foreign": -63017,
-    "trust": 0
-  },
-  {
     "code": "6865",
     "date": "2026-05-12",
     "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "6869",
-    "date": "2026-05-12",
-    "foreign": -126960,
     "trust": 0
   },
   {
@@ -11619,12 +9621,6 @@
     "code": "6872",
     "date": "2026-05-12",
     "foreign": -6000,
-    "trust": 0
-  },
-  {
-    "code": "6873",
-    "date": "2026-05-12",
-    "foreign": -354000,
     "trust": 0
   },
   {
@@ -11652,24 +9648,6 @@
     "trust": 0
   },
   {
-    "code": "6885",
-    "date": "2026-05-12",
-    "foreign": -63000,
-    "trust": 0
-  },
-  {
-    "code": "6887",
-    "date": "2026-05-12",
-    "foreign": -7000,
-    "trust": 0
-  },
-  {
-    "code": "6890",
-    "date": "2026-05-12",
-    "foreign": 274082,
-    "trust": 0
-  },
-  {
     "code": "6894",
     "date": "2026-05-12",
     "foreign": 7177,
@@ -11688,18 +9666,6 @@
     "trust": 0
   },
   {
-    "code": "6901",
-    "date": "2026-05-12",
-    "foreign": -374000,
-    "trust": 0
-  },
-  {
-    "code": "6902",
-    "date": "2026-05-12",
-    "foreign": -37000,
-    "trust": 0
-  },
-  {
     "code": "6903",
     "date": "2026-05-12",
     "foreign": 516016,
@@ -11712,27 +9678,9 @@
     "trust": 0
   },
   {
-    "code": "6906",
-    "date": "2026-05-12",
-    "foreign": -56000,
-    "trust": 0
-  },
-  {
     "code": "6907",
     "date": "2026-05-12",
     "foreign": -106475,
-    "trust": 0
-  },
-  {
-    "code": "6908",
-    "date": "2026-05-12",
-    "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "6909",
-    "date": "2026-05-12",
-    "foreign": 103000,
     "trust": 0
   },
   {
@@ -11748,51 +9696,9 @@
     "trust": 0
   },
   {
-    "code": "6914",
-    "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
-    "code": "6916",
-    "date": "2026-05-12",
-    "foreign": -4000,
-    "trust": 0
-  },
-  {
-    "code": "6918",
-    "date": "2026-05-12",
-    "foreign": -68000,
-    "trust": 0
-  },
-  {
-    "code": "6919",
-    "date": "2026-05-12",
-    "foreign": -1333367,
-    "trust": -11000
-  },
-  {
-    "code": "6921",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
     "code": "6922",
     "date": "2026-05-12",
     "foreign": 24979,
-    "trust": 0
-  },
-  {
-    "code": "6923",
-    "date": "2026-05-12",
-    "foreign": 78000,
-    "trust": 0
-  },
-  {
-    "code": "6924",
-    "date": "2026-05-12",
-    "foreign": -40000,
     "trust": 0
   },
   {
@@ -11802,69 +9708,9 @@
     "trust": 0
   },
   {
-    "code": "6928",
-    "date": "2026-05-12",
-    "foreign": 8007,
-    "trust": 0
-  },
-  {
     "code": "6929",
     "date": "2026-05-12",
     "foreign": 2000,
-    "trust": 0
-  },
-  {
-    "code": "6931",
-    "date": "2026-05-12",
-    "foreign": -14000,
-    "trust": 0
-  },
-  {
-    "code": "6933",
-    "date": "2026-05-12",
-    "foreign": 23000,
-    "trust": 0
-  },
-  {
-    "code": "6934",
-    "date": "2026-05-12",
-    "foreign": 16000,
-    "trust": 0
-  },
-  {
-    "code": "6936",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
-  },
-  {
-    "code": "6937",
-    "date": "2026-05-12",
-    "foreign": -85206,
-    "trust": 0
-  },
-  {
-    "code": "6944",
-    "date": "2026-05-12",
-    "foreign": -133559,
-    "trust": 0
-  },
-  {
-    "code": "6949",
-    "date": "2026-05-12",
-    "foreign": -50082,
-    "trust": 0
-  },
-  {
-    "code": "6951",
-    "date": "2026-05-12",
-    "foreign": -68000,
-    "trust": 0
-  },
-  {
-    "code": "6952",
-    "date": "2026-05-12",
-    "foreign": -8000,
     "trust": 0
   },
   {
@@ -11874,39 +9720,9 @@
     "trust": 0
   },
   {
-    "code": "6955",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
-    "code": "6957",
-    "date": "2026-05-12",
-    "foreign": 3000,
-    "trust": 0
-  },
-  {
-    "code": "6958",
-    "date": "2026-05-12",
-    "foreign": -25000,
-    "trust": 0
-  },
-  {
     "code": "6961",
     "date": "2026-05-12",
     "foreign": -7028,
-    "trust": 0
-  },
-  {
-    "code": "6962",
-    "date": "2026-05-12",
-    "foreign": 259000,
-    "trust": 0
-  },
-  {
-    "code": "6965",
-    "date": "2026-05-12",
-    "foreign": -9000,
     "trust": 0
   },
   {
@@ -11922,12 +9738,6 @@
     "trust": 0
   },
   {
-    "code": "6969",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
     "code": "6971",
     "date": "2026-05-12",
     "foreign": 1000,
@@ -11937,18 +9747,6 @@
     "code": "6982",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "6988",
-    "date": "2026-05-12",
-    "foreign": 5000,
-    "trust": 0
-  },
-  {
-    "code": "6994",
-    "date": "2026-05-12",
-    "foreign": 34000,
     "trust": 0
   },
   {
@@ -11988,18 +9786,6 @@
     "trust": 0
   },
   {
-    "code": "7610",
-    "date": "2026-05-12",
-    "foreign": -390317,
-    "trust": 0
-  },
-  {
-    "code": "7631",
-    "date": "2026-05-12",
-    "foreign": -16000,
-    "trust": 0
-  },
-  {
     "code": "7642",
     "date": "2026-05-12",
     "foreign": 0,
@@ -12018,21 +9804,9 @@
     "trust": 0
   },
   {
-    "code": "7705",
-    "date": "2026-05-12",
-    "foreign": -27000,
-    "trust": 0
-  },
-  {
     "code": "7709",
     "date": "2026-05-12",
     "foreign": 69029,
-    "trust": 0
-  },
-  {
-    "code": "7711",
-    "date": "2026-05-12",
-    "foreign": -78000,
     "trust": 0
   },
   {
@@ -12066,18 +9840,6 @@
     "trust": 0
   },
   {
-    "code": "7721",
-    "date": "2026-05-12",
-    "foreign": -168000,
-    "trust": 0
-  },
-  {
-    "code": "7722",
-    "date": "2026-05-12",
-    "foreign": -14889,
-    "trust": 0
-  },
-  {
     "code": "7723",
     "date": "2026-05-12",
     "foreign": -13000,
@@ -12090,27 +9852,9 @@
     "trust": 0
   },
   {
-    "code": "7730",
-    "date": "2026-05-12",
-    "foreign": -29000,
-    "trust": 0
-  },
-  {
-    "code": "7732",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
     "code": "7734",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "7736",
-    "date": "2026-05-12",
-    "foreign": -8000,
     "trust": 0
   },
   {
@@ -12120,28 +9864,10 @@
     "trust": 0
   },
   {
-    "code": "7740",
-    "date": "2026-05-12",
-    "foreign": -57000,
-    "trust": 0
-  },
-  {
     "code": "7744",
     "date": "2026-05-12",
     "foreign": 11663,
     "trust": 0
-  },
-  {
-    "code": "7749",
-    "date": "2026-05-12",
-    "foreign": -236000,
-    "trust": 0
-  },
-  {
-    "code": "7750",
-    "date": "2026-05-12",
-    "foreign": 90944,
-    "trust": 3000
   },
   {
     "code": "7751",
@@ -12162,30 +9888,6 @@
     "trust": 0
   },
   {
-    "code": "7760",
-    "date": "2026-05-12",
-    "foreign": 22000,
-    "trust": 0
-  },
-  {
-    "code": "7765",
-    "date": "2026-05-12",
-    "foreign": -17000,
-    "trust": 0
-  },
-  {
-    "code": "7768",
-    "date": "2026-05-12",
-    "foreign": -249000,
-    "trust": 0
-  },
-  {
-    "code": "7769",
-    "date": "2026-05-12",
-    "foreign": 168744,
-    "trust": 245041
-  },
-  {
     "code": "7770",
     "date": "2026-05-12",
     "foreign": 0,
@@ -12204,33 +9906,9 @@
     "trust": 0
   },
   {
-    "code": "7780",
-    "date": "2026-05-12",
-    "foreign": -1170,
-    "trust": 0
-  },
-  {
     "code": "7782",
     "date": "2026-05-12",
     "foreign": 7000,
-    "trust": 0
-  },
-  {
-    "code": "7786",
-    "date": "2026-05-12",
-    "foreign": -8069,
-    "trust": 0
-  },
-  {
-    "code": "7788",
-    "date": "2026-05-12",
-    "foreign": 113000,
-    "trust": 0
-  },
-  {
-    "code": "7791",
-    "date": "2026-05-12",
-    "foreign": 14000,
     "trust": 0
   },
   {
@@ -12243,18 +9921,6 @@
     "code": "7794",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "7795",
-    "date": "2026-05-12",
-    "foreign": 434001,
-    "trust": -1000
-  },
-  {
-    "code": "7799",
-    "date": "2026-05-12",
-    "foreign": -31886,
     "trust": 0
   },
   {
@@ -12282,24 +9948,6 @@
     "trust": 0
   },
   {
-    "code": "7821",
-    "date": "2026-05-12",
-    "foreign": 21000,
-    "trust": 0
-  },
-  {
-    "code": "7822",
-    "date": "2026-05-12",
-    "foreign": -19870,
-    "trust": 0
-  },
-  {
-    "code": "7823",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
     "code": "7828",
     "date": "2026-05-12",
     "foreign": -23439,
@@ -12314,20 +9962,20 @@
   {
     "code": "8011",
     "date": "2026-05-12",
-    "foreign": -490463,
+    "foreign": -16000,
     "trust": 0
   },
   {
     "code": "8016",
     "date": "2026-05-12",
-    "foreign": 684000,
-    "trust": -5923
+    "foreign": -61000,
+    "trust": 0
   },
   {
     "code": "8021",
     "date": "2026-05-12",
-    "foreign": 919655,
-    "trust": -382000
+    "foreign": 30000,
+    "trust": 0
   },
   {
     "code": "8027",
@@ -12336,21 +9984,9 @@
     "trust": 0
   },
   {
-    "code": "8028",
-    "date": "2026-05-12",
-    "foreign": 80477,
-    "trust": 0
-  },
-  {
     "code": "8032",
     "date": "2026-05-12",
     "foreign": 0,
-    "trust": 0
-  },
-  {
-    "code": "8033",
-    "date": "2026-05-12",
-    "foreign": -998410,
     "trust": 0
   },
   {
@@ -12368,7 +10004,7 @@
   {
     "code": "8039",
     "date": "2026-05-12",
-    "foreign": -240029,
+    "foreign": -232000,
     "trust": 0
   },
   {
@@ -12396,16 +10032,10 @@
     "trust": 0
   },
   {
-    "code": "8045",
-    "date": "2026-05-12",
-    "foreign": -61000,
-    "trust": 0
-  },
-  {
     "code": "8046",
     "date": "2026-05-12",
-    "foreign": -228047,
-    "trust": 1259330
+    "foreign": 10000,
+    "trust": 0
   },
   {
     "code": "8047",
@@ -12470,19 +10100,13 @@
   {
     "code": "8070",
     "date": "2026-05-12",
-    "foreign": 28000,
-    "trust": -24572
+    "foreign": 3000,
+    "trust": 0
   },
   {
     "code": "8071",
     "date": "2026-05-12",
     "foreign": -19000,
-    "trust": 0
-  },
-  {
-    "code": "8072",
-    "date": "2026-05-12",
-    "foreign": -10901,
     "trust": 0
   },
   {
@@ -12506,8 +10130,8 @@
   {
     "code": "8081",
     "date": "2026-05-12",
-    "foreign": -180068,
-    "trust": -1000
+    "foreign": 12000,
+    "trust": 0
   },
   {
     "code": "8083",
@@ -12582,6 +10206,12 @@
     "trust": 0
   },
   {
+    "code": "8101",
+    "date": "2026-05-12",
+    "foreign": 3000,
+    "trust": 0
+  },
+  {
     "code": "8102",
     "date": "2026-05-12",
     "foreign": 6000,
@@ -12590,20 +10220,14 @@
   {
     "code": "8103",
     "date": "2026-05-12",
-    "foreign": 484500,
-    "trust": 0
-  },
-  {
-    "code": "8104",
-    "date": "2026-05-12",
-    "foreign": -15000,
+    "foreign": -8000,
     "trust": 0
   },
   {
     "code": "8105",
     "date": "2026-05-12",
-    "foreign": 2802000,
-    "trust": 0
+    "foreign": -658000,
+    "trust": 200000
   },
   {
     "code": "8107",
@@ -12620,7 +10244,7 @@
   {
     "code": "8110",
     "date": "2026-05-12",
-    "foreign": -442900,
+    "foreign": 256000,
     "trust": 0
   },
   {
@@ -12632,13 +10256,13 @@
   {
     "code": "8112",
     "date": "2026-05-12",
-    "foreign": -24118420,
-    "trust": -50997
+    "foreign": -187000,
+    "trust": 0
   },
   {
     "code": "8114",
     "date": "2026-05-12",
-    "foreign": 151541,
+    "foreign": -26960,
     "trust": 0
   },
   {
@@ -12650,8 +10274,8 @@
   {
     "code": "8131",
     "date": "2026-05-12",
-    "foreign": -30526,
-    "trust": 0
+    "foreign": -40000,
+    "trust": 122000
   },
   {
     "code": "8147",
@@ -12662,8 +10286,8 @@
   {
     "code": "8150",
     "date": "2026-05-12",
-    "foreign": -4812823,
-    "trust": -3000
+    "foreign": -647000,
+    "trust": 0
   },
   {
     "code": "8155",
@@ -12672,15 +10296,9 @@
     "trust": 45000
   },
   {
-    "code": "8162",
-    "date": "2026-05-12",
-    "foreign": 86324,
-    "trust": 0
-  },
-  {
     "code": "8163",
     "date": "2026-05-12",
-    "foreign": 175045,
+    "foreign": -3000,
     "trust": 0
   },
   {
@@ -12708,33 +10326,27 @@
     "trust": 0
   },
   {
-    "code": "8201",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
     "code": "8210",
     "date": "2026-05-12",
-    "foreign": -562748,
-    "trust": 381000
+    "foreign": -85000,
+    "trust": 0
   },
   {
     "code": "8213",
     "date": "2026-05-12",
-    "foreign": -270986,
+    "foreign": -59000,
     "trust": 0
   },
   {
     "code": "8215",
     "date": "2026-05-12",
-    "foreign": 418802,
+    "foreign": 23000,
     "trust": 0
   },
   {
     "code": "8222",
     "date": "2026-05-12",
-    "foreign": 76017,
+    "foreign": -35000,
     "trust": 0
   },
   {
@@ -12758,7 +10370,7 @@
   {
     "code": "8249",
     "date": "2026-05-12",
-    "foreign": -222000,
+    "foreign": 69000,
     "trust": 0
   },
   {
@@ -12770,14 +10382,14 @@
   {
     "code": "8261",
     "date": "2026-05-12",
-    "foreign": -470230,
+    "foreign": 35000,
     "trust": 0
   },
   {
     "code": "8271",
     "date": "2026-05-12",
-    "foreign": -2755198,
-    "trust": -9000
+    "foreign": 18000,
+    "trust": 0
   },
   {
     "code": "8272",
@@ -12818,7 +10430,7 @@
   {
     "code": "8341",
     "date": "2026-05-12",
-    "foreign": 47115,
+    "foreign": 20000,
     "trust": 0
   },
   {
@@ -12846,15 +10458,9 @@
     "trust": 101198
   },
   {
-    "code": "8367",
-    "date": "2026-05-12",
-    "foreign": -14000,
-    "trust": 0
-  },
-  {
     "code": "8374",
     "date": "2026-05-12",
-    "foreign": 311000,
+    "foreign": 1000,
     "trust": 0
   },
   {
@@ -12884,7 +10490,7 @@
   {
     "code": "8404",
     "date": "2026-05-12",
-    "foreign": -152952,
+    "foreign": 12000,
     "trust": 0
   },
   {
@@ -12896,7 +10502,7 @@
   {
     "code": "8411",
     "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": 12000,
     "trust": 0
   },
   {
@@ -12914,8 +10520,8 @@
   {
     "code": "8422",
     "date": "2026-05-12",
-    "foreign": -1330525,
-    "trust": -83000
+    "foreign": -42000,
+    "trust": 59000
   },
   {
     "code": "8423",
@@ -12936,9 +10542,15 @@
     "trust": 0
   },
   {
+    "code": "8427",
+    "date": "2026-05-12",
+    "foreign": -1000,
+    "trust": 0
+  },
+  {
     "code": "8429",
     "date": "2026-05-12",
-    "foreign": 10000,
+    "foreign": 19000,
     "trust": 0
   },
   {
@@ -12978,27 +10590,9 @@
     "trust": 0
   },
   {
-    "code": "8438",
-    "date": "2026-05-12",
-    "foreign": 541353,
-    "trust": 0
-  },
-  {
     "code": "8440",
     "date": "2026-05-12",
     "foreign": 22000,
-    "trust": 0
-  },
-  {
-    "code": "8442",
-    "date": "2026-05-12",
-    "foreign": -8000,
-    "trust": 0
-  },
-  {
-    "code": "8443",
-    "date": "2026-05-12",
-    "foreign": -6000,
     "trust": 0
   },
   {
@@ -13022,8 +10616,8 @@
   {
     "code": "8454",
     "date": "2026-05-12",
-    "foreign": -64806,
-    "trust": 12141
+    "foreign": -4000,
+    "trust": 0
   },
   {
     "code": "8455",
@@ -13032,33 +10626,15 @@
     "trust": 0
   },
   {
-    "code": "8462",
-    "date": "2026-05-12",
-    "foreign": -75854,
-    "trust": 0
-  },
-  {
-    "code": "8463",
-    "date": "2026-05-12",
-    "foreign": -12000,
-    "trust": 0
-  },
-  {
     "code": "8464",
     "date": "2026-05-12",
-    "foreign": 82577,
+    "foreign": 34000,
     "trust": 0
   },
   {
     "code": "8466",
     "date": "2026-05-12",
-    "foreign": -14000,
-    "trust": 0
-  },
-  {
-    "code": "8467",
-    "date": "2026-05-12",
-    "foreign": -2986,
+    "foreign": 2000,
     "trust": 0
   },
   {
@@ -13070,13 +10646,7 @@
   {
     "code": "8473",
     "date": "2026-05-12",
-    "foreign": -121000,
-    "trust": 0
-  },
-  {
-    "code": "8476",
-    "date": "2026-05-12",
-    "foreign": 6000,
+    "foreign": -3000,
     "trust": 0
   },
   {
@@ -13086,45 +10656,15 @@
     "trust": 0
   },
   {
-    "code": "8478",
+    "code": "8480",
     "date": "2026-05-12",
-    "foreign": -32049,
-    "trust": 0
-  },
-  {
-    "code": "8481",
-    "date": "2026-05-12",
-    "foreign": -2000,
-    "trust": 0
-  },
-  {
-    "code": "8482",
-    "date": "2026-05-12",
-    "foreign": -3000,
-    "trust": 0
-  },
-  {
-    "code": "8487",
-    "date": "2026-05-12",
-    "foreign": 1000,
-    "trust": 0
-  },
-  {
-    "code": "8488",
-    "date": "2026-05-12",
-    "foreign": 1000,
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "8489",
     "date": "2026-05-12",
     "foreign": 20010,
-    "trust": 0
-  },
-  {
-    "code": "8499",
-    "date": "2026-05-12",
-    "foreign": 49000,
     "trust": 0
   },
   {
@@ -13166,8 +10706,8 @@
   {
     "code": "8926",
     "date": "2026-05-12",
-    "foreign": 283100,
-    "trust": -3000
+    "foreign": -21000,
+    "trust": 473000
   },
   {
     "code": "8927",
@@ -13236,12 +10776,6 @@
     "trust": 0
   },
   {
-    "code": "8940",
-    "date": "2026-05-12",
-    "foreign": -13980,
-    "trust": 0
-  },
-  {
     "code": "8942",
     "date": "2026-05-12",
     "foreign": -197000,
@@ -13250,253 +10784,235 @@
   {
     "code": "8996",
     "date": "2026-05-12",
-    "foreign": -681950,
-    "trust": 520000
-  },
-  {
-    "code": "9103",
-    "date": "2026-05-12",
-    "foreign": -23000,
+    "foreign": 55000,
     "trust": 0
   },
   {
     "code": "910322",
     "date": "2026-05-12",
-    "foreign": 12000,
+    "foreign": 15000,
     "trust": 0
   },
   {
     "code": "9105",
     "date": "2026-05-12",
-    "foreign": -3883000,
+    "foreign": -249000,
+    "trust": 0
+  },
+  {
+    "code": "910708",
+    "date": "2026-05-12",
+    "foreign": 2000,
     "trust": 0
   },
   {
     "code": "910861",
     "date": "2026-05-12",
-    "foreign": 29000,
+    "foreign": -4000,
     "trust": 0
   },
   {
-    "code": "911868",
+    "code": "9136",
     "date": "2026-05-12",
-    "foreign": -14000,
+    "foreign": 40000,
     "trust": 0
   },
   {
-    "code": "912000",
+    "code": "9188",
     "date": "2026-05-12",
-    "foreign": -56000,
+    "foreign": 95000,
     "trust": 0
   },
   {
     "code": "9802",
     "date": "2026-05-12",
-    "foreign": -552000,
-    "trust": 33000
+    "foreign": -57500,
+    "trust": 0
   },
   {
     "code": "9902",
-    "date": "2026-05-12",
-    "foreign": -6000,
-    "trust": 0
-  },
-  {
-    "code": "9904",
-    "date": "2026-05-12",
-    "foreign": -600877,
-    "trust": -2557232
-  },
-  {
-    "code": "9905",
-    "date": "2026-05-12",
-    "foreign": -30000,
-    "trust": 0
-  },
-  {
-    "code": "9906",
-    "date": "2026-05-12",
-    "foreign": -45997,
-    "trust": 0
-  },
-  {
-    "code": "9907",
-    "date": "2026-05-12",
-    "foreign": -2066000,
-    "trust": -188795
-  },
-  {
-    "code": "9908",
-    "date": "2026-05-12",
-    "foreign": 71000,
-    "trust": 0
-  },
-  {
-    "code": "9910",
-    "date": "2026-05-12",
-    "foreign": -130661,
-    "trust": 26000
-  },
-  {
-    "code": "9911",
-    "date": "2026-05-12",
-    "foreign": -175101,
-    "trust": -2000
-  },
-  {
-    "code": "9912",
-    "date": "2026-05-12",
-    "foreign": -4000,
-    "trust": 0
-  },
-  {
-    "code": "9914",
-    "date": "2026-05-12",
-    "foreign": -100975,
-    "trust": 0
-  },
-  {
-    "code": "9917",
-    "date": "2026-05-12",
-    "foreign": -225009,
-    "trust": 2000
-  },
-  {
-    "code": "9918",
-    "date": "2026-05-12",
-    "foreign": 10698,
-    "trust": 0
-  },
-  {
-    "code": "9919",
-    "date": "2026-05-12",
-    "foreign": 94500,
-    "trust": 0
-  },
-  {
-    "code": "9921",
-    "date": "2026-05-12",
-    "foreign": 265174,
-    "trust": -1000
-  },
-  {
-    "code": "9924",
-    "date": "2026-05-12",
-    "foreign": -56800,
-    "trust": -1325
-  },
-  {
-    "code": "9925",
-    "date": "2026-05-12",
-    "foreign": -345000,
-    "trust": 0
-  },
-  {
-    "code": "9926",
-    "date": "2026-05-12",
-    "foreign": -18000,
-    "trust": 0
-  },
-  {
-    "code": "9927",
-    "date": "2026-05-12",
-    "foreign": -13895,
-    "trust": 0
-  },
-  {
-    "code": "9929",
     "date": "2026-05-12",
     "foreign": -1000,
     "trust": 0
   },
   {
-    "code": "9930",
+    "code": "9904",
     "date": "2026-05-12",
-    "foreign": -28124,
+    "foreign": 521931,
+    "trust": -130000
+  },
+  {
+    "code": "9905",
+    "date": "2026-05-12",
+    "foreign": -16000,
     "trust": 0
   },
   {
-    "code": "9931",
+    "code": "9906",
     "date": "2026-05-12",
-    "foreign": -13000,
+    "foreign": -20000,
     "trust": 0
   },
   {
-    "code": "9933",
+    "code": "9907",
     "date": "2026-05-12",
-    "foreign": 1525495,
-    "trust": -3000
-  },
-  {
-    "code": "9934",
-    "date": "2026-05-12",
-    "foreign": -314000,
+    "foreign": 219000,
     "trust": 0
   },
   {
-    "code": "9935",
+    "code": "9908",
     "date": "2026-05-12",
-    "foreign": 11000,
+    "foreign": -6000,
     "trust": 0
   },
   {
-    "code": "9937",
+    "code": "9910",
     "date": "2026-05-12",
-    "foreign": -5000,
+    "foreign": 24080,
+    "trust": -4000
+  },
+  {
+    "code": "9911",
+    "date": "2026-05-12",
+    "foreign": -57000,
     "trust": 0
   },
   {
-    "code": "9938",
+    "code": "9914",
     "date": "2026-05-12",
-    "foreign": -415794,
-    "trust": 35472
-  },
-  {
-    "code": "9939",
-    "date": "2026-05-12",
-    "foreign": 1250000,
-    "trust": -63122
-  },
-  {
-    "code": "9940",
-    "date": "2026-05-12",
-    "foreign": -279855,
+    "foreign": -133410,
     "trust": 0
   },
   {
-    "code": "9941",
+    "code": "9917",
     "date": "2026-05-12",
-    "foreign": -870000,
-    "trust": -75526
+    "foreign": 33000,
+    "trust": -17000
   },
   {
-    "code": "9942",
+    "code": "9918",
     "date": "2026-05-12",
-    "foreign": -12987,
+    "foreign": -1000,
     "trust": 0
   },
   {
-    "code": "9943",
+    "code": "9919",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
+    "code": "9921",
+    "date": "2026-05-12",
+    "foreign": 250000,
+    "trust": 0
+  },
+  {
+    "code": "9924",
+    "date": "2026-05-12",
+    "foreign": -7000,
+    "trust": 0
+  },
+  {
+    "code": "9925",
     "date": "2026-05-12",
     "foreign": -15000,
     "trust": 0
   },
   {
+    "code": "9926",
+    "date": "2026-05-12",
+    "foreign": -4000,
+    "trust": 0
+  },
+  {
+    "code": "9927",
+    "date": "2026-05-12",
+    "foreign": -58000,
+    "trust": 0
+  },
+  {
+    "code": "9929",
+    "date": "2026-05-12",
+    "foreign": -12000,
+    "trust": 0
+  },
+  {
+    "code": "9930",
+    "date": "2026-05-12",
+    "foreign": -5000,
+    "trust": 0
+  },
+  {
+    "code": "9933",
+    "date": "2026-05-12",
+    "foreign": -528000,
+    "trust": 0
+  },
+  {
+    "code": "9934",
+    "date": "2026-05-12",
+    "foreign": 127000,
+    "trust": 0
+  },
+  {
+    "code": "9935",
+    "date": "2026-05-12",
+    "foreign": 33000,
+    "trust": 0
+  },
+  {
+    "code": "9937",
+    "date": "2026-05-12",
+    "foreign": -2000,
+    "trust": 0
+  },
+  {
+    "code": "9938",
+    "date": "2026-05-12",
+    "foreign": -38000,
+    "trust": -49000
+  },
+  {
+    "code": "9939",
+    "date": "2026-05-12",
+    "foreign": 677000,
+    "trust": -80000
+  },
+  {
+    "code": "9940",
+    "date": "2026-05-12",
+    "foreign": -31000,
+    "trust": 0
+  },
+  {
+    "code": "9941",
+    "date": "2026-05-12",
+    "foreign": -24000,
+    "trust": -267000
+  },
+  {
+    "code": "9942",
+    "date": "2026-05-12",
+    "foreign": 5000,
+    "trust": 0
+  },
+  {
+    "code": "9943",
+    "date": "2026-05-12",
+    "foreign": -1000,
+    "trust": 0
+  },
+  {
     "code": "9944",
     "date": "2026-05-12",
-    "foreign": 3000,
+    "foreign": -2000,
     "trust": 0
   },
   {
     "code": "9945",
     "date": "2026-05-12",
-    "foreign": -3031427,
-    "trust": 0
-  },
-  {
-    "code": "9946",
-    "date": "2026-05-12",
-    "foreign": -311000,
+    "foreign": -690000,
     "trust": 0
   },
   {
@@ -13518,15 +11034,9 @@
     "trust": 0
   },
   {
-    "code": "9955",
-    "date": "2026-05-12",
-    "foreign": -203402,
-    "trust": 0
-  },
-  {
     "code": "9958",
     "date": "2026-05-12",
-    "foreign": 102763,
+    "foreign": -655600,
     "trust": 0
   },
   {
