@@ -5626,10 +5626,10 @@
   "2340": {
     "foreign3d": 391423,
     "foreign5d": -3157167,
-    "trust3d": 31000,
-    "trust5d": 31000,
+    "trust3d": 0,
+    "trust5d": 0,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "2342": {
     "foreign3d": 278270,
@@ -5810,10 +5810,10 @@
   "2369": {
     "foreign3d": 8826688,
     "foreign5d": 7298103,
-    "trust3d": 12000,
-    "trust5d": 12000,
+    "trust3d": 0,
+    "trust5d": 0,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "2371": {
     "foreign3d": 5981344,
@@ -6346,10 +6346,10 @@
   "2465": {
     "foreign3d": 129241,
     "foreign5d": 34367,
-    "trust3d": 1012,
-    "trust5d": 1012,
+    "trust3d": 0,
+    "trust5d": 0,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "2466": {
     "foreign3d": 1020000,
@@ -6682,10 +6682,10 @@
   "2536": {
     "foreign3d": -327715,
     "foreign5d": -322715,
-    "trust3d": 2000,
-    "trust5d": 2000,
+    "trust3d": 0,
+    "trust5d": 0,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "2537": {
     "foreign3d": 904197,
@@ -10434,8 +10434,8 @@
   "4137": {
     "foreign3d": -522754,
     "foreign5d": -1060690,
-    "trust3d": 139847,
-    "trust5d": 420227,
+    "trust3d": 1000,
+    "trust5d": 281380,
     "foreignBuyDays3": 0,
     "trustBuyDays3": 1
   },
@@ -11594,10 +11594,10 @@
   "4906": {
     "foreign3d": -372792,
     "foreign5d": -765110,
-    "trust3d": 6000,
-    "trust5d": 6000,
+    "trust3d": -6000,
+    "trust5d": -6000,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "4907": {
     "foreign3d": 62000,
@@ -13858,8 +13858,8 @@
   "6197": {
     "foreign3d": 1251668,
     "foreign5d": 842276,
-    "trust3d": 10910,
-    "trust5d": 4910,
+    "trust3d": 2000,
+    "trust5d": -4000,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 2
   },
@@ -14914,10 +14914,10 @@
   "6533": {
     "foreign3d": 60848,
     "foreign5d": 148797,
-    "trust3d": 529,
-    "trust5d": 5529,
+    "trust3d": 0,
+    "trust5d": 5000,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "6534": {
     "foreign3d": -5289,
@@ -16458,10 +16458,10 @@
   "6924": {
     "foreign3d": -2000,
     "foreign5d": -21980,
-    "trust3d": 1000,
-    "trust5d": 1000,
+    "trust3d": 0,
+    "trust5d": 0,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "6925": {
     "foreign3d": -31000,
