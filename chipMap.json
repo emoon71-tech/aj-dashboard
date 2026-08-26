@@ -3354,8 +3354,8 @@
   "1303": {
     "foreign3d": -34162071,
     "foreign5d": -38301289,
-    "trust3d": 9606359,
-    "trust5d": 10579321,
+    "trust3d": 8882359,
+    "trust5d": 9855321,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 3
   },
@@ -4882,10 +4882,10 @@
   "1815": {
     "foreign3d": 17191075,
     "foreign5d": 22853513,
-    "trust3d": 3335000,
-    "trust5d": 3639185,
+    "trust3d": 4654000,
+    "trust5d": 4958185,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 2
   },
   "1817": {
     "foreign3d": 14000,
@@ -5170,8 +5170,8 @@
   "2059": {
     "foreign3d": -108809,
     "foreign5d": -288225,
-    "trust3d": 154431,
-    "trust5d": 560334,
+    "trust3d": 257681,
+    "trust5d": 663584,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 3
   },
@@ -5578,8 +5578,8 @@
   "2313": {
     "foreign3d": 5686511,
     "foreign5d": 2431501,
-    "trust3d": 1986000,
-    "trust5d": 2105266,
+    "trust3d": 3232000,
+    "trust5d": 3351266,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 3
   },
@@ -5602,10 +5602,10 @@
   "2317": {
     "foreign3d": -27308091,
     "foreign5d": -45232376,
-    "trust3d": 1460009,
-    "trust5d": -3210872,
+    "trust3d": 959009,
+    "trust5d": -3711872,
     "foreignBuyDays3": 0,
-    "trustBuyDays3": 3
+    "trustBuyDays3": 2
   },
   "2321": {
     "foreign3d": 0,
@@ -5626,10 +5626,10 @@
   "2324": {
     "foreign3d": 5232326,
     "foreign5d": -9209754,
-    "trust3d": 768077,
-    "trust5d": 599154,
+    "trust3d": 1138077,
+    "trust5d": 969154,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 2
   },
   "2327": {
     "foreign3d": -3785964,
@@ -5658,8 +5658,8 @@
   "2330": {
     "foreign3d": -2037720,
     "foreign5d": -12700781,
-    "trust3d": 881238,
-    "trust5d": 839518,
+    "trust3d": 1215238,
+    "trust5d": 1173518,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 3
   },
@@ -5722,8 +5722,8 @@
   "2345": {
     "foreign3d": -72997,
     "foreign5d": -678359,
-    "trust3d": -626850,
-    "trust5d": -1076860,
+    "trust3d": -694850,
+    "trust5d": -1144860,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 0
   },
@@ -5962,8 +5962,8 @@
   "2383": {
     "foreign3d": 741787,
     "foreign5d": 1246277,
-    "trust3d": -261840,
-    "trust5d": -620256,
+    "trust3d": -295840,
+    "trust5d": -654256,
     "foreignBuyDays3": 3,
     "trustBuyDays3": 1
   },
@@ -6082,8 +6082,8 @@
   "2408": {
     "foreign3d": 14355886,
     "foreign5d": 2957127,
-    "trust3d": -271334,
-    "trust5d": 851541,
+    "trust3d": -294334,
+    "trust5d": 828541,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 2
   },
@@ -6346,8 +6346,8 @@
   "2454": {
     "foreign3d": 23858,
     "foreign5d": -390464,
-    "trust3d": -2043558,
-    "trust5d": -4243552,
+    "trust3d": -2047558,
+    "trust5d": -4247552,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 0
   },
@@ -7538,8 +7538,8 @@
   "2884": {
     "foreign3d": 718910,
     "foreign5d": -38919228,
-    "trust3d": 2942457,
-    "trust5d": 46382766,
+    "trust3d": 3347457,
+    "trust5d": 46787766,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 3
   },
@@ -7554,10 +7554,10 @@
   "2886": {
     "foreign3d": 45158426,
     "foreign5d": 67423601,
-    "trust3d": -5910237,
-    "trust5d": 9727268,
+    "trust3d": -6579237,
+    "trust5d": 9058268,
     "foreignBuyDays3": 3,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 0
   },
   "2887": {
     "foreign3d": -27564274,
@@ -7954,8 +7954,8 @@
   "3017": {
     "foreign3d": 72499,
     "foreign5d": 946486,
-    "trust3d": 294492,
-    "trust5d": 239392,
+    "trust3d": 196492,
+    "trust5d": 141392,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 3
   },
@@ -8018,8 +8018,8 @@
   "3026": {
     "foreign3d": 11555,
     "foreign5d": 165800,
-    "trust3d": 538000,
-    "trust5d": 594000,
+    "trust3d": 515000,
+    "trust5d": 571000,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 1
   },
@@ -8106,8 +8106,8 @@
   "3037": {
     "foreign3d": 4567444,
     "foreign5d": 16882376,
-    "trust3d": -1288771,
-    "trust5d": -1775772,
+    "trust3d": -1457771,
+    "trust5d": -1944772,
     "foreignBuyDays3": 3,
     "trustBuyDays3": 0
   },
@@ -9322,10 +9322,10 @@
   "3443": {
     "foreign3d": -127144,
     "foreign5d": 965763,
-    "trust3d": 431944,
-    "trust5d": 260655,
+    "trust3d": 432944,
+    "trust5d": 261655,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 2
+    "trustBuyDays3": 3
   },
   "3444": {
     "foreign3d": -147869,
@@ -9442,8 +9442,8 @@
   "3491": {
     "foreign3d": -379293,
     "foreign5d": -590200,
-    "trust3d": 50000,
-    "trust5d": 76981,
+    "trust3d": 230000,
+    "trust5d": 256981,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 2
   },
@@ -10034,8 +10034,8 @@
   "3653": {
     "foreign3d": 664449,
     "foreign5d": 1611734,
-    "trust3d": 321249,
-    "trust5d": 898249,
+    "trust3d": 276249,
+    "trust5d": 853249,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 2
   },
@@ -12322,8 +12322,8 @@
   "5274": {
     "foreign3d": 170645,
     "foreign5d": 159010,
-    "trust3d": -19989,
-    "trust5d": -84106,
+    "trust3d": -18989,
+    "trust5d": -83106,
     "foreignBuyDays3": 3,
     "trustBuyDays3": 1
   },
@@ -14042,8 +14042,8 @@
   "6213": {
     "foreign3d": 3922441,
     "foreign5d": 5637112,
-    "trust3d": -757000,
-    "trust5d": -151000,
+    "trust3d": -1410000,
+    "trust5d": -804000,
     "foreignBuyDays3": 3,
     "trustBuyDays3": 1
   },
@@ -14122,8 +14122,8 @@
   "6223": {
     "foreign3d": -205494,
     "foreign5d": -191631,
-    "trust3d": 271627,
-    "trust5d": -432731,
+    "trust3d": 251627,
+    "trust5d": -452731,
     "foreignBuyDays3": 0,
     "trustBuyDays3": 3
   },
@@ -14514,8 +14514,8 @@
   "6409": {
     "foreign3d": 38188,
     "foreign5d": 75206,
-    "trust3d": 57968,
-    "trust5d": 101936,
+    "trust3d": 58968,
+    "trust5d": 102936,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 2
   },
@@ -14906,10 +14906,10 @@
   "6515": {
     "foreign3d": 50836,
     "foreign5d": 203472,
-    "trust3d": 15521,
-    "trust5d": -187482,
+    "trust3d": -22479,
+    "trust5d": -225482,
     "foreignBuyDays3": 2,
-    "trustBuyDays3": 3
+    "trustBuyDays3": 2
   },
   "6516": {
     "foreign3d": -11000,
@@ -14970,8 +14970,8 @@
   "6531": {
     "foreign3d": 2638655,
     "foreign5d": 5753956,
-    "trust3d": -2171932,
-    "trust5d": -5418219,
+    "trust3d": -2153932,
+    "trust5d": -5400219,
     "foreignBuyDays3": 3,
     "trustBuyDays3": 1
   },
@@ -15554,8 +15554,8 @@
   "6669": {
     "foreign3d": -228437,
     "foreign5d": 121831,
-    "trust3d": 51307,
-    "trust5d": -664066,
+    "trust3d": 48807,
+    "trust5d": -666566,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 2
   },
@@ -16138,8 +16138,8 @@
   "6831": {
     "foreign3d": 310358,
     "foreign5d": 229650,
-    "trust3d": -696000,
-    "trust5d": -755000,
+    "trust3d": -796000,
+    "trust5d": -855000,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 0
   },
@@ -17466,10 +17466,10 @@
   "8039": {
     "foreign3d": -5829929,
     "foreign5d": -4409097,
-    "trust3d": 1000,
-    "trust5d": 1000,
+    "trust3d": 442000,
+    "trust5d": 442000,
     "foreignBuyDays3": 1,
-    "trustBuyDays3": 1
+    "trustBuyDays3": 2
   },
   "8040": {
     "foreign3d": 32227,
@@ -17514,8 +17514,8 @@
   "8046": {
     "foreign3d": 36193,
     "foreign5d": -366100,
-    "trust3d": 278961,
-    "trust5d": 255961,
+    "trust3d": 161961,
+    "trust5d": 138961,
     "foreignBuyDays3": 2,
     "trustBuyDays3": 2
   },
@@ -18154,8 +18154,8 @@
   "8358": {
     "foreign3d": -3892391,
     "foreign5d": -8299182,
-    "trust3d": 153000,
-    "trust5d": 279400,
+    "trust3d": 159000,
+    "trust5d": 285400,
     "foreignBuyDays3": 1,
     "trustBuyDays3": 1
   },
